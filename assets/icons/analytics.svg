@@ -1,0 +1,22 @@
+<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" x="0" y="0"><defs><filter id="filter3_d_403_583" x="-3" y="-2" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="1" dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.737255 0 0 0 0 0.611765 0 0 0 0 0.776471 0 0 0 1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_403_583"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_403_583" result="shape"/>
+</filter><linearGradient id="paint4_linear_403_583" x1="20" y1="-15.172000000000025" x2="20.200999999999993" y2="40" gradientUnits="userSpaceOnUse">
+<stop offset="1" stop-color="#BD9AC4"/>
+</linearGradient></defs><g id="Group 37057">
+<g id="Rectangle 10" filter="url(#filter3_d_403_583)">
+<rect x="0" y="0" width="40" height="40" rx="10" fill="url(#paint4_linear_403_583)"/>
+</g>
+<g id="Iconly/Regular/Bulk/Graph">
+<g id="Graph">
+<path id="Path" d="M18.1528,13.556c0.0509,0.103 0.0845,0.214 0.0996,0.328l0.2784,4.14l0.1382,2.081c0.0015,0.214 0.035,0.427 0.0997,0.631c0.1669,0.397 0.5685,0.649 1.0054,0.631l6.6569,-0.435c0.289,-0.005 0.567,0.103 0.774,0.299c0.173,0.164 0.284,0.379 0.32,0.609l0.011,0.14c-0.275,3.815 -3.077,6.997 -6.884,7.818c-3.8064,0.821 -7.7101,-0.914 -9.5913,-4.263c-0.5423,-0.973 -0.881,-2.043 -0.9963,-3.146c-0.0482,-0.327 -0.0694,-0.656 -0.0634,-0.986c-0.006,-4.09 2.9065,-7.626 6.9833,-8.478c0.4907,-0.077 0.9717,0.183 1.1685,0.631z" fill="#FAFAFA"/>
+<path id="Path_2" opacity="0.4" d="M20.87,10.001c4.56,0.116 8.392,3.395 9.13,7.811l-0.007,0.033l-0.02,0.047l0.003,0.13c-0.011,0.173 -0.077,0.339 -0.192,0.472c-0.119,0.14 -0.283,0.235 -0.462,0.272l-0.11,0.015l-7.681,0.498c-0.255,0.025 -0.51,-0.058 -0.7,-0.227c-0.158,-0.141 -0.259,-0.332 -0.288,-0.537l-0.515,-7.67c-0.009,-0.026 -0.009,-0.054 0,-0.08c0.007,-0.211 0.1,-0.411 0.258,-0.555c0.158,-0.143 0.369,-0.219 0.584,-0.209z" fill="#FAFAFA"/>
+</g>
+</g>
+</g></svg>

@@ -1,0 +1,23 @@
+<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" x="0" y="0"><defs><filter id="filter4_d_403_583" x="-3" y="-2" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="1" dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.737255 0 0 0 0 0.611765 0 0 0 0 0.776471 0 0 0 1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_403_583"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_403_583" result="shape"/>
+</filter><linearGradient id="paint5_linear_403_583" x1="20" y1="-15.172000000000025" x2="20.200999999999993" y2="40" gradientUnits="userSpaceOnUse">
+<stop offset="1" stop-color="#BD9AC4"/>
+</linearGradient><clipPath id="clip8_403_583">
+<rect width="24" height="24" fill="white" transform="translate(8, 8)"/>
+</clipPath></defs><g id="Group 37058">
+<g id="Rectangle 10_2" filter="url(#filter4_d_403_583)">
+<rect x="0" y="0" width="40" height="40" rx="10" fill="url(#paint5_linear_403_583)"/>
+</g>
+<g id="history_anticlockwise_fill" clip-path="url(#clip8_403_583)">
+<g id="Group_8">
+<path id="Vector_9" d="M29.093,14.75c2.9,5.022 1.179,11.444 -3.843,14.344c-4.183,2.414 -9.332,1.624 -12.613,-1.604c-0.284,-0.279 -0.445,-0.659 -0.448,-1.057c-0.003,-0.398 0.151,-0.781 0.43,-1.064c0.28,-0.284 0.66,-0.445 1.058,-0.449c0.397,-0.003 0.78,0.152 1.064,0.431c1.181,1.161 2.713,1.898 4.357,2.097c1.644,0.199 3.307,-0.152 4.731,-0.997c1.423,-0.846 2.527,-2.139 3.139,-3.678c0.612,-1.538 0.697,-3.236 0.243,-4.829c-0.455,-1.592 -1.423,-2.989 -2.755,-3.973c-1.332,-0.984 -2.952,-1.5 -4.607,-1.467c-1.656,0.033 -3.254,0.613 -4.545,1.65c-1.292,1.036 -2.204,2.471 -2.594,4.08l0.518,-0.134c1.522,-0.398 2.644,1.41 1.61,2.598l-2.25,2.587c-0.826,0.949 -2.423,0.626 -2.754,-0.646c-0.577,-2.224 -0.408,-4.576 0.48,-6.695c0.888,-2.119 2.446,-3.888 4.436,-5.037c5.023,-2.9 11.444,-1.179 14.343,3.843zM20,13.5c0.373,0 0.732,0.139 1.008,0.39c0.276,0.25 0.449,0.595 0.485,0.966l0.007,0.144v4.379l2.06,2.06c0.273,0.272 0.431,0.638 0.442,1.023c0.01,0.385 -0.128,0.759 -0.386,1.045c-0.258,0.286 -0.616,0.462 -1,0.491c-0.384,0.03 -0.765,-0.09 -1.063,-0.334l-0.114,-0.103l-2.5,-2.5c-0.245,-0.245 -0.398,-0.568 -0.432,-0.913l-0.007,-0.148v-5c0,-0.398 0.158,-0.779 0.439,-1.061c0.282,-0.281 0.663,-0.439 1.061,-0.439z" fill="white"/>
+</g>
+</g>
+</g></svg>

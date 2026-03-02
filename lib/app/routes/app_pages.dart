@@ -1,0 +1,64 @@
+import 'package:get/get.dart';
+
+import '../modules/add_transaksi/bindings/add_transaksi_binding.dart';
+import '../modules/add_transaksi/views/add_transaksi_view.dart';
+import '../modules/all_transaction/bindings/all_transaction_binding.dart';
+import '../modules/all_transaction/views/all_transaction_view.dart';
+import '../modules/home/bindings/home_binding.dart';
+import '../modules/home/views/home_view.dart';
+import '../modules/login/bindings/login_binding.dart';
+import '../modules/login/views/login_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
+import '../modules/regis/bindings/regis_binding.dart';
+import '../modules/regis/views/regis_view.dart';
+import '../modules/report/bindings/report_binding.dart';
+import '../modules/report/views/report_view.dart';
+
+part 'app_routes.dart';
+
+class AppPages {
+  AppPages._();
+
+  static const INITIAL = Routes.HOME;
+
+  static final routes = [
+    GetPage(
+      name: _Paths.HOME,
+      page: () => HomeView(),
+      binding: HomeBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.REPORT,
+      page: () => ReportView(),
+      binding: ReportBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => ProfileView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.ALL_TRANSACTION,
+      page: () => AllTransactionView(),
+      binding: AllTransactionBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_TRANSAKSI,
+      page: () => AddTransaksiView(),
+      binding: AddTransaksiBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () =>  LoginView(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGIS,
+      page: () =>  RegisView(),
+      binding: RegisBinding(),
+    ),
+  ];
+}
