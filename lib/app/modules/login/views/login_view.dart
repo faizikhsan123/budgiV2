@@ -1,4 +1,5 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -136,6 +137,7 @@ class LoginView extends GetView<LoginController> {
                       "Log In",
                       style: TextStyle(
                         fontSize: 16,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -183,15 +185,15 @@ class LoginView extends GetView<LoginController> {
                 /// SIGN UP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children:  [
                     Text("Don't have an account? "),
-                    Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    TextButton(onPressed: (){
+                      Get.toNamed(Routes.REGIS);
+                    }, child: Text("Sign Up",style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold
+                    ),))
+                   
                   ],
                 ),
 
