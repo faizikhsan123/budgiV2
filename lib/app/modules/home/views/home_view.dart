@@ -10,7 +10,6 @@ import '../widgets/quick_actions_row.dart';
 import '../widgets/transaction_group_card.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
