@@ -1,10 +1,12 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
-class LoginView extends StatelessWidget {
-  final authC = Get.find<AuthController>();
+import '../controllers/login_controller.dart';
 
+class LoginView extends GetView<LoginController> {
+  final authC = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,21 +62,28 @@ class LoginView extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 /// PASSWORD FIELD
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "*******",
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
+                Obx(
+                  () => TextField(
+                    obscureText: controller.isHide.value,
+                    decoration: InputDecoration(
+                      hintText: "*******",
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 18,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () => controller.isHide.toggle(),
+                        icon: controller.isHide.value == true
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off),
+                      ),
                     ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: const Icon(Icons.visibility_off),
                   ),
                 ),
 

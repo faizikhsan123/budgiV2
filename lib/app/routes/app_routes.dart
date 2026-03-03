@@ -11,6 +11,7 @@ abstract class Routes {
   static const ADD_TRANSAKSI = _Paths.ADD_TRANSAKSI;
   static const LOGIN = _Paths.LOGIN;
   static const REGIS = _Paths.REGIS;
+
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const ADD_TRANSAKSI = '/add-transaksi';
   static const LOGIN = '/login';
   static const REGIS = '/regis';
+
 }
