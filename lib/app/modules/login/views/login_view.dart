@@ -125,7 +125,7 @@ class LoginView extends GetView<LoginController> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      authC.login(controller.emailC.text, controller.passC.text);
+                    authC.loginFOrm(controller.emailC.text, controller.passC.text);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB695C0),

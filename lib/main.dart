@@ -9,17 +9,30 @@ import 'package:get/get.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); //wajib tambahkan ini
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions
-        .currentPlatform, //tambahkan inioptions: DefaultFirebaseOptions();
-  ); //inisialisasi firebase
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(NyApp());
 }
 
 class NyApp extends StatelessWidget {
   final authC = Get.put(AuthController(), permanent: true);
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Budgi",
+      home: AuthWrapper(), // ✅ Pakai home, bukan initialRoute
+      getPages: AppPages.routes,
+    );
+  }
+}
+
+// ✅ Pisahkan logic auth ke widget sendiri
+class AuthWrapper extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -27,16 +40,29 @@ class NyApp extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: auth.authStateChanges(),
       builder: (context, snapshot) {
+        // Loading
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: "Application",
-          initialRoute: Routes.LOGIN,
-          // initialRoute: snapshot.hasData ? Routes.HOME : Routes.LOGIN,
-          getPages: AppPages.routes,
+        // ✅ Auto redirect berdasarkan status login
+        if (snapshot.hasData) {
+          // Sudah login → ke HOME
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Get.offAllNamed(Routes.HOME);
+          });
+        } else {
+          // Belum login → ke LOGIN
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Get.offAllNamed(Routes.LOGIN);
+          });
+        }
+
+        // Tampilkan loading sementara redirect
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
         );
       },
     );
