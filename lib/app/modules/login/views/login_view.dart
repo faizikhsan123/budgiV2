@@ -1,13 +1,11 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
-import '../controllers/login_controller.dart';
-
-class LoginView extends GetView<LoginController> {
+class LoginView extends StatelessWidget {
   final authC = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,28 +61,21 @@ class LoginView extends GetView<LoginController> {
                 const SizedBox(height: 20),
 
                 /// PASSWORD FIELD
-                Obx(
-                  () => TextField(
-                    obscureText: controller.isHide.value,
-                    decoration: InputDecoration(
-                      hintText: "*******",
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 18,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () => controller.isHide.toggle(),
-                        icon: controller.isHide.value == true
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off),
-                      ),
+                TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: "*******",
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 18,
                     ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: const Icon(Icons.visibility_off),
                   ),
                 ),
 
@@ -94,12 +85,7 @@ class LoginView extends GetView<LoginController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: const [
-                        Checkbox(value: false, onChanged: null),
-                        Text("Remember me"),
-                      ],
-                    ),
+                    Row(children: const [Text("")]),
                     Text(
                       "Forgot Password ?",
                       style: TextStyle(
@@ -185,15 +171,20 @@ class LoginView extends GetView<LoginController> {
                 /// SIGN UP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:  [
+                  children: [
                     Text("Don't have an account? "),
-                    TextButton(onPressed: (){
-                      Get.toNamed(Routes.REGIS);
-                    }, child: Text("Sign Up",style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold
-                    ),))
-                   
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.REGIS);
+                      },
+                      child: Text(
+                        "Sign Up",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
 
