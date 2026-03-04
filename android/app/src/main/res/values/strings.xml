@@ -4,7 +4,7 @@
     <string name="app_name">budgi</string>
 
     <string name="facebook_app_id">905653798984278</string>
-    <string name="facebook_client_token">d3ad2c717e28b5e78e684d7d47bdf26</string>
+    <string name="facebook_client_token">2d3ad2c717e28b5e78e684d7d47bdf26</string>
 
     <string name="fb_login_protocol_scheme">
         fb905653798984278
