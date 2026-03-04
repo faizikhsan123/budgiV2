@@ -12,11 +12,12 @@ dependencies:
   get: 4.7.3
   firebase_core: 4.4.0
   convex_bottom_bar: 3.2.0
-  syncfusion_flutter_datepicker: 32.2.7
+  syncfusion_flutter_datepicker: 32.2.8
   google_sign_in: 6.2.1
   firebase_auth: 6.1.4
   cloud_firestore: 6.1.2
   flutter_facebook_auth: 7.1.5
+  intl_phone_number_input_v2: 0.0.9
   flutter: 
     sdk: flutter
 
@@ -26,7 +27,7 @@ dev_dependencies:
     sdk: flutter
 
 flutter: 
-  uses-material-design: true
-  assets:
+  assets: 
     - assets/icons/
+  uses-material-design: true
 
