@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/complete_profile_controller.dart';
 
 class CompleteProfileView extends GetView<CompleteProfileController> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,10 +12,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFFF3E7FF),
-              Color(0xFFF6EBDD),
-            ],
+            colors: [Color(0xFFF3E7FF), Color(0xFFF6EBDD)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -26,33 +23,19 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
-
-                /// BACK BUTTON
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.arrow_back_ios_new),
-                ),
-
-                const SizedBox(height: 20),
+                const SizedBox(height: 160),
 
                 /// TITLE
                 const Text(
                   "To Continue Fill in\nYour Details",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 8),
 
                 const Text(
                   "Enter your Birth of date & Phone Number",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 40),
@@ -60,39 +43,88 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                 /// BIRTH DATE LABEL
                 const Text(
                   "Birth of date",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 8),
 
                 /// BIRTH DATE FIELD
-                Container(
-                  height: 55,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                      )
-                    ],
-                  ),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                        child: Text(
-                          "24/07/2005",
-                          style: TextStyle(fontSize: 16),
+                InkWell(
+                  onTap: () => Get.dialog(
+                    Dialog(
+                      child: Container(
+                        height: 400,
+                        padding: const EdgeInsets.all(10),
+
+                        child: SfDateRangePicker(
+                          controller: controller.dateC,
+                          selectionMode: DateRangePickerSelectionMode
+                              .single, //mode datepicker
+                          minDate: DateTime(2000),
+                          initialSelectedDate: null,
+                          maxDate: DateTime(2040),
+                          todayHighlightColor: Colors.transparent,
+                          showNavigationArrow: true,
+                          showActionButtons: true, //tampilkan tombol
+                          onCancel: () =>
+                              Get.back(), //ketika tombol cancel ditekan
+                          onSubmit: (obj) {
+                            DateTime date = obj as DateTime;
+
+                            controller.nilaiTanggal.value =
+                                "${date.day}/${date.month}/${date.year}";
+
+                            print(
+                              " data tagnggal : ${controller.nilaiTanggal.value}",
+                            );
+
+                            Get.back();
+                          },
                         ),
                       ),
-                      Icon(Icons.calendar_today_outlined,
-                          size: 20, color: Colors.grey),
-                    ],
+                    ),
+                  ),
+                  child: Obx(
+                    () => Container(
+                      height: 55,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              controller.nilaiTanggal.value.isEmpty
+                                  ? "Select Date"
+                                  : controller.nilaiTanggal.value,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: controller.nilaiTanggal.value.isEmpty
+                                    ? Colors.grey.shade500
+                                    : Colors.black,
+                                fontWeight:
+                                    controller.nilaiTanggal.value.isEmpty
+                                    ? FontWeight.normal
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.calendar_today_outlined,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
 
@@ -101,10 +133,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                 /// PHONE LABEL
                 const Text(
                   "Phone Number",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 8),
@@ -120,27 +149,29 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 10,
-                      )
+                      ),
                     ],
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: const Text(
-                          "+62",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      const VerticalDivider(width: 1),
-                      const SizedBox(width: 10),
-                      const Expanded(
-                        child: Text(
-                          "821-726-0592",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
+                  child: InternationalPhoneNumberInput(
+                    onInputChanged: (PhoneNumber number) {
+                      controller.phoneC = number; // 🔥 INI WAJIB
+                      print(number.phoneNumber);
+                    },
+
+                    selectorConfig: const SelectorConfig(
+                      selectorType: PhoneInputSelectorType.DROPDOWN,
+                      showFlags: true,
+                    ),
+                    initialValue: PhoneNumber(isoCode: 'ID'),
+                    textFieldController: TextEditingController(),
+                    formatInput: true,
+                    keyboardType: TextInputType.number,
+                    inputDecoration: const InputDecoration(
+                      border: InputBorder.none, // 🔥 hilangkan border default
+                      isCollapsed: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 18),
+                      hintText: "812-3456-7890",
+                    ),
                   ),
                 ),
 
@@ -151,7 +182,9 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.LengkapiProfile();
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB18FCF),
                       shape: RoundedRectangleBorder(
@@ -163,6 +196,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       "Continue",
                       style: TextStyle(
                         fontSize: 16,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

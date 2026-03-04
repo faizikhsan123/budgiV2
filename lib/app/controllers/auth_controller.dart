@@ -99,13 +99,8 @@ class AuthController extends GetxController {
         },
       );
 
-      Get.snackbar(
-        '✅ Berhasil Login',
-        'Selamat datang, ${_currentUser!.displayName}!',
-        backgroundColor: Colors.white,
-        colorText: Colors.green,
-      );
-      Get.toNamed(Routes.HOME);
+     
+      Get.offAllNamed(Routes.COMPLETE_PROFILE);
     } catch (e) {
       print(e);
     }
@@ -188,13 +183,8 @@ class AuthController extends GetxController {
       );
 
       print("data dari fb: ${userData.toString()}");
-      Get.snackbar(
-        '✅ Success',
-        'Login Berhasil',
-        backgroundColor: Colors.white,
-        colorText: Colors.green,
-      );
-      Get.offAllNamed(Routes.HOME);
+     
+      Get.offAllNamed(Routes.COMPLETE_PROFILE);
     } catch (e) {
       print("ERROR FACEBOOK LOGIN: $e");
       Get.snackbar(

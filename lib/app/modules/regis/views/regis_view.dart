@@ -77,7 +77,7 @@ class RegisView extends GetView<RegisController> {
                           controller: controller.dateC,
                           selectionMode: DateRangePickerSelectionMode
                               .single, //mode datepicker
-                          minDate: DateTime.now(),
+                          minDate: DateTime(2000),
                           initialSelectedDate: null,
                           maxDate: DateTime(2040),
                           todayHighlightColor: Colors.transparent,
