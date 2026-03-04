@@ -12,7 +12,20 @@
           "package_name": "com.example.budgi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1045518840876-ckvpt41vniar4efma2fqogeq6po5ne77.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.budgi",
+            "certificate_hash": "b2f15afc8ab73b029332db78faaab02db315778d"
+          }
+        },
+        {
+          "client_id": "1045518840876-iqdel6gsetof7b6ibdnebqktiuber8u4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB_UhxD4sBzl6Qhcd9P-BfVK0RYpocNapI"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045518840876-iqdel6gsetof7b6ibdnebqktiuber8u4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1045518840876-e0sckchgt2edegtkjf26bg401h63ca8j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.budgi"
+              }
+            }
+          ]
         }
       }
     }
