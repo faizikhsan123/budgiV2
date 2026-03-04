@@ -168,7 +168,7 @@ class HomeView extends GetView<HomeController> {
           auth.signOut();
           Get.toNamed(Routes.LOGIN);
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.logout_outlined),
       ),
     );
   }

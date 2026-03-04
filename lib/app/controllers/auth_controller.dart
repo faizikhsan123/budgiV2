@@ -9,101 +9,233 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 class AuthController extends GetxController {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  GoogleSignInAccount? _currentUser;
+  UserCredential? userCredential;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  // ================================
-  // GOOGLE LOGIN
-  // ================================
-  Future<void> loginWithGoogle() async {
+  // ✅ Cek email sudah terdaftar di provider lain atau belum
+  Future<String?> _getExistingProvider(String email) async {
+    final query = await firestore
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .limit(1)
+        .get();
+
+    if (query.docs.isNotEmpty) {
+      final providers = List<String>.from(
+        query.docs.first.data()['providers'] ?? [],
+      );
+      return providers.isNotEmpty ? providers.first : null;
+    }
+    return null; // Email belum terdaftar
+  }
+
+  Future<void> _saveUser({
+    required String uid,
+    required Map<String, dynamic> data,
+    required String provider,
+  }) async {
+    await firestore.collection("users").doc(uid).set({
+      ...data,
+      "providers": [provider],
+      "created_at": Timestamp.now(),
+      "updated_at": Timestamp.now(),
+    });
+  }
+
+  void loginWithGoogle() async {
     try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return;
+      await _googleSignIn.signOut();
+      await _googleSignIn.signIn().then((value) => _currentUser = value);
 
-      final googleAuth = await googleUser.authentication;
+      final isLogin = await _googleSignIn.isSignedIn();
+      if (!isLogin) return;
 
+      final email = _currentUser!.email;
+
+      // 🔍 Cek dulu apakah email sudah dipakai provider lain
+      final existingProvider = await _getExistingProvider(email);
+
+      if (existingProvider != null && existingProvider != "google") {
+        // ❌ Tolak login, tampilkan notif
+        Get.snackbar(
+          '❌ Email Sudah Terdaftar',
+          'Email "$email" sudah digunakan via $existingProvider. '
+              'Silakan login menggunakan $existingProvider.',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+          duration: const Duration(seconds: 5),
+          icon: const Icon(Icons.cancel, color: Colors.red, size: 28),
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(12),
+        );
+        await _googleSignIn.signOut(); // Pastikan Google session dibersihkan
+        return; // 🚫 Stop, tidak lanjut ke Firebase Auth
+      }
+
+      // ✅ Email aman, lanjut login
+      final googleAuth = await _currentUser!.authentication;
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken,
       );
 
-      final userCredential =
-          await auth.signInWithCredential(credential);
+      await FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then((value) => userCredential = value);
 
-      await _handleUserData(userCredential);
+      final uid = userCredential!.user!.uid;
 
-      Get.offAllNamed(Routes.HOME);
-    } catch (e) {
-      print("Google Login Error: $e");
-    }
-  }
-  Future<void> loginFacebook() async {
-    try {
-      final result = await FacebookAuth.instance.login();
-
-      if (result.status != LoginStatus.success) return;
-
-      final credential = FacebookAuthProvider.credential(
-        result.accessToken!.tokenString,
+      await _saveUser(
+        uid: uid,
+        provider: "google",
+        data: {
+          "name": _currentUser!.displayName,
+          "email": email,
+          "phone": null,
+          "tanggal_lahir": null,
+          "photo_url": userCredential!.user!.photoURL,
+        },
       );
 
-      final userCredential =
-          await auth.signInWithCredential(credential);
-
-      await _handleUserData(userCredential);
-
-      Get.offAllNamed(Routes.HOME);
-      Get.snackbar('berhasil', 'berhasil login');
+      Get.snackbar(
+        '✅ Berhasil Login',
+        'Selamat datang, ${_currentUser!.displayName}!',
+        backgroundColor: Colors.white,
+        colorText: Colors.green,
+      );
+      Get.toNamed(Routes.HOME);
     } catch (e) {
-      print("Facebook Login Error: $e");
+      print(e);
     }
   }
 
-  Future<void> login(String email, String pass) async {
-    if (email.isEmpty || pass.isEmpty) {
-      Get.snackbar("Error", "Semua field wajib diisi",
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
-      return;
-    }
-
+  Future<void> loginFacebook() async {
     try {
-      final userCredential = await auth
-          .signInWithEmailAndPassword(email: email, password: pass);
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+      );
 
-      await _handleUserData(userCredential);
+      if (result.status != LoginStatus.success) {
+        print("Login gagal: ${result.message}");
+        Get.snackbar(
+          'Error',
+          'Login Gagal',
+          backgroundColor: Colors.white,
+          colorText: Colors.red,
+        );
+        return;
+      }
 
+      // ✅ Step 1: Ambil userData dari Facebook
+      final userData = await FacebookAuth.instance.getUserData();
+      print("FB USER DATA: $userData");
+
+      final email = userData['email'];
+      if (email == null) {
+        Get.snackbar(
+          '❌ Error',
+          'Akun Facebook tidak memiliki email.',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
+        await FacebookAuth.instance.logOut();
+        return;
+      }
+
+      // ✅ Step 2: Cek email di Firestore
+      final existingProvider = await _getExistingProvider(email);
+      if (existingProvider != null && existingProvider != "facebook") {
+        Get.snackbar(
+          '❌ Email Sudah Terdaftar',
+          'Email "$email" sudah digunakan via $existingProvider. '
+              'Silakan login menggunakan $existingProvider.',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+          duration: const Duration(seconds: 5),
+          icon: const Icon(Icons.cancel, color: Colors.red, size: 28),
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(12),
+        );
+        await FacebookAuth.instance.logOut();
+        return;
+      }
+
+      // ✅ Step 3: Login ke Firebase Auth pakai token Facebook
+      final accessToken = result.accessToken!;
+      final facebookCredential = FacebookAuthProvider.credential(
+        accessToken.tokenString,
+      );
+
+      userCredential = await FirebaseAuth.instance.signInWithCredential(
+        facebookCredential,
+      ); // ← login dulu baru ambil uid
+
+      final uid = userCredential!.user!.uid; // ← baru aman dipakai
+
+      // ✅ Step 4: Simpan ke Firestore
+      await _saveUser(
+        uid: uid,
+        provider: "facebook",
+        data: {
+          "name": userData['name'],
+          "email": email,
+          "phone": null,
+          "tanggal_lahir": null,
+          "photo_url": userData['picture']['data']['url'],
+        },
+      );
+
+      print("data dari fb: ${userData.toString()}");
+      Get.snackbar(
+        '✅ Success',
+        'Login Berhasil',
+        backgroundColor: Colors.white,
+        colorText: Colors.green,
+      );
       Get.offAllNamed(Routes.HOME);
     } catch (e) {
-      print("Email Login Error: $e");
-      Get.snackbar("Error", "Login Gagal",
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      print("ERROR FACEBOOK LOGIN: $e");
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
     }
   }
 
+  Future<void> loginFOrm(String email, String password) async {
+    try {
 
-  Future<void> _handleUserData(UserCredential userCredential) async {
-    final user = userCredential.user!;
-    final uid = user.uid;
+      if (email.isEmpty || password.isEmpty) {
+        Get.snackbar(
+          'Error',
+          'Semua field wajib diisi',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
+        return;
+      }
 
-    final isNewUser =
-        userCredential.additionalUserInfo?.isNewUser ?? false;
-
-    if (isNewUser) {
-      await firestore.collection("users").doc(uid).set({
-        "name": user.displayName,
-        "email": user.email,
-        "phone": user.phoneNumber,
-        "photo_url": user.photoURL,
-        "tanggal_lahir": null,
-        "created_at": Timestamp.now(),
-        "updated_at": Timestamp.now(),
-      });
-    } else {
-      await firestore.collection("users").doc(uid).set({
-        "last_login_at": Timestamp.now(),
-        "updated_at": Timestamp.now(),
-      }, SetOptions(merge: true));
+      await auth.signInWithEmailAndPassword(email: email, password: password);
+      Get.toNamed(Routes.HOME);
+      Get.snackbar(
+        'Success',
+        'Login Berhasil',
+        colorText: Colors.green,
+        backgroundColor: Colors.white,
+      );
+    } catch (e) {
+      print("ERROR FORM LOGIN: $e");
+      Get.snackbar(
+        'Gagal',
+        'Login Gagal',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
     }
+    await auth.signInWithEmailAndPassword(email: email, password: password);
   }
 }
