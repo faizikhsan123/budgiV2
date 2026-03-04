@@ -25,13 +25,14 @@ class NyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Budgi",
-      home: AuthWrapper(), // ✅ Pakai home, bukan initialRoute
+      // initialRoute: Routes.COMPLETE_PROFILE,
+      home: AuthWrapper(), 
       getPages: AppPages.routes,
     );
   }
 }
 
-// ✅ Pisahkan logic auth ke widget sendiri
+
 class AuthWrapper extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
