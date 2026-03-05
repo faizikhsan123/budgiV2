@@ -24,9 +24,9 @@ class NyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Budgi",
-      // initialRoute: Routes.COMPLETE_PROFILE,
-      home: AuthWrapper(), 
+
+      title: "Application",
+      initialRoute: Routes.PROFILE,
       getPages: AppPages.routes,
     );
   }
