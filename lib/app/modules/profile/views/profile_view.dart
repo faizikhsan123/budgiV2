@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../widgets/app_colors.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -21,10 +23,6 @@ class ProfileView extends GetView<ProfileController> {
             end: Alignment.bottomCenter,
             stops: [0.0535, 0.3931],
             colors: [Color(0xFFE2B9A3), Color(0xFFEAC9B3)],
-
-            // colors: [
-            // COlors.whi
-            // ],
           ),
         ),
         child: SafeArea(
@@ -32,7 +30,7 @@ class ProfileView extends GetView<ProfileController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Back Arrow ───────────────────────────────────────────
+              // ── Back Arrow ──────────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.only(left: 24, top: 16),
                 child: GestureDetector(
@@ -41,22 +39,21 @@ class ProfileView extends GetView<ProfileController> {
                     'assets/icons/back_arrow.svg',
                     width: 20,
                     height: 18,
-
-                    // colorFilter: const ColorFilter.mode(
-                    //   AppColors.textDark,
-                    //   BlendMode.srcIn,
-                    // ),
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.textDark,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
 
-              // ── Main Content (Stack: avatar + white card) ─────────────
+              // ── Main Content: avatar overlaps white card ─────────────────
               Expanded(
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    // White card (starts 40px from top, avatar overlaps 40px)
+                    // White card (starts 40px from Stack top so avatar overlaps)
                     Positioned(
                       top: 40,
                       left: 0,
@@ -82,31 +79,29 @@ class ProfileView extends GetView<ProfileController> {
                             // Scrollable form content
                             Expanded(
                               child: SingleChildScrollView(
-                                padding: const EdgeInsets.fromLTRB(
-                                  24,
-                                  0,
-                                  24,
-                                  24,
-                                ),
+                                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Edit Profile button (right-aligned)
+                                    // Edit Profile button aligned right
                                     SizedBox(
                                       height: 48,
                                       child: Align(
                                         alignment: Alignment.centerRight,
-                                        child: const _EditProfileButton(),
+                                        child: GestureDetector(
+                                          onTap: () => Get.toNamed(Routes.EDIT_PROFILE),
+                                          child: const _EditProfileButton(),
+                                        ),
                                       ),
                                     ),
 
                                     // Full name
                                     Text(
-                                      'Faiz  Ihsan Fajrul Falah',
+                                      'Faiz Ihsan Fajrul Falah',
                                       style: GoogleFonts.plusJakartaSans(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w700,
-                                        color: Colors.black,
+                                        color: AppColors.textDark,
                                         letterSpacing: -0.45,
                                       ),
                                     ),
@@ -118,14 +113,13 @@ class ProfileView extends GetView<ProfileController> {
                                       style: GoogleFonts.plusJakartaSans(
                                         fontSize: 10,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                        // color: AppColors.textDark,
+                                        color: AppColors.textDark,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 24),
 
-                                    // ── Form Fields ───────────────────
+                                    // ── Form Fields ──────────────────────
                                     const _ProfileFormField(
                                       label: 'Full Name',
                                       value: 'Faiz Ihsan Fajrul Falah',
@@ -150,14 +144,14 @@ class ProfileView extends GetView<ProfileController> {
                               ),
                             ),
 
-                            // Bottom navigation bar
+                            // Fixed bottom nav
                             const _ProfileBottomNavBar(),
                           ],
                         ),
                       ),
                     ),
 
-                    // ── Avatar (overlaps gradient + card) ─────────────
+                    // Avatar overlapping gradient + card
                     Positioned(
                       top: 0,
                       left: 24,
@@ -178,7 +172,8 @@ class ProfileView extends GetView<ProfileController> {
   }
 }
 
-// ── Edit Profile Button ────────────────────────────────────────────────────────
+
+// ── Edit Profile Pill Button ───────────────────────────────────────────────────
 
 class _EditProfileButton extends StatelessWidget {
   const _EditProfileButton();
@@ -196,14 +191,37 @@ class _EditProfileButton extends StatelessWidget {
         style: GoogleFonts.plusJakartaSans(
           fontSize: 10,
           fontWeight: FontWeight.w700,
-          color: Colors.black,
+          color: AppColors.deepPurple,
         ),
       ),
     );
   }
 }
 
-// ── Generic Text Form Field ───────────────────────────────────────────────────
+
+// ── Shared Field Label ─────────────────────────────────────────────────────────
+
+class _FieldLabel extends StatelessWidget {
+  final String text;
+
+  const _FieldLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: GoogleFonts.plusJakartaSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: AppColors.labelGray,
+        letterSpacing: -0.24,
+      ),
+    );
+  }
+}
+
+
+// ── Generic Text Form Field ────────────────────────────────────────────────────
 
 class _ProfileFormField extends StatelessWidget {
   final String label;
@@ -216,15 +234,7 @@ class _ProfileFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-            letterSpacing: -0.24,
-          ),
-        ),
+        _FieldLabel(label),
         const SizedBox(height: 2),
         _InputContainer(
           child: Text(
@@ -232,7 +242,7 @@ class _ProfileFormField extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.black,
+              color: AppColors.textDark,
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -242,7 +252,8 @@ class _ProfileFormField extends StatelessWidget {
   }
 }
 
-// ── Date of Birth Field ───────────────────────────────────────────────────────
+
+// ── Date of Birth Field ────────────────────────────────────────────────────────
 
 class _DateFormField extends StatelessWidget {
   final String label;
@@ -255,15 +266,7 @@ class _DateFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-            letterSpacing: -0.24,
-          ),
-        ),
+        _FieldLabel(label),
         const SizedBox(height: 2),
         _InputContainer(
           child: Row(
@@ -274,7 +277,7 @@ class _DateFormField extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black,
+                  color: AppColors.textDark,
                 ),
               ),
               SvgPicture.asset(
@@ -294,7 +297,8 @@ class _DateFormField extends StatelessWidget {
   }
 }
 
-// ── Phone Number Field ────────────────────────────────────────────────────────
+
+// ── Phone Number Field ─────────────────────────────────────────────────────────
 
 class _PhoneFormField extends StatelessWidget {
   final String label;
@@ -307,15 +311,7 @@ class _PhoneFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-            letterSpacing: -0.24,
-          ),
-        ),
+        _FieldLabel(label),
         const SizedBox(height: 2),
         Container(
           width: double.infinity,
@@ -323,7 +319,7 @@ class _PhoneFormField extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black),
+            border: Border.all(color: AppColors.inputBorder),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x3DE4E5E7),
@@ -334,11 +330,13 @@ class _PhoneFormField extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Country flag + chevron section
+              // Country flag + chevron section (62px wide)
               Container(
                 width: 62,
                 decoration: const BoxDecoration(
-                  border: Border(right: BorderSide(color: Colors.black)),
+                  border: Border(
+                    right: BorderSide(color: AppColors.inputBorder),
+                  ),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
@@ -361,7 +359,7 @@ class _PhoneFormField extends StatelessWidget {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                      color: AppColors.textDark,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -375,7 +373,8 @@ class _PhoneFormField extends StatelessWidget {
   }
 }
 
-// ── Shared Input Container ────────────────────────────────────────────────────
+
+// ── Shared Input Container ─────────────────────────────────────────────────────
 
 class _InputContainer extends StatelessWidget {
   final Widget child;
@@ -390,7 +389,7 @@ class _InputContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: AppColors.inputBorder),
         boxShadow: const [
           BoxShadow(
             color: Color(0x3DE4E5E7),
@@ -404,7 +403,8 @@ class _InputContainer extends StatelessWidget {
   }
 }
 
-// ── Bottom Navigation Bar ─────────────────────────────────────────────────────
+
+// ── Bottom Navigation Bar ──────────────────────────────────────────────────────
 
 class _ProfileBottomNavBar extends StatelessWidget {
   const _ProfileBottomNavBar();
@@ -413,7 +413,7 @@ class _ProfileBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
@@ -430,7 +430,7 @@ class _ProfileBottomNavBar extends StatelessWidget {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              // Home + Profile items
+              // Home + Profile
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Row(
@@ -443,7 +443,7 @@ class _ProfileBottomNavBar extends StatelessWidget {
                       onTap: () => Get.offAllNamed('/home'),
                     ),
                     const SizedBox(width: 56),
-                    _NavItem(
+                    const _NavItem(
                       assetPath: 'assets/icons/nav_profile.svg',
                       label: 'Profile',
                       isActive: true,
@@ -461,10 +461,10 @@ class _ProfileBottomNavBar extends StatelessWidget {
                     height: 52,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blueAccent,
+                      color: AppColors.primaryPurple,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
+                          color: AppColors.primaryPurple.withOpacity(0.40),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -482,7 +482,8 @@ class _ProfileBottomNavBar extends StatelessWidget {
   }
 }
 
-// ── Nav Item ──────────────────────────────────────────────────────────────────
+
+// ── Reusable Nav Item ──────────────────────────────────────────────────────────
 
 class _NavItem extends StatelessWidget {
   final String assetPath;
@@ -499,7 +500,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? Colors.black : Colors.black54;
+    final color = isActive ? AppColors.primaryPurple : AppColors.navGray;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
