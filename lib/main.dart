@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -25,8 +26,8 @@ class NyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Budgi",
-      // initialRoute: Routes.COMPLETE_PROFILE,
-      home: AuthWrapper(), 
+      initialRoute: Routes.PROFILE,
+      // home: AuthWrapper(), 
       getPages: AppPages.routes,
     );
   }

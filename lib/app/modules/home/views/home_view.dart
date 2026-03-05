@@ -163,13 +163,7 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          auth.signOut();
-          Get.toNamed(Routes.LOGIN);
-        },
-        child: Icon(Icons.logout_outlined),
-      ),
+   
     );
   }
 }
