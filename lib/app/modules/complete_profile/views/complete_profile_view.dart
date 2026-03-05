@@ -1,71 +1,54 @@
-import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import '../controllers/regis_controller.dart';
+import '../controllers/complete_profile_controller.dart';
 
-class RegisView extends GetView<RegisController> {
+class CompleteProfileView extends GetView<CompleteProfileController> {
   @override
   Widget build(BuildContext context) {
-    String phoneNumber;
-    PhoneNumber number = PhoneNumber(isoCode: 'ID');
-
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFEDE7F6), Color(0xFFF5EBDC)],
+            colors: [Color(0xFFF3E7FF), Color(0xFFF6EBDD)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
-
-                /// BACK BUTTON
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.arrow_back_ios_new),
-                ),
-
-                const SizedBox(height: 20),
+                const SizedBox(height: 160),
 
                 /// TITLE
                 const Text(
-                  "Sign up",
-                  style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+                  "To Continue Fill in\nYour Details",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
 
                 const Text(
-                  "Create an account to continue!",
+                  "Enter your Birth of date & Phone Number",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
 
-                buildLabel("Full Name"),
-                buildTextField(
-                  hint: "",
-                  keyboardType: TextInputType.text,
-                  controller: controller.nameC,
+                /// BIRTH DATE LABEL
+                const Text(
+                  "Birth of date",
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
 
-                buildLabel("Email"),
-                buildTextField(
-                  hint: "",
-                  keyboardType: TextInputType.emailAddress,
-                  controller: controller.emailC,
-                ),
+                const SizedBox(height: 8),
 
-                buildLabel("Birth of date"),
+                /// BIRTH DATE FIELD
                 InkWell(
                   onTap: () => Get.dialog(
                     Dialog(
@@ -145,7 +128,17 @@ class RegisView extends GetView<RegisController> {
                   ),
                 ),
 
-                buildLabel("Phone Number"),
+                const SizedBox(height: 25),
+
+                /// PHONE LABEL
+                const Text(
+                  "Phone Number",
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+
+                const SizedBox(height: 8),
+
+                /// PHONE FIELD
                 Container(
                   height: 55,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -182,51 +175,15 @@ class RegisView extends GetView<RegisController> {
                   ),
                 ),
 
-                buildLabel("Set Password"),
-                Obx(
-                  () => buildTextField(
-                    controller: controller.passC,
-                    hint: "********",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        controller.ishidepass.toggle();
-                      },
-                      icon: controller.ishidepass.value == true
-                          ? const Icon(Icons.visibility_off)
-                          : const Icon(Icons.visibility),
-                    ),
+                const Spacer(),
 
-                    obscureText: controller.ishidepass.value,
-                  ),
-                ),
-
-                buildLabel("Re-Enter Password"),
-
-                Obx(
-                  () => buildTextField(
-                    controller: controller.passReC,
-                    hint: "********",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        controller.ishidepassreentry.toggle();
-                      },
-                      icon: controller.ishidepassreentry.value == true
-                          ? const Icon(Icons.visibility_off)
-                          : const Icon(Icons.visibility),
-                    ),
-                    obscureText: controller.ishidepassreentry.value,
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                /// SIGN UP BUTTON
+                /// CONTINUE BUTTON
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () {
-                      controller.jalankanRegis();
+                      controller.LengkapiProfile();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB18FCF),
@@ -236,7 +193,7 @@ class RegisView extends GetView<RegisController> {
                       elevation: 6,
                     ),
                     child: const Text(
-                      "Sign Up",
+                      "Continue",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
@@ -247,108 +204,10 @@ class RegisView extends GetView<RegisController> {
                 ),
 
                 const SizedBox(height: 30),
-
-                /// LOGIN TEXT
-                Center(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Already have an account?"),
-                      TextButton(
-                        onPressed: () => Get.toNamed(Routes.LOGIN),
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  /// LABEL
-  Widget buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6, top: 15),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 14, color: Colors.black54),
-      ),
-    );
-  }
-
-  /// TEXT FIELD STYLE
-  Widget buildTextField({
-    required String hint,
-    TextEditingController? controller,
-    bool obscureText = false,
-    Widget? suffixIcon,
-    // VoidCallback? onSuffixTap,
-    TextInputType? keyboardType,
-  }) {
-    return Container(
-      height: 55,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(fontSize: 15),
-          border: InputBorder.none,
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 18,
-          ),
-          suffixIcon: suffixIcon,
-          suffixIconConstraints: const BoxConstraints(
-            minHeight: 55,
-            minWidth: 55,
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// PHONE FIELD
-  Widget buildPhoneField() {
-    return Container(
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
-        ],
-      ),
-      child: Row(
-        children: const [
-          Text("+62", style: TextStyle(fontSize: 15)),
-
-          VerticalDivider(width: 20),
-          Expanded(child: Text("821-726-0592", style: TextStyle(fontSize: 15))),
-        ],
       ),
     );
   }

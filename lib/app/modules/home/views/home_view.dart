@@ -1,17 +1,20 @@
+import 'package:budgi/app/controllers/auth_controller.dart';
+import 'package:budgi/app/routes/app_pages.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/home_controller.dart';
-import '../widgets/app_colors.dart';
-import '../widgets/balance_card.dart';
-import '../widgets/quick_actions_row.dart';
-import '../widgets/transaction_group_card.dart';
+import '../../widgets/app_colors.dart';
+import '../../widgets/balance_card.dart';
+import '../../widgets/quick_actions_row.dart';
+import '../../widgets/transaction_group_card.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
-
+  final authC = Get.find<AuthController>();
+  final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +27,7 @@ class HomeView extends GetView<HomeController> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0, 0.13, 0.40],
-            colors: [
-              Color(0xFFE2B9A3),
-              Color(0xFFEAC9B3),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE2B9A3), Color(0xFFEAC9B3), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -163,6 +162,13 @@ class HomeView extends GetView<HomeController> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          auth.signOut();
+          Get.toNamed(Routes.LOGIN);
+        },
+        child: Icon(Icons.logout_outlined),
       ),
     );
   }

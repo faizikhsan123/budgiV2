@@ -4,6 +4,10 @@ import '../modules/add_transaksi/bindings/add_transaksi_binding.dart';
 import '../modules/add_transaksi/views/add_transaksi_view.dart';
 import '../modules/all_transaction/bindings/all_transaction_binding.dart';
 import '../modules/all_transaction/views/all_transaction_view.dart';
+import '../modules/complete_profile/bindings/complete_profile_binding.dart';
+import '../modules/complete_profile/views/complete_profile_view.dart';
+import '../modules/edit_profile/bindings/edit_profile_binding.dart';
+import '../modules/edit_profile/views/edit_profile_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -52,13 +56,30 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () =>  LoginView(),
+      page: () => LoginView(),
       binding: LoginBinding(),
+      children: [
+        GetPage(
+          name: _Paths.LOGIN,
+          page: () => LoginView(),
+          binding: LoginBinding(),
+        ),
+      ],
     ),
     GetPage(
       name: _Paths.REGIS,
-      page: () =>  RegisView(),
+      page: () => RegisView(),
       binding: RegisBinding(),
+    ),
+    GetPage(
+      name: _Paths.COMPLETE_PROFILE,
+      page: () => CompleteProfileView(),
+      binding: CompleteProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDIT_PROFILE,
+      page: () => const EditProfileView(),
+      binding: EditProfileBinding(),
     ),
   ];
 }

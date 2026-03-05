@@ -1,8 +1,10 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
+import 'package:budgi/app/modules/login/controllers/login_controller.dart';
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends GetView<LoginController> {
   final authC = Get.find<AuthController>();
 
   @override
@@ -42,6 +44,7 @@ class LoginView extends StatelessWidget {
 
                 /// EMAIL FIELD
                 TextField(
+                  controller: controller.emailC,
                   decoration: InputDecoration(
                     hintText: "faizjrul@gmail.com",
                     filled: true,
@@ -60,21 +63,31 @@ class LoginView extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 /// PASSWORD FIELD
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "*******",
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
+                Obx(
+                  () => TextField(
+                    obscureText: controller.isHide.value,
+                    controller: controller.passC,
+                    decoration: InputDecoration(
+                      hintText: "*******",
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 18,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          controller.isHide.toggle();
+                        },
+                        icon: controller.isHide.value == true
+                            ? const Icon(Icons.visibility_off)
+                            : const Icon(Icons.visibility),
+                      ),
                     ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: const Icon(Icons.visibility_off),
                   ),
                 ),
 
@@ -84,12 +97,7 @@ class LoginView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: const [
-                        Checkbox(value: false, onChanged: null),
-                        Text("Remember me"),
-                      ],
-                    ),
+                    Row(children: const [Text("")]),
                     Text(
                       "Forgot Password ?",
                       style: TextStyle(
@@ -116,7 +124,9 @@ class LoginView extends StatelessWidget {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                    authC.loginFOrm(controller.emailC.text, controller.passC.text);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB695C0),
                       shape: RoundedRectangleBorder(
@@ -127,6 +137,7 @@ class LoginView extends StatelessWidget {
                       "Log In",
                       style: TextStyle(
                         fontSize: 16,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -174,13 +185,18 @@ class LoginView extends StatelessWidget {
                 /// SIGN UP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text("Don't have an account? "),
-                    Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.REGIS);
+                      },
+                      child: Text(
+                        "Sign Up",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
