@@ -1,5 +1,7 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
+import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,6 +16,7 @@ import '../../widgets/transaction_group_card.dart';
 
 class HomeView extends GetView<HomeController> {
   final authC = Get.find<AuthController>();
+  final pageC = Get.find<PageIndexController>();
   final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -158,121 +161,24 @@ class HomeView extends GetView<HomeController> {
               ),
 
               // ── Bottom Navigation Bar ─────────────────────────────────
-              _HomeBottomNavBar(),
+              ConvexAppBar(
+                //widget bottom navbar
+               
+                backgroundColor: const Color.fromARGB(255, 189, 157, 195),
+                initialActiveIndex: pageC.CurrentIndex.value, //index active
+                items: [
+                  TabItem(icon: Icons.home, title: 'Home'),
+                  TabItem(icon: Icons.add, title: 'Add'),
+                  TabItem(icon: Icons.person, title: 'Pofile'),
+                ],
+                onTap: (index) {
+                  pageC.changePage(index);
+                },
+              ),
             ],
           ),
         ),
       ),
-   
-    );
-  }
-}
-
-class _HomeBottomNavBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          // Home + Profile items
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Home
-                _NavItem(
-                  assetPath: 'assets/icons/nav_home.svg',
-                  label: 'Home',
-                  isActive: true,
-                ),
-                // Spacer for FAB
-                const SizedBox(width: 56),
-                // Profile
-                _NavItem(
-                  assetPath: 'assets/icons/nav_profile.svg',
-                  label: 'Profile',
-                  isActive: false,
-                ),
-              ],
-            ),
-          ),
-          // Center FAB
-          Positioned(
-            top: -20,
-            child: GestureDetector(
-              onTap: () {},
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryPurple,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryPurple.withOpacity(0.40),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(Icons.add, color: Colors.white, size: 28),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final String assetPath;
-  final String label;
-  final bool isActive;
-
-  const _NavItem({
-    required this.assetPath,
-    required this.label,
-    required this.isActive,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? AppColors.primaryPurple : AppColors.navGray;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SvgPicture.asset(
-          assetPath,
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-            color: color,
-            height: 1.33,
-          ),
-        ),
-      ],
     );
   }
 }

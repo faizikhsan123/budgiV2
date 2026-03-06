@@ -1,5 +1,10 @@
+import 'package:budgi/app/controllers/page_index_controller.dart';
+import 'package:budgi/app/modules/widgets/TextField.dart';
+import 'package:budgi/app/modules/widgets/labelTextField.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,7 +27,7 @@ class ProfileView extends GetView<ProfileController> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0535, 0.3931],
-            colors: [Color(0xFFE2B9A3), Color(0xFFEAC9B3)],
+            colors: [AppColors.peachTop, Colors.white],
           ),
         ),
         child: SafeArea(
@@ -30,373 +35,212 @@ class ProfileView extends GetView<ProfileController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Back Arrow ──────────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.only(left: 24, top: 16),
-                child: GestureDetector(
-                  onTap: () => Get.back(),
-                  child: SvgPicture.asset(
-                    'assets/icons/back_arrow.svg',
-                    width: 20,
-                    height: 18,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.textDark,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: controller.streamUser(),
+                builder: (context, asyncSnapshot) {
+                  if (!asyncSnapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              // ── Main Content: avatar overlaps white card ─────────────────
-              Expanded(
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // White card (starts 40px from Stack top so avatar overlaps)
-                    Positioned(
-                      top: 40,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFFBC9CC6),
-                              blurRadius: 4,
-                              offset: Offset(2, -1),
+                  final user = asyncSnapshot.data!;
+
+                  return Expanded(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // CARD PUTIH
+                        Positioned(
+                          top: 150,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFFBC9CC6),
+                                  blurRadius: 4,
+                                  offset: Offset(2, -1),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            // Scrollable form content
-                            Expanded(
-                              child: SingleChildScrollView(
-                                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Edit Profile button aligned right
-                                    SizedBox(
-                                      height: 48,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: GestureDetector(
-                                          onTap: () => Get.toNamed(Routes.EDIT_PROFILE),
-                                          child: const _EditProfileButton(),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      24,
+                                      60,
+                                      24,
+                                      24,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${user['name']}',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                            color: AppColors.textDark,
+                                          ),
                                         ),
-                                      ),
-                                    ),
 
-                                    // Full name
-                                    Text(
-                                      'Faiz Ihsan Fajrul Falah',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.textDark,
-                                        letterSpacing: -0.45,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
+                                        const SizedBox(height: 6),
 
-                                    // Email
-                                    Text(
-                                      'faizjrul@gmail.com',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.textDark,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 24),
+                                        Text(
+                                          '${user['email']}',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColors.textDark,
+                                          ),
+                                        ),
 
-                                    // ── Form Fields ──────────────────────
-                                    const _ProfileFormField(
-                                      label: 'Full Name',
-                                      value: 'Faiz Ihsan Fajrul Falah',
+                                        const SizedBox(height: 24),
+
+                                        buildLabel('Full Name'),
+                                        buildTextField(
+                                          readonly: true,
+                                          hint: '${user['name']}',
+                                        ),
+
+                                        buildLabel('Email'),
+                                        buildTextField(
+                                          readonly: true,
+                                          hint: '${user['email']}',
+                                        ),
+
+                                        buildLabel("Date of Birth"),
+
+                                        Container(
+                                          height: 55,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.black,
+                                            ),
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  "${user['tanggal_lahir']}",
+                                                  style:
+                                                      GoogleFonts.plusJakartaSans(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                ),
+                                              ),
+                                              const Icon(
+                                                Icons.calendar_today_outlined,
+                                                size: 20,
+                                                color: Colors.grey,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        buildLabel("Phone Number"),
+
+                                        buildTextField(
+                                          readonly: true,
+                                          hint: '${user['phone']}',
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 16),
-                                    const _ProfileFormField(
-                                      label: 'Email',
-                                      value: 'faizjrul@gmail.com',
-                                    ),
-                                    const SizedBox(height: 16),
-                                    const _DateFormField(
-                                      label: 'Birth of date',
-                                      value: '24/07/2005',
-                                    ),
-                                    const SizedBox(height: 16),
-                                    const _PhoneFormField(
-                                      label: 'Phone Number',
-                                      value: '+62 821-726-0592',
-                                    ),
-                                  ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // AVATAR PROFILE
+                        Positioned(
+                          top: 110,
+                          left: 24,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFFD9B3E6),
+                            ),
+                            child: const Icon(
+                              Icons.person,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+
+                        // BUTTON EDIT PROFILE
+                        Positioned(
+                          top: 170,
+                          right: 24,
+                          child: GestureDetector(
+                            onTap: () => Get.toNamed(
+                              Routes.EDIT_PROFILE,
+                              arguments: user.data(),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF5EAF7),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Text(
+                                'Edit Profile',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.purple,
                                 ),
                               ),
                             ),
-
-                            // Fixed bottom nav
-                            const _ProfileBottomNavBar(),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                  );
+                },
+              ),
 
-                    // Avatar overlapping gradient + card
-                    Positioned(
-                      top: 0,
-                      left: 24,
-                      child: SvgPicture.asset(
-                        'assets/icons/profile_avatar.svg',
-                        width: 80,
-                        height: 80,
-                      ),
-                    ),
-                  ],
-                ),
+              // BOTTOM NAVBAR
+              ConvexAppBar(
+                //widget bottom navbar
+                backgroundColor: const Color.fromARGB(255, 189, 157, 195),
+                initialActiveIndex: pageC.CurrentIndex.value, //index active
+                items: [
+                  TabItem(icon: Icons.home, title: 'Home'),
+                  TabItem(icon: Icons.add, title: 'Add'),
+                  TabItem(icon: Icons.person, title: 'Pofile'),
+                ],
+                onTap: (index) {
+                  pageC.changePage(index);
+                },
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-
-// ── Edit Profile Pill Button ───────────────────────────────────────────────────
-
-class _EditProfileButton extends StatelessWidget {
-  const _EditProfileButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5EAF7),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Text(
-        'Edit Profile',
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          color: AppColors.deepPurple,
-        ),
-      ),
-    );
-  }
-}
-
-
-// ── Shared Field Label ─────────────────────────────────────────────────────────
-
-class _FieldLabel extends StatelessWidget {
-  final String text;
-
-  const _FieldLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: GoogleFonts.plusJakartaSans(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: AppColors.labelGray,
-        letterSpacing: -0.24,
-      ),
-    );
-  }
-}
-
-
-// ── Generic Text Form Field ────────────────────────────────────────────────────
-
-class _ProfileFormField extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _ProfileFormField({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _FieldLabel(label),
-        const SizedBox(height: 2),
-        _InputContainer(
-          child: Text(
-            value,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textDark,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-// ── Date of Birth Field ────────────────────────────────────────────────────────
-
-class _DateFormField extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _DateFormField({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _FieldLabel(label),
-        const SizedBox(height: 2),
-        _InputContainer(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                value,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textDark,
-                ),
-              ),
-              SvgPicture.asset(
-                'assets/icons/calendar.svg',
-                width: 16,
-                height: 16,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFFACB5BB),
-                  BlendMode.srcIn,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-// ── Phone Number Field ─────────────────────────────────────────────────────────
-
-class _PhoneFormField extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _PhoneFormField({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _FieldLabel(label),
-        const SizedBox(height: 2),
-        Container(
-          width: double.infinity,
-          height: 46,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.inputBorder),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x3DE4E5E7),
-                blurRadius: 2,
-                offset: Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              // Country flag + chevron section (62px wide)
-              Container(
-                width: 62,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    right: BorderSide(color: AppColors.inputBorder),
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
-                  ),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/icons/country_flag.svg',
-                    width: 46,
-                    height: 28,
-                  ),
-                ),
-              ),
-              // Phone number text
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: Text(
-                    value,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textDark,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-// ── Shared Input Container ─────────────────────────────────────────────────────
-
-class _InputContainer extends StatelessWidget {
-  final Widget child;
-
-  const _InputContainer({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.inputBorder),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x3DE4E5E7),
-            blurRadius: 2,
-            offset: Offset(0, 1),
-          ),
-        ],
       ),
       child: child,
     );

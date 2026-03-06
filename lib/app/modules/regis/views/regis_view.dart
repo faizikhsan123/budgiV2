@@ -1,3 +1,5 @@
+import 'package:budgi/app/modules/widgets/TextField.dart';
+import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,8 +8,10 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
+
   @override
   Widget build(BuildContext context) {
+
     String phoneNumber;
     PhoneNumber number = PhoneNumber(isoCode: 'ID');
 
@@ -28,7 +32,6 @@ class RegisView extends GetView<RegisController> {
               children: [
                 const SizedBox(height: 10),
 
-                /// BACK BUTTON
                 IconButton(
                   onPressed: () => Get.back(),
                   icon: const Icon(Icons.arrow_back_ios_new),
@@ -36,7 +39,6 @@ class RegisView extends GetView<RegisController> {
 
                 const SizedBox(height: 20),
 
-                /// TITLE
                 const Text(
                   "Sign up",
                   style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
@@ -75,16 +77,14 @@ class RegisView extends GetView<RegisController> {
 
                         child: SfDateRangePicker(
                           controller: controller.dateC,
-                          selectionMode: DateRangePickerSelectionMode
-                              .single, //mode datepicker
+                          selectionMode: DateRangePickerSelectionMode.single,
                           minDate: DateTime(2000),
                           initialSelectedDate: null,
                           maxDate: DateTime(2040),
                           todayHighlightColor: Colors.transparent,
                           showNavigationArrow: true,
-                          showActionButtons: true, //tampilkan tombol
-                          onCancel: () =>
-                              Get.back(), //ketika tombol cancel ditekan
+                          showActionButtons: true,
+                          onCancel: () => Get.back(),
                           onSubmit: (obj) {
                             DateTime date = obj as DateTime;
 
@@ -161,7 +161,7 @@ class RegisView extends GetView<RegisController> {
                   ),
                   child: InternationalPhoneNumberInput(
                     onInputChanged: (PhoneNumber number) {
-                      controller.phoneC = number; // 🔥 INI WAJIB
+                      controller.phoneC = number;
                       print(number.phoneNumber);
                     },
 
@@ -174,7 +174,7 @@ class RegisView extends GetView<RegisController> {
                     formatInput: true,
                     keyboardType: TextInputType.number,
                     inputDecoration: const InputDecoration(
-                      border: InputBorder.none, // 🔥 hilangkan border default
+                      border: InputBorder.none,
                       isCollapsed: true,
                       contentPadding: EdgeInsets.symmetric(vertical: 18),
                       hintText: "812-3456-7890",
@@ -220,7 +220,6 @@ class RegisView extends GetView<RegisController> {
 
                 const SizedBox(height: 30),
 
-                /// SIGN UP BUTTON
                 SizedBox(
                   width: double.infinity,
                   height: 55,
@@ -248,7 +247,6 @@ class RegisView extends GetView<RegisController> {
 
                 const SizedBox(height: 30),
 
-                /// LOGIN TEXT
                 Center(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -274,81 +272,6 @@ class RegisView extends GetView<RegisController> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  /// LABEL
-  Widget buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6, top: 15),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 14, color: Colors.black54),
-      ),
-    );
-  }
-
-  /// TEXT FIELD STYLE
-  Widget buildTextField({
-    required String hint,
-    TextEditingController? controller,
-    bool obscureText = false,
-    Widget? suffixIcon,
-    // VoidCallback? onSuffixTap,
-    TextInputType? keyboardType,
-  }) {
-    return Container(
-      height: 55,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(fontSize: 15),
-          border: InputBorder.none,
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 18,
-          ),
-          suffixIcon: suffixIcon,
-          suffixIconConstraints: const BoxConstraints(
-            minHeight: 55,
-            minWidth: 55,
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// PHONE FIELD
-  Widget buildPhoneField() {
-    return Container(
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
-        ],
-      ),
-      child: Row(
-        children: const [
-          Text("+62", style: TextStyle(fontSize: 15)),
-
-          VerticalDivider(width: 20),
-          Expanded(child: Text("821-726-0592", style: TextStyle(fontSize: 15))),
-        ],
       ),
     );
   }
