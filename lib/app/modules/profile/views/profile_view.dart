@@ -44,6 +44,9 @@ class ProfileView extends GetView<ProfileController> {
 
                   final user = asyncSnapshot.data!;
 
+                  String imageUrl =
+                      "https://ui-avatars.com/api/?name=${user['name']}&background=random&size=256";
+
                   return Expanded(
                     child: Stack(
                       clipBehavior: Clip.none,
@@ -177,14 +180,26 @@ class ProfileView extends GetView<ProfileController> {
                           child: Container(
                             width: 80,
                             height: 80,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color(0xFFD9B3E6),
+                              color: const Color(0xFFD9B3E6),
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 224, 219, 219),
+                                width: 3,
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.person,
-                              size: 40,
-                              color: Colors.white,
+                            child: ClipOval(
+                              child:
+                                  user['photo_url'] == null ||
+                                      user['photo_url'] == ''
+                                  ? Image.network(
+                                      '${imageUrl}',
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      '${user['photo_url']}',
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                         ),
