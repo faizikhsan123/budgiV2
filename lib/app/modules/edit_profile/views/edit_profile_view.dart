@@ -15,6 +15,8 @@ class EditProfileView extends GetView<EditProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    String imageUrl =
+        "https://ui-avatars.com/api/?name=${dataArgument['name']}&background=random&size=256";
     return Scaffold(
       backgroundColor: Colors.transparent,
 
@@ -34,9 +36,12 @@ class EditProfileView extends GetView<EditProfileController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(onPressed: () {
-                Get.back();
-              }, icon: Icon(Icons.arrow_back_ios,size: 30,)),
+              IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(Icons.arrow_back_ios, size: 30),
+              ),
               Expanded(
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -221,7 +226,39 @@ class EditProfileView extends GetView<EditProfileController> {
                                       ),
                                     ),
 
-                                    const SizedBox(height: 60),
+                                    const SizedBox(height: 20),
+
+                                    GetBuilder<EditProfileController>(
+                                      builder: (controller) => Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            controller.pickedIMage == null
+                                                ? "No image selected"
+                                                : controller.pickedIMage!.path
+                                                      .split('/')
+                                                      .last,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          TextButton(
+                                            onPressed: () =>
+                                                controller.selectImage(),
+                                            child: Text(
+                                              "Pilih File",
+                                              style: TextStyle(
+                                                color: Colors.blueAccent,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 50),
 
                                     SizedBox(
                                       width: Get.width,
@@ -260,15 +297,44 @@ class EditProfileView extends GetView<EditProfileController> {
                       child: Container(
                         width: 80,
                         height: 80,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Color(0xFFD9B3E6),
+                          color: const Color(0xFFD9B3E6),
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 224, 219, 219),
+                            width: 3,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.person,
-                          size: 40,
-                          color: Colors.white,
+                        child: ClipOval(
+                          child:
+                              dataArgument['photo_url'] == null ||
+                                  dataArgument['photo_url'] == ''
+                              ? Image.network('${imageUrl}', fit: BoxFit.cover)
+                              : Image.network(
+                                  '${dataArgument['photo_url']}',
+                                  fit: BoxFit.cover,
+                                ),
                         ),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: 70,
+                      right: 145,
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        child: controller.pickedIMage != null
+                            ? IconButton(
+                                onPressed: () {
+                                  controller.deleteImage();
+                                },
+                                icon: Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.red,
+                                ),
+                              )
+                            : SizedBox(),
                       ),
                     ),
                   ],
