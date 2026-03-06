@@ -13,7 +13,7 @@ import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
-  final pageC = Get.find<PageIndexController>();
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -241,6 +241,133 @@ class ProfileView extends GetView<ProfileController> {
             ],
           ),
         ),
+      ),
+      child: child,
+    );
+  }
+}
+
+
+// ── Bottom Navigation Bar ──────────────────────────────────────────────────────
+
+class _ProfileBottomNavBar extends StatelessWidget {
+  const _ProfileBottomNavBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 60,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              // Home + Profile
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _NavItem(
+                      assetPath: 'assets/icons/nav_home.svg',
+                      label: 'Home',
+                      isActive: false,
+                      onTap: () => Get.offAllNamed('/home'),
+                    ),
+                    const SizedBox(width: 56),
+                    const _NavItem(
+                      assetPath: 'assets/icons/nav_profile.svg',
+                      label: 'Profile',
+                      isActive: true,
+                    ),
+                  ],
+                ),
+              ),
+              // Center FAB
+              Positioned(
+                top: -20,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primaryPurple,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryPurple.withOpacity(0.40),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.add, color: Colors.white, size: 28),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// ── Reusable Nav Item ──────────────────────────────────────────────────────────
+
+class _NavItem extends StatelessWidget {
+  final String assetPath;
+  final String label;
+  final bool isActive;
+  final VoidCallback? onTap;
+
+  const _NavItem({
+    required this.assetPath,
+    required this.label,
+    required this.isActive,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isActive ? AppColors.primaryPurple : AppColors.navGray;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            assetPath,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: color,
+              height: 1.33,
+            ),
+          ),
+        ],
       ),
     );
   }
