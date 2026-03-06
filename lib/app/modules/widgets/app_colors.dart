@@ -14,4 +14,7 @@ class AppColors {
   static const Color textMutedPurple = Color(0xFFBC9CC6);
   static const Color navGray = Color(0xFF484C52);
   static const Color white = Colors.white;
+  static const Color deepPurple = Color(0xFF8A2B9D);
+  static const Color labelGray = Color(0xFF6C7278);
+  static const Color inputBorder = Color(0xFFEDF1F3);
 }

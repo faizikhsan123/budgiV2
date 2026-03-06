@@ -11,9 +11,7 @@ import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(NyApp());
 }
@@ -27,13 +25,12 @@ class NyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Budgi",
-      initialRoute: Routes.PROFILE,
-      // home: AuthWrapper(), 
+      // initialRoute: Routes.PROFILE,
+      home: AuthWrapper(),
       getPages: AppPages.routes,
     );
   }
 }
-
 
 class AuthWrapper extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -64,9 +61,7 @@ class AuthWrapper extends StatelessWidget {
         }
 
         // Tampilkan loading sementara redirect
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        );
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
       },
     );
   }

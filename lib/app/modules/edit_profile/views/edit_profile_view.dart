@@ -1,12 +1,13 @@
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../../widgets/app_colors.dart';
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
