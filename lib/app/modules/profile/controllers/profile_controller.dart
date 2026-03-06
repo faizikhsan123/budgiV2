@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
-  //TODO: Implement ProfileController
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final count = 0.obs;
+  Stream<DocumentSnapshot<Map<String, dynamic>>> streamUser(){
+    String uid = auth.currentUser!.uid;
+    return firestore.collection("users").doc(uid).snapshots();
+  }
 
-
-
-  void increment() => count.value++;
 }
