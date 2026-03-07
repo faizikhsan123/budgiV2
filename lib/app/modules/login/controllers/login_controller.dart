@@ -15,6 +15,7 @@ class LoginController extends GetxController {
   void onInit() {
     emailC = TextEditingController();
     passC = TextEditingController();
+    isHide.value = true;
     // TODO: implement onInit
     super.onInit();
   }
@@ -24,6 +25,8 @@ class LoginController extends GetxController {
   void onClose() {
     emailC.dispose();
     passC.dispose();
+    isHide.value = true;
+
     // TODO: implement onClose
     super.onClose();
   }

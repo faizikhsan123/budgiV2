@@ -8,10 +8,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
-
   @override
   Widget build(BuildContext context) {
-
     String phoneNumber;
     PhoneNumber number = PhoneNumber(isoCode: 'ID');
 
@@ -220,27 +218,40 @@ class RegisView extends GetView<RegisController> {
 
                 const SizedBox(height: 30),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      controller.jalankanRegis();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB18FCF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                Obx(
+                  () => SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      // ✅ disable saat loading
+                      onPressed: controller.isloading.value
+                          ? null
+                          : () => controller.jalankanRegis(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB18FCF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 6,
                       ),
-                      elevation: 6,
-                    ),
-                    child: const Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      // ✅ spinner saat loading
+                      child: controller.isloading.value
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ),

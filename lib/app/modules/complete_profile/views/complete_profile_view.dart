@@ -183,7 +183,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () {
-                      controller.LengkapiProfile();
+                      controller.LengkapiProfile() ;
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB18FCF),

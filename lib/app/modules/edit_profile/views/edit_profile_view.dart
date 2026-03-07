@@ -1,13 +1,12 @@
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-import '../../widgets/app_colors.dart';
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
@@ -258,27 +257,46 @@ class EditProfileView extends GetView<EditProfileController> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 50),
+                                    SizedBox(height: 20),
 
-                                    SizedBox(
-                                      width: Get.width,
-                                      height: 50,
-                                      child: ElevatedButton(
-                                        style: const ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStatePropertyAll(
-                                                Color.fromARGB(
-                                                  255,
-                                                  219,
-                                                  188,
-                                                  224,
+                                    Obx(
+                                      () => SizedBox(
+                                        width: Get.width,
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          style: const ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStatePropertyAll(
+                                                  Color.fromARGB(
+                                                    255,
+                                                    219,
+                                                    188,
+                                                    224,
+                                                  ),
                                                 ),
-                                              ),
-                                        ),
-                                        onPressed: controller.updateProfile,
-                                        child: const Text(
-                                          "Save",
-                                          style: TextStyle(color: Colors.white),
+                                          ),
+                                          // ✅ disable saat loading
+                                          onPressed: controller.isloading.value
+                                              ? null
+                                              : () =>
+                                                    controller.updateProfile(),
+                                          // ✅ spinner saat loading
+                                          child: controller.isloading.value
+                                              ? const SizedBox(
+                                                  width: 22,
+                                                  height: 22,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2.5,
+                                                        color: Colors.white,
+                                                      ),
+                                                )
+                                              : const Text(
+                                                  "Save",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
                                         ),
                                       ),
                                     ),
@@ -324,8 +342,11 @@ class EditProfileView extends GetView<EditProfileController> {
                       child: Container(
                         width: 80,
                         height: 80,
-                        child: controller.pickedIMage != null
-                            ? IconButton(
+                        child:
+                            dataArgument['photo_url'] == null ||
+                                dataArgument['photo_url'] == ''
+                            ? SizedBox()
+                            : IconButton(
                                 onPressed: () {
                                   controller.deleteImage();
                                 },
@@ -333,8 +354,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                   Icons.delete_forever,
                                   color: Colors.red,
                                 ),
-                              )
-                            : SizedBox(),
+                              ),
                       ),
                     ),
                   ],
