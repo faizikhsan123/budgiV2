@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class EditProfileController extends GetxController {
   RxString nilaiTanggal = "".obs;
+  RxBool isloading = false.obs;
 
   late TextEditingController nameC;
 
@@ -103,21 +104,26 @@ class EditProfileController extends GetxController {
 
   Future updateProfile() async {
     try {
+      isloading.value = true;
       final uid = auth.currentUser!.uid;
 
+      // Upload gambar dulu (parallel bisa pakai Future.wait jika ada banyak)
+      String? newImageUrl;
+      if (pickedIMage != null) {
+        newImageUrl =
+            await _uploadImageOnly(); // return URL, jangan update Firestore di sini
+      }
+
+      // 1x write ke Firestore, semua sekaligus
       await firestore.collection("users").doc(uid).update({
         'name': nameC.text,
         'phone': phoneC.phoneNumber,
         'tanggal_lahir': nilaiTanggal.value,
         'updated_at': Timestamp.now(),
+        if (newImageUrl != null) 'photo_url': newImageUrl,
       });
 
-      // upload image hanya jika ada
-      if (pickedIMage != null) {
-        await uploadImage();
-      }
       Get.back();
-
       Get.snackbar(
         'Success',
         'Profile Updated',
@@ -131,6 +137,35 @@ class EditProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+    } finally {
+      isloading.value = false; // jangan lupa reset
+    }
+  }
+
+  // Pisahkan fungsi upload — hanya return URL, tidak update Firestore
+  Future<String?> _uploadImageOnly() async {
+    try {
+      String cloudName = 'dzfi5acyl';
+      String uploadPreset = 'budgiv2';
+      var url = 'https://api.cloudinary.com/v1_1/$cloudName/image/upload';
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.fields['upload_preset'] = uploadPreset;
+      request.files.add(
+        await http.MultipartFile.fromPath('file', pickedIMage!.path),
+      );
+
+      var response = await request.send();
+      var responseData = await response.stream.toBytes();
+      var data = jsonDecode(String.fromCharCodes(responseData));
+      return data['secure_url'];
+    } catch (e) {
+      Get.snackbar(
+        'Gagal',
+        'Upload gambar gagal $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return null;
     }
   }
 

@@ -98,7 +98,7 @@ class LoginView extends GetView<LoginController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(children: const [Text("")]),
-                    Text(
+                    const Text(
                       "Forgot Password ?",
                       style: TextStyle(
                         color: Colors.blue,
@@ -123,23 +123,44 @@ class LoginView extends GetView<LoginController> {
                       ),
                     ],
                   ),
-                  child: ElevatedButton(
-                    onPressed: () {
-                    authC.loginFOrm(controller.emailC.text, controller.passC.text);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB695C0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                  child: Obx(
+                    () => ElevatedButton(
+                      // ✅ disable tombol saat loading supaya tidak bisa diklik dobel
+                      onPressed: authC.isloading.value
+                          ? null
+                          : () async {
+                              await authC.loginFOrm(
+                                controller.emailC.text,
+                                controller.passC.text,
+                              );
+                              controller.emailC.clear();
+                              controller.passC.clear();
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB695C0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      "Log In",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      child: authC.isloading.value
+                          // ✅ spinner saat loading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            )
+                          // ✅ teks normal saat tidak loading
+                          : const Text(
+                              "Log In",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -186,12 +207,12 @@ class LoginView extends GetView<LoginController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account? "),
+                    const Text("Don't have an account? "),
                     TextButton(
                       onPressed: () {
                         Get.toNamed(Routes.REGIS);
                       },
-                      child: Text(
+                      child: const Text(
                         "Sign Up",
                         style: TextStyle(
                           color: Colors.blue,

@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthController extends GetxController {
+  RxBool isloading = false.obs;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -99,7 +100,6 @@ class AuthController extends GetxController {
         },
       );
 
-     
       Get.offAllNamed(Routes.COMPLETE_PROFILE);
     } catch (e) {
       print(e);
@@ -183,7 +183,7 @@ class AuthController extends GetxController {
       );
 
       print("data dari fb: ${userData.toString()}");
-     
+
       Get.offAllNamed(Routes.COMPLETE_PROFILE);
     } catch (e) {
       print("ERROR FACEBOOK LOGIN: $e");
@@ -197,18 +197,18 @@ class AuthController extends GetxController {
   }
 
   Future<void> loginFOrm(String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Semua field wajib diisi',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
+      return;
+    }
+
+    isloading.value = true; // ✅ set sebelum proses
     try {
-
-      if (email.isEmpty || password.isEmpty) {
-        Get.snackbar(
-          'Error',
-          'Semua field wajib diisi',
-          backgroundColor: Colors.red.shade50,
-          colorText: Colors.red.shade900,
-        );
-        return;
-      }
-
       await auth.signInWithEmailAndPassword(email: email, password: password);
       Get.toNamed(Routes.HOME);
       Get.snackbar(
@@ -218,14 +218,15 @@ class AuthController extends GetxController {
         backgroundColor: Colors.white,
       );
     } catch (e) {
-      print("ERROR FORM LOGIN: $e");
       Get.snackbar(
         'Gagal',
         'Login Gagal',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
+    } finally {
+      isloading.value = false; // ✅ selalu reset
     }
-    await auth.signInWithEmailAndPassword(email: email, password: password);
+    // ❌ hapus baris signIn yang duplikat di sini
   }
 }

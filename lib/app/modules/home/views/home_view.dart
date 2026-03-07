@@ -1,10 +1,10 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
-import 'package:budgi/app/routes/app_pages.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,7 +17,7 @@ import '../../widgets/transaction_group_card.dart';
 class HomeView extends GetView<HomeController> {
   final authC = Get.find<AuthController>();
   final pageC = Get.find<PageIndexController>();
-  final FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,39 +46,70 @@ class HomeView extends GetView<HomeController> {
                       const SizedBox(height: 16),
 
                       // ── User Greeting Row ──────────────────────────────
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/icons/avatar.svg',
-                            width: 40,
-                            height: 40,
-                          ),
-                          const SizedBox(width: 13),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                        stream: controller.streamProfile(),
+                        builder: (context, asyncSnapshot) {
+                          if (asyncSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (!asyncSnapshot.hasData) {
+                            return Center(child: Text("Data belum ada"));
+                          }
+
+                          var data = asyncSnapshot.data!;
+                          String imageUrl =
+                              "https://ui-avatars.com/api/?name=${data['name']}&background=random&size=256";
+
+                          return Row(
                             children: [
-                              Text(
-                                'Good Morning',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.textDark,
-                                  letterSpacing: -0.30,
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image:
+                                        data['photo_url'] == null ||
+                                            data['photo_url'] == ""
+                                        ? NetworkImage(imageUrl)
+                                        : NetworkImage(data['photo_url']),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Faiz Ihsan Fajrul Falah',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textDark,
-                                  letterSpacing: -0.45,
-                                ),
+
+                              const SizedBox(width: 13),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Good Morning',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.textDark,
+                                      letterSpacing: -0.30,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${data['name']}',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textDark,
+                                      letterSpacing: -0.45,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 24),
 
@@ -163,7 +194,6 @@ class HomeView extends GetView<HomeController> {
               // ── Bottom Navigation Bar ─────────────────────────────────
               ConvexAppBar(
                 //widget bottom navbar
-               
                 backgroundColor: const Color.fromARGB(255, 189, 157, 195),
                 initialActiveIndex: pageC.CurrentIndex.value, //index active
                 items: [
@@ -178,6 +208,12 @@ class HomeView extends GetView<HomeController> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller.logout();
+        },
+        child: const Icon(Icons.logout_outlined),
       ),
     );
   }
