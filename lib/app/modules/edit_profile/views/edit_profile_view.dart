@@ -311,7 +311,7 @@ class EditProfileView extends GetView<EditProfileController> {
 
                     Positioned(
                       top: 100,
-                      left: 160,
+                      left: 150,
                       child: Container(
                         width: 80,
                         height: 80,
