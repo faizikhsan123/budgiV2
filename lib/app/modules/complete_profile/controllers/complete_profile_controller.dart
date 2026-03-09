@@ -24,6 +24,7 @@ class CompleteProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+      return;
     }
 
     if (nilaiTanggal.value.isEmpty) {
@@ -33,6 +34,7 @@ class CompleteProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+      return;
     }
 
     final uid = auth.currentUser!.uid;
