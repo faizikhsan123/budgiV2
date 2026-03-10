@@ -13,6 +13,7 @@ abstract class Routes {
   static const REGIS = _Paths.REGIS;
   static const COMPLETE_PROFILE = _Paths.COMPLETE_PROFILE;
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
+  static const COMPLETE_BALANCE = _Paths.COMPLETE_BALANCE;
 }
 
 abstract class _Paths {
@@ -27,4 +28,5 @@ abstract class _Paths {
   static const REGIS = '/regis';
   static const COMPLETE_PROFILE = '/complete-profile';
   static const EDIT_PROFILE = '/edit-profile';
+  static const COMPLETE_BALANCE = '/complete-balance';
 }

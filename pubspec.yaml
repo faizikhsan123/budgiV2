@@ -19,6 +19,9 @@ dependencies:
   flutter_facebook_auth: 7.1.5
   intl_phone_number_input_v2: 0.0.9
   image_picker: 1.2.1
+  format_indonesia_v2: 0.0.8
+  intl: 0.20.2
+  currency_text_input_formatter: 2.3.0
   flutter: 
     sdk: flutter
 

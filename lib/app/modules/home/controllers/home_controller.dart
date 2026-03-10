@@ -16,4 +16,5 @@ class HomeController extends GetxController {
     final uid = auth.currentUser!.uid;
     return firestore.collection("users").doc(uid).snapshots();
   }
+
 }
