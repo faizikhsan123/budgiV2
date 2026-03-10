@@ -4,6 +4,8 @@ import '../modules/add_transaksi/bindings/add_transaksi_binding.dart';
 import '../modules/add_transaksi/views/add_transaksi_view.dart';
 import '../modules/all_transaction/bindings/all_transaction_binding.dart';
 import '../modules/all_transaction/views/all_transaction_view.dart';
+import '../modules/complete_balance/bindings/complete_balance_binding.dart';
+import '../modules/complete_balance/views/complete_balance_view.dart';
 import '../modules/complete_profile/bindings/complete_profile_binding.dart';
 import '../modules/complete_profile/views/complete_profile_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
@@ -78,8 +80,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
-      page: () =>  EditProfileView(),
+      page: () => EditProfileView(),
       binding: EditProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.COMPLETE_BALANCE,
+      page: () => const CompleteBalanceView(),
+      binding: CompleteBalanceBinding(),
     ),
   ];
 }

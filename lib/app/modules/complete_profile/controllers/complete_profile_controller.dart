@@ -24,7 +24,9 @@ class CompleteProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+      isloading.value = false;
       return;
+      
     }
 
     if (nilaiTanggal.value.isEmpty) {
@@ -34,6 +36,7 @@ class CompleteProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+      isloading.value = false;
       return;
     }
 
@@ -42,7 +45,7 @@ class CompleteProfileController extends GetxController {
       'phone': phoneC.phoneNumber,
       'tanggal_lahir': nilaiTanggal.value,
     });
-    Get.toNamed(Routes.HOME);
+    Get.offAllNamed(Routes.COMPLETE_BALANCE);
   }
 
   @override
