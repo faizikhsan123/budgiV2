@@ -94,6 +94,7 @@ class AuthController extends GetxController {
         data: {
           "name": _currentUser!.displayName,
           "email": email,
+           "balance": 0,
           "phone": null,
           "tanggal_lahir": null,
           "photo_url": userCredential!.user!.photoURL,
@@ -178,6 +179,7 @@ class AuthController extends GetxController {
           "email": email,
           "phone": null,
           "tanggal_lahir": null,
+          "balance": 0,
           "photo_url": userData['picture']['data']['url'],
         },
       );

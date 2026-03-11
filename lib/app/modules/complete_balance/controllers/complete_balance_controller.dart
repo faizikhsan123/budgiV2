@@ -10,12 +10,10 @@ class CompleteBalanceController extends GetxController {
 
   final balance = TextEditingController();
   
-
-  void setBalance(int number) async {
-    balance.text = number.toString();
+  Future<void> setBalance(int number) async {                                                                                             
     final uid = auth.currentUser!.uid;
     await firestore.collection("users").doc(uid).update({
-      'balance': balance.text,
+      'balance': number,
     });
     Get.offAllNamed(Routes.HOME);
   }

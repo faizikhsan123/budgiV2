@@ -108,9 +108,12 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            controller.setBalance(
-                              int.parse(controller.balance.text),
-                            );
+                            String value = controller.balance.text
+                                .replaceAll("Rp", "")
+                                .replaceAll(".", "")
+                                .trim();
+
+                            controller.setBalance(int.parse(value));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xffB89BC6),

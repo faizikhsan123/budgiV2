@@ -129,6 +129,7 @@ class RegisController extends GetxController {
         "updated_at": Timestamp.now(),
         "photo_url": null,
         "provider": "password",
+         "balance": 0,
       });
 
       // Bersihkan form
