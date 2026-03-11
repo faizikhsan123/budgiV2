@@ -12,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/home_controller.dart';
 import '../../widgets/app_colors.dart';
 import '../../widgets/quick_actions_row.dart';
-import '../../widgets/transaction_group_card.dart';
 
 class HomeView extends GetView<HomeController> {
   final authC = Get.find<AuthController>();
@@ -193,61 +192,148 @@ class HomeView extends GetView<HomeController> {
                               letterSpacing: -0.30,
                             ),
                           ),
-                          SizedBox(height: 12),
+                          SizedBox(height: 10),
 
-                          // ── Friday Group ──────────────────────────────────
-                          TransactionGroupCard(
-                            dateLabel: 'Friday, 27 February 2026',
-                            transactions: [
-                              TransactionData(
-                                iconAsset: 'assets/icons/food.svg',
-                                category: 'Food',
-                                description: 'Geprek Bakar Cibus',
-                                amount: 'Rp15.000',
-                              ),
-                              TransactionData(
-                                iconAsset: 'assets/icons/transport.svg',
-                                category: 'Transport',
-                                description: 'Bensin Pertamax Turbo',
-                                amount: 'Rp50.000',
-                              ),
-                              TransactionData(
-                                iconAsset: 'assets/icons/income.svg',
-                                category: 'Income',
-                                description: 'Gaji bulan Februari',
-                                amount: 'Rp2.000.000',
-                                isIncome: true,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
+                          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                            stream: controller.streamTransaction(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
 
-                          // ── Thursday Group ────────────────────────────────
-                          TransactionGroupCard(
-                            dateLabel: 'Thursday, 26 February 2026',
-                            transactions: const [
-                              TransactionData(
-                                iconAsset: 'assets/icons/food.svg',
-                                category: 'Food',
-                                description: 'Dubai Chewy Cookies',
-                                amount: 'Rp35.000',
-                              ),
-                              TransactionData(
-                                iconAsset: 'assets/icons/transport2.svg',
-                                category: 'Transport',
-                                description: 'Bensin Pertamax Turbo',
-                                amount: 'Rp50.000',
-                              ),
-                              TransactionData(
-                                iconAsset: 'assets/icons/income2.svg',
-                                category: 'Income',
-                                description: 'Gaji bulan Februari',
-                                amount: 'Rp2.000.000',
-                                isIncome: true,
-                              ),
-                            ],
+                              if (!snapshot.hasData ||
+                                  snapshot.data!.docs.isEmpty) {
+                                return SizedBox(
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: const Center(
+                                    child: Text(
+                                      "Transaksi belum ada",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              var dataPerhari = snapshot.data!;
+
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: dataPerhari.docs.length,
+                                itemBuilder: (context, index) {
+                                  var doc = dataPerhari.docs[index];
+                                  String docId = doc.id;
+
+                                  return Container(
+                                    padding: EdgeInsets.all(10),
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    width: Get.width,
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        214,
+                                        212,
+                                        206,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // TANGGAL
+                                        Text(
+                                          "${doc['date']}",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 8),
+
+                                        // STREAM ITEMS
+                                        StreamBuilder<
+                                          QuerySnapshot<Map<String, dynamic>>
+                                        >(
+                                          stream: controller
+                                              .streamTransactionItem(docId),
+                                          builder: (context, itemSnapshot) {
+                                            if (itemSnapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+
+                                            if (!itemSnapshot.hasData) {
+                                              return Text(
+                                                "Belum ada transaksi",
+                                              );
+                                            }
+
+                                            var dataItem = itemSnapshot.data!;
+
+                                            return ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: dataItem.docs.length,
+                                              itemBuilder: (context, i) {
+                                                var item = dataItem.docs[i];
+
+                                                return Column(
+                                                  children: [
+                                                    ListTile(
+                                                      leading: CircleAvatar(
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                              item['icon'],
+                                                            ),
+                                                      ),
+                                                      title: Text(
+                                                        item['category'],
+                                                      ),
+                                                      subtitle: Text(
+                                                        item['notes'],
+                                                      ),
+                                                      trailing: Text(
+                                                        '${rupiah.convertToRupiah('${item['amount']}')}',
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              item['category'] ==
+                                                                  'income'
+                                                              ? Colors.green
+                                                              : Colors.red,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Divider(
+                                                      thickness: 1,
+                                                      height: 0,
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
-                          const SizedBox(height: 24),
                         ],
                       );
                     },

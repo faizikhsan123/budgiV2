@@ -14,7 +14,35 @@ class HomeController extends GetxController {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> streamProfile() {
     final uid = auth.currentUser!.uid;
-    return firestore.collection("users").doc(uid).snapshots();
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamTransaction() {
+    final uid = auth.currentUser!.uid;
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  // STREAM ITEMS BERDASARKAN TANGGAL
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamTransactionItem(String docId) {
+    final uid = auth.currentUser!.uid;
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .doc(docId)
+        .collection("items")
+        .orderBy("created_at", descending: true)
+        .snapshots();
+  }
 }

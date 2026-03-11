@@ -232,6 +232,9 @@ class PageIndexController extends GetxController {
                                         () => InkWell(
                                           onTap: () {
                                             selectedCategoryIndex.value = index;
+                                            print(
+                                              "data categories sesuai index : ${categories[index]['name']}",
+                                            );
                                           },
                                           child: Container(
                                             width: itemWidth,
@@ -280,7 +283,7 @@ class PageIndexController extends GetxController {
                       () => transactionType.value == "expense"
                           ? ElevatedButton(
                               onPressed: () {
-                                // tambahTransaksi();
+                                tambahExpense(notesC.text);
                               },
                               child: const Text("Tambah transaksi"),
                             )
@@ -314,6 +317,104 @@ class PageIndexController extends GetxController {
     }
   }
 
+  void tambahExpense(String notes) async {
+    String cleanText = amountC.text
+        .replaceAll("Rp", "")
+        .replaceAll(".", "")
+        .trim();
+
+    int? number = int.tryParse(cleanText);
+
+    if (number == null) {
+      Get.snackbar(
+        'Error',
+        'Nominal wajib diisi',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
+      return;
+    }
+
+    String uid = auth.currentUser!.uid;
+
+    DateTime now = DateTime.now();
+
+    String todaydocId = DateFormat.yMd().format(now).replaceAll('/', '-');
+
+    String tanggalBesok = DateFormat.yMd()
+        .format(now.add(const Duration(days: 1)))
+        .replaceAll('/', '-');
+
+    Future<DocumentSnapshot<Map<String, dynamic>>> streamTransaction = firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .doc(todaydocId)
+        .get();
+
+    var data = await streamTransaction.then((value) => value.data());
+
+    //jika hari ini belum ada transaksi
+    if (data == null || data.isEmpty) {
+      firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .doc(todaydocId)
+          .set({
+            'date': DateFormat.yMd().format(DateTime.now()),
+            'created_at': Timestamp.now(),
+          });
+    }
+
+    // tambah data transaksi
+    String waktu = DateFormat.jms().format(now);
+
+    // tambah transaksi baru (tidak menimpa)
+
+    Future<DocumentSnapshot<Map<String, dynamic>>> dataProfile = firestore
+        .collection("users")
+        .doc(uid)
+        .get();
+    dataProfile.then((snapshot) {
+      int balance = snapshot.data()?['balance'];
+
+      firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .doc(todaydocId)
+          .collection("items")
+          .doc(waktu)
+          .set({
+            'type': "expense",
+            "date": todaydocId,
+            "icon": categories[selectedCategoryIndex.value]['icon'],
+            'amount': number,
+            'notes': notes,
+            'category': categories[selectedCategoryIndex.value]['name'],
+            'created_at': Timestamp.now(),
+          });
+
+      if (balance < number) {
+        Get.snackbar(
+          'Error',
+          'Saldo tidak mencukupi',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
+        return;
+      }
+
+      firestore.collection("users").doc(uid).update({
+        'balance': balance - number,
+      });
+    });
+
+    Get.snackbar('berhasil', 'pengeluaran berhasil ditambahkan');
+  }
+
+  // Fungsinya jadi:
   void tambahTransaksiIncome(String notes) async {
     String cleanText = amountC.text
         .replaceAll("Rp", "")
@@ -332,46 +433,68 @@ class PageIndexController extends GetxController {
       return;
     }
 
-    if (number.toString().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Nominal wajib diisi',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
-
     String uid = auth.currentUser!.uid;
-
-    CollectionReference<Map<String, dynamic>> streamTransaction = firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions");
 
     DateTime now = DateTime.now();
 
     String todaydocId = DateFormat.yMd().format(now).replaceAll('/', '-');
 
-    DocumentReference todayDoc = streamTransaction.doc(todaydocId);
+    Future<DocumentSnapshot<Map<String, dynamic>>> streamTransaction = firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .doc(todaydocId)
+        .get();
 
-    // buat document tanggal kalau belum ada
-    await todayDoc.set({
-      'date': todaydocId,
-      'created_at': Timestamp.now(),
-    }, SetOptions(merge: true));
+    var data = await streamTransaction.then((value) => value.data());
 
+    //jika hari ini belum ada transaksi
+    if (data == null || data.isEmpty) {
+      firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .doc(todaydocId)
+          .set({
+            'date': DateFormat.yMd().format(DateTime.now()),
+            'created_at': Timestamp.now(),
+          });
+    }
+
+    // tambah data transaksi
     String waktu = DateFormat.jms().format(now);
 
     // tambah transaksi baru (tidak menimpa)
-    await todayDoc.collection("items").doc(waktu).set({
-      'type': "income",
-      'amount': number,
-      'notes': notes,
-      'created_at': Timestamp.now(),
-      'updated_at': Timestamp.now(),
+
+    Future<DocumentSnapshot<Map<String, dynamic>>> dataProfile = firestore
+        .collection("users")
+        .doc(uid)
+        .get();
+    dataProfile.then((snapshot) {
+      int balance = snapshot.data()?['balance'];
+
+      firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .doc(todaydocId)
+          .collection("items")
+          .doc(waktu)
+          .set({
+            'type': "income",
+            "icon": "https://cdn-icons-png.flaticon.com/512/3135/3135706.png",
+            "category": "income",
+            "date": todaydocId,
+            'amount': number,
+            'notes': notes,
+            'created_at': Timestamp.now(),
+          });
+
+      firestore.collection("users").doc(uid).update({
+        'balance': balance + number,
+      });
     });
 
-    Get.snackbar('Berhasil', 'Data berhasil ditambahkan');
+    Get.snackbar('berhasil', 'income berhasil ditambahkan');
   }
 }
