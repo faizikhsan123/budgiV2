@@ -14,7 +14,6 @@ class PageIndexController extends GetxController {
   RxInt selectedCategoryIndex = (-1).obs;
   late DateRangePickerController dateC;
   RxString nilaiTanggal = "".obs;
-  RxString tanggal = "".obs;
 
   final amountC = TextEditingController();
   final notesC = TextEditingController();
@@ -131,34 +130,47 @@ class PageIndexController extends GetxController {
                               Dialog(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 400,
-                                    child: SfDateRangePicker(
-                                      selectionMode:
-                                          DateRangePickerSelectionMode
-                                              .single, //mode datepicker
-                                      todayHighlightColor: Colors.blue,
-                                      showActionButtons:
-                                          true, //tampilkan tombol
-
-                                      onCancel: () =>
-                                          Get.back(), //ketika tombol cancel ditekan
-                                      /// ketika tombol submit ditekan
-                                      onSubmit: (obj) {
-                                        DateTime date = obj as DateTime;
-                                        nilaiTanggal.value =
-                                            "${date.day}-${date.month}-${date.year}";
-
-                                        print(nilaiTanggal.value);
-                                        Get.back();
-                                      },
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 400,
+                                        width: 300,
+                                        child: SfDateRangePicker(
+                                          selectionMode:
+                                              DateRangePickerSelectionMode
+                                                  .single, //mode datepicker
+                                        
+                                          showActionButtons:
+                                              true, //tampilkan tombol
+                                      
+                                          onCancel: () =>
+                                              Get.back(), //ketika tombol cancel ditekan
+                                          /// ketika tombol submit ditekan
+                                          onSubmit: (obj) {
+                                            DateTime date = obj as DateTime;
+                                            nilaiTanggal.value =
+                                                "${date.day}-${date.month}-${date.year}";
+                                      
+                                            print(nilaiTanggal.value);
+                                            Get.back();
+                                          },
+                                        ),
+                                      ),
+                                     
+                                    ],
                                   ),
                                 ),
                               ),
                             );
                           },
-                          child: Obx(() => Text("${nilaiTanggal.value}")),
+                          child: Obx(() => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("${nilaiTanggal.value}"),
+                              SizedBox(width: 5,),
+                              Icon(Icons.calendar_month_outlined,size: 21,),
+                            ],
+                          )),
                         ),
                       ],
                     ),
@@ -262,8 +274,8 @@ class PageIndexController extends GetxController {
 
                     Obx(
                       () => transactionType.value == "expense"
-                          ? const SizedBox(height: 40)
-                          : const SizedBox(height: 20),
+                          ? SizedBox(height: 20)
+                          : SizedBox(height: 20),
                     ),
 
                     /// CATEGORY (ONLY EXPENSE)
@@ -318,6 +330,11 @@ class PageIndexController extends GetxController {
                               ),
                             )
                           : const SizedBox(),
+                    ),
+                    Obx(
+                      () => transactionType.value == "expense"
+                          ? SizedBox(height: 20)
+                          : SizedBox(height: 0),
                     ),
 
                     /// NOTE

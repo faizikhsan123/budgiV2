@@ -4,12 +4,16 @@ import '../modules/add_transaksi/bindings/add_transaksi_binding.dart';
 import '../modules/add_transaksi/views/add_transaksi_view.dart';
 import '../modules/all_transaction/bindings/all_transaction_binding.dart';
 import '../modules/all_transaction/views/all_transaction_view.dart';
+import '../modules/analytics/bindings/analytics_binding.dart';
+import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
 import '../modules/complete_balance/views/complete_balance_view.dart';
 import '../modules/complete_profile/bindings/complete_profile_binding.dart';
 import '../modules/complete_profile/views/complete_profile_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
+import '../modules/history/bindings/history_binding.dart';
+import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -87,6 +91,16 @@ class AppPages {
       name: _Paths.COMPLETE_BALANCE,
       page: () => const CompleteBalanceView(),
       binding: CompleteBalanceBinding(),
+    ),
+    GetPage(
+      name: _Paths.ANALYTICS,
+      page: () =>  AnalyticsView(),
+      binding: AnalyticsBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY,
+      page: () =>  HistoryView(),
+      binding: HistoryBinding(),
     ),
   ];
 }
