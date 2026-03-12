@@ -6,11 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class PageIndexController extends GetxController {
   RxInt CurrentIndex = 0.obs;
   RxString transactionType = "expense".obs;
   RxInt selectedCategoryIndex = (-1).obs;
+  late DateRangePickerController dateC;
+  RxString nilaiTanggal = "".obs;
+  RxString tanggal = "".obs;
 
   final amountC = TextEditingController();
   final notesC = TextEditingController();
@@ -66,6 +70,25 @@ class PageIndexController extends GetxController {
     selectedCategoryIndex.value = -1;
     amountC.clear();
     notesC.clear();
+    Future.delayed(Duration(seconds: 1), () {
+      nilaiTanggal.value = DateFormat('dd-M-yyyy').format(DateTime.now());
+    });
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    nilaiTanggal.value = DateFormat('dd-M-yyyy').format(DateTime.now());
+    print(nilaiTanggal.value);
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    amountC.dispose();
+    notesC.dispose();
+    dateC.dispose();
+    super.onClose();
   }
 
   void changePage(int index) {
@@ -101,9 +124,41 @@ class PageIndexController extends GetxController {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+
                         ElevatedButton(
-                          onPressed: () {},
-                          child: const Text("Pilih Tanggal"),
+                          onPressed: () {
+                            Get.dialog(
+                              Dialog(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 400,
+                                    child: SfDateRangePicker(
+                                      selectionMode:
+                                          DateRangePickerSelectionMode
+                                              .single, //mode datepicker
+                                      todayHighlightColor: Colors.blue,
+                                      showActionButtons:
+                                          true, //tampilkan tombol
+
+                                      onCancel: () =>
+                                          Get.back(), //ketika tombol cancel ditekan
+                                      /// ketika tombol submit ditekan
+                                      onSubmit: (obj) {
+                                        DateTime date = obj as DateTime;
+                                        nilaiTanggal.value =
+                                            "${date.day}-${date.month}-${date.year}";
+
+                                        print(nilaiTanggal.value);
+                                        Get.back();
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Obx(() => Text("${nilaiTanggal.value}")),
                         ),
                       ],
                     ),
@@ -317,7 +372,7 @@ class PageIndexController extends GetxController {
     }
   }
 
-  void tambahExpense(String notes) async {
+  Future tambahExpense(String notes) async {
     String cleanText = amountC.text
         .replaceAll("Rp", "")
         .replaceAll(".", "")
@@ -337,78 +392,61 @@ class PageIndexController extends GetxController {
 
     String uid = auth.currentUser!.uid;
 
-    DateTime now = DateTime.now();
+    var snapshot = await firestore.collection("users").doc(uid).get();
+    int balance = snapshot.data()?['balance'];
 
-    String todaydocId = DateFormat.yMd().format(now).replaceAll('/', '-');
+    /// VALIDASI
+    if (number > balance) {
+      Get.snackbar(
+        'Error',
+        'Saldo tidak mencukupi',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
+      return;
+    }
 
-    String tanggalBesok = DateFormat.yMd()
-        .format(now.add(const Duration(days: 1)))
-        .replaceAll('/', '-');
-
-    Future<DocumentSnapshot<Map<String, dynamic>>> streamTransaction = firestore
+    /// CEK TRANSAKSI HARI INI
+    var streamTransaction = await firestore
         .collection("users")
         .doc(uid)
         .collection("transactions")
-        .doc(todaydocId)
+        .doc(nilaiTanggal.value)
         .get();
 
-    var data = await streamTransaction.then((value) => value.data());
+    var data = streamTransaction.data();
+    String waktu = DateFormat.jms().format(DateTime.now());
 
-    //jika hari ini belum ada transaksi
     if (data == null || data.isEmpty) {
-      firestore
+      await firestore
           .collection("users")
           .doc(uid)
           .collection("transactions")
-          .doc(todaydocId)
-          .set({
-            'date': DateFormat.yMd().format(DateTime.now()),
-            'created_at': Timestamp.now(),
-          });
+          .doc(nilaiTanggal.value)
+          .set({'date': nilaiTanggal.value, 'created_at': waktu});
     }
 
-    // tambah data transaksi
-    String waktu = DateFormat.jms().format(now);
-
-    // tambah transaksi baru (tidak menimpa)
-
-    Future<DocumentSnapshot<Map<String, dynamic>>> dataProfile = firestore
+    /// SIMPAN TRANSAKSI
+    await firestore
         .collection("users")
         .doc(uid)
-        .get();
-    dataProfile.then((snapshot) {
-      int balance = snapshot.data()?['balance'];
+        .collection("transactions")
+        .doc(nilaiTanggal.value)
+        .collection("items")
+        .doc(waktu)
+        .set({
+          'type': "expense",
+          "date": nilaiTanggal.value,
+          "icon": categories[selectedCategoryIndex.value]['icon'],
+          'amount': number,
+          'notes': notes,
+          'category': categories[selectedCategoryIndex.value]['name'],
+          'created_at': waktu,
+        });
 
-      firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(todaydocId)
-          .collection("items")
-          .doc(waktu)
-          .set({
-            'type': "expense",
-            "date": todaydocId,
-            "icon": categories[selectedCategoryIndex.value]['icon'],
-            'amount': number,
-            'notes': notes,
-            'category': categories[selectedCategoryIndex.value]['name'],
-            'created_at': Timestamp.now(),
-          });
-
-      if (balance < number) {
-        Get.snackbar(
-          'Error',
-          'Saldo tidak mencukupi',
-          backgroundColor: Colors.red.shade50,
-          colorText: Colors.red.shade900,
-        );
-        return;
-      }
-
-      firestore.collection("users").doc(uid).update({
-        'balance': balance - number,
-      });
+    /// UPDATE SALDO
+    await firestore.collection("users").doc(uid).update({
+      'balance': balance - number,
     });
 
     Get.snackbar('berhasil', 'pengeluaran berhasil ditambahkan');
@@ -435,18 +473,17 @@ class PageIndexController extends GetxController {
 
     String uid = auth.currentUser!.uid;
 
-    DateTime now = DateTime.now();
-
-    String todaydocId = DateFormat.yMd().format(now).replaceAll('/', '-');
-
     Future<DocumentSnapshot<Map<String, dynamic>>> streamTransaction = firestore
         .collection("users")
         .doc(uid)
         .collection("transactions")
-        .doc(todaydocId)
+        .doc(nilaiTanggal.value)
         .get();
 
     var data = await streamTransaction.then((value) => value.data());
+
+    // tambah data transaksi wakttu s3ekatang
+    String waktu = DateFormat.jms().format(DateTime.now());
 
     //jika hari ini belum ada transaksi
     if (data == null || data.isEmpty) {
@@ -454,15 +491,9 @@ class PageIndexController extends GetxController {
           .collection("users")
           .doc(uid)
           .collection("transactions")
-          .doc(todaydocId)
-          .set({
-            'date': DateFormat.yMd().format(DateTime.now()),
-            'created_at': Timestamp.now(),
-          });
+          .doc(nilaiTanggal.value)
+          .set({'date': nilaiTanggal.value, 'created_at': waktu});
     }
-
-    // tambah data transaksi
-    String waktu = DateFormat.jms().format(now);
 
     // tambah transaksi baru (tidak menimpa)
 
@@ -472,22 +503,21 @@ class PageIndexController extends GetxController {
         .get();
     dataProfile.then((snapshot) {
       int balance = snapshot.data()?['balance'];
-
       firestore
           .collection("users")
           .doc(uid)
           .collection("transactions")
-          .doc(todaydocId)
+          .doc(nilaiTanggal.value)
           .collection("items")
           .doc(waktu)
           .set({
             'type': "income",
             "icon": "https://cdn-icons-png.flaticon.com/512/3135/3135706.png",
             "category": "income",
-            "date": todaydocId,
+            "date": nilaiTanggal.value,
             'amount': number,
             'notes': notes,
-            'created_at': Timestamp.now(),
+            'created_at': waktu,
           });
 
       firestore.collection("users").doc(uid).update({

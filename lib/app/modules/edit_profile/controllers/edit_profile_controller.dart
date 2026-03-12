@@ -114,7 +114,6 @@ class EditProfileController extends GetxController {
             await _uploadImageOnly(); // return URL, jangan update Firestore di sini
       }
 
-      // 1x write ke Firestore, semua sekaligus
       await firestore.collection("users").doc(uid).update({
         'name': nameC.text,
         'phone': phoneC.phoneNumber,
