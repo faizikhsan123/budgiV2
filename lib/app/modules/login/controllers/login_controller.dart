@@ -4,33 +4,37 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
- RxBool isHide = true.obs;
- final FirebaseAuth auth = FirebaseAuth.instance;
- final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  RxBool isHide = true.obs;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
- late TextEditingController emailC;
- late TextEditingController passC;
+  late TextEditingController emailC;
+  late TextEditingController passC;
 
- @override
+  @override
   void onInit() {
     emailC = TextEditingController();
     passC = TextEditingController();
     isHide.value = true;
-    // TODO: implement onInit
+
     super.onInit();
   }
 
   @override
+  void dispose() {
+    emailC.dispose();
+    passC.dispose();
+    isHide.value = true;
 
+    super.dispose();
+  }
+
+  @override
   void onClose() {
     emailC.dispose();
     passC.dispose();
     isHide.value = true;
 
-    // TODO: implement onClose
     super.onClose();
   }
-
-
-
 }

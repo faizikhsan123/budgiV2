@@ -22,9 +22,6 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
-import '../modules/report/bindings/report_binding.dart';
-import '../modules/report/views/report_view.dart';
-
 part 'app_routes.dart';
 
 class AppPages {
@@ -39,11 +36,7 @@ class AppPages {
       binding: HomeBinding(),
       transition: Transition.fadeIn,
     ),
-    GetPage(
-      name: _Paths.REPORT,
-      page: () => ReportView(),
-      binding: ReportBinding(),
-    ),
+  
     GetPage(
       name: _Paths.PROFILE,
       page: () => ProfileView(),
