@@ -51,6 +51,7 @@ class LoginView extends GetView<LoginController> {
                               height: 90,
                               child: Image.network(
                                 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773415779/budgi_B_D_bentuk_babi_zyclve.png',
+                                filterQuality: FilterQuality.high,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -118,9 +119,9 @@ class LoginView extends GetView<LoginController> {
                             const SizedBox(height: 10),
 
                             /// LOGIN BUTTON
-                            ButtonPink(
-                              authC: authC,
-                              controller: controller,
+                            buildButtonPink(
+                              // authC: authC,
+                              // controller: controller,
                               text: "Masuk",
                               onTap: () {
                                 authC.loginFOrm(
