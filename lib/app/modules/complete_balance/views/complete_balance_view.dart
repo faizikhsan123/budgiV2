@@ -1,7 +1,11 @@
+import 'package:budgi/app/modules/widgets/ButtonPink.dart';
+import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
+import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/complete_balance_controller.dart';
 
@@ -14,13 +18,7 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xffEDEDED), Color(0xffEED6C6)],
-          ),
-        ),
+        color: const Color.fromARGB(255, 243, 241, 241),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -29,10 +27,12 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
               children: [
                 /// ICON / IMAGE
                 Container(
-                  width: 90,
-                  height: 90,
+                  width: 100,
+                  child: Image.network(
+                    'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773415779/budgi_B_D_bentuk_babi_zyclve.png',
+                    fit: BoxFit.cover,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.yellow,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
@@ -45,97 +45,43 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Welcome to Budgis! 👋",
-                        style: TextStyle(
+                       Text(
+                        "Welcome to Budgi! 👋",
+                       style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 7, 7, 7),
                           fontSize: 24,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 20),
-                      const Text(
-                        "Start by adding your current balance.\nYou can update it anytime as you record income or expenses.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
+                      SizedBox(height: 10),
+                      Text(
+                        "Start by adding your current balance.You can update it anytime as you record income or expenses.",
+                        style: GoogleFonts.plusJakartaSans(
+                          color: const Color.fromARGB(255, 7, 7, 7),
+                          fontSize: 16,
                         ),
                       ),
 
                       const SizedBox(height: 20),
 
-                      /// TEXTFIELD
-                      TextField(
-                        keyboardType: TextInputType.number,
-                        controller: controller.balance,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          CurrencyTextInputFormatter.currency(
-                            maxValue: 1000000000,
-                            locale: 'id',
-                            decimalDigits: 0,
-                            symbol: 'Rp',
-                          ),
-                        ],
-                        decoration: InputDecoration(
-                          hintText: "Current balance",
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Color(0xffB89BC6),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Color(0xffB89BC6),
-                            ),
-                          ),
-                        ),
-                      ),
+                      input_rupiah(amountC: controller.balance),
 
                       const SizedBox(height: 20),
 
                       /// BUTTON
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            String value = controller.balance.text
-                                .replaceAll("Rp", "")
-                                .replaceAll(".", "")
-                                .trim();
-
-                            controller.setBalance(int.parse(value));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xffB89BC6),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            "Start Tracking",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+                      buildButtonPink(
+                        text: 'Start Tracking',
+                        onTap: () {
+                          String value = controller.balance.text
+                              .replaceAll("Rp", "")
+                              .replaceAll(".", "")
+                              .trim();
+                          controller.setBalance(int.parse(value));
+                        },
                       ),
                     ],
                   ),
                 ),
-
-                /// DESCRIPTION
               ],
             ),
           ),

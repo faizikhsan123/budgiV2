@@ -1,3 +1,4 @@
+import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -139,10 +140,10 @@ class PageIndexController extends GetxController {
                                           selectionMode:
                                               DateRangePickerSelectionMode
                                                   .single, //mode datepicker
-                                        
+
                                           showActionButtons:
                                               true, //tampilkan tombol
-                                      
+
                                           onCancel: () =>
                                               Get.back(), //ketika tombol cancel ditekan
                                           /// ketika tombol submit ditekan
@@ -150,27 +151,28 @@ class PageIndexController extends GetxController {
                                             DateTime date = obj as DateTime;
                                             nilaiTanggal.value =
                                                 "${date.day}-${date.month}-${date.year}";
-                                      
+
                                             print(nilaiTanggal.value);
                                             Get.back();
                                           },
                                         ),
                                       ),
-                                     
                                     ],
                                   ),
                                 ),
                               ),
                             );
                           },
-                          child: Obx(() => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${nilaiTanggal.value}"),
-                              SizedBox(width: 5,),
-                              Icon(Icons.calendar_month_outlined,size: 21,),
-                            ],
-                          )),
+                          child: Obx(
+                            () => Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("${nilaiTanggal.value}"),
+                                SizedBox(width: 5),
+                                Icon(Icons.calendar_month_outlined, size: 21),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -237,40 +239,7 @@ class PageIndexController extends GetxController {
                     const SizedBox(height: 20),
 
                     /// AMOUNT
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      controller: amountC,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        CurrencyTextInputFormatter.currency(
-                          maxValue: 1000000000000,
-                          locale: 'id',
-                          decimalDigits: 0,
-                          symbol: 'Rp',
-                        ),
-                      ],
-                      decoration: InputDecoration(
-                        hintText: "Current balance",
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Color(0xffB89BC6),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Color(0xffB89BC6),
-                          ),
-                        ),
-                      ),
-                    ),
+                    input_rupiah(amountC: amountC),
 
                     Obx(
                       () => transactionType.value == "expense"
