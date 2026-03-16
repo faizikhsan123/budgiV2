@@ -1,0 +1,69 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+
+class AnalyticsController extends GetxController {
+  RxString transactionType = "expense".obs;
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  void liatExpense() {
+    transactionType.value = "expense";
+  }
+
+  void liatIncome() {
+    transactionType.value = "income";
+  }
+
+  /// ambil semua transaksi
+  Stream<QuerySnapshot<Map<String, dynamic>>> dataExpenseAll() {
+    final uid = auth.currentUser!.uid;
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  /// STREAM EXPENSE
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamExpenseItem(String docId) {
+    final uid = auth.currentUser!.uid;
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .doc(docId)
+        .collection("items")
+        .where("type", isEqualTo: "expense")
+        .snapshots();
+  }
+
+  /// STREAM INCOME
+  Stream<QuerySnapshot<Map<String, dynamic>>> dataIncomeAll() {
+    final uid = auth.currentUser!.uid;
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+         .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamIncomeItem(String docId) {
+    final uid = auth.currentUser!.uid;
+
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("transactions")
+        .doc(docId)
+        .collection("items")
+        .where("type", isEqualTo: "income")
+        .snapshots();
+  }
+}

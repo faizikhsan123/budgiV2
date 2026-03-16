@@ -7,16 +7,23 @@ environment:
 
 dependencies: 
   flutter_svg: ^2.0.10+1
-  google_fonts: ^6.2.1
+  google_fonts: 8.0.2
   cupertino_icons: ^1.0.8
   get: 4.7.3
   firebase_core: 4.4.0
   convex_bottom_bar: 3.2.0
-  syncfusion_flutter_datepicker: 32.2.7
+  syncfusion_flutter_datepicker: 32.2.8
   google_sign_in: 6.2.1
   firebase_auth: 6.1.4
   cloud_firestore: 6.1.2
   flutter_facebook_auth: 7.1.5
+  intl_phone_number_input_v2: 0.0.9
+  image_picker: 1.2.1
+  format_indonesia_v2: 0.0.8
+  intl: 0.20.2
+  currency_text_input_formatter: 2.3.0
+  syncfusion_flutter_charts: 32.2.9
+  lottie: 3.3.2
   flutter: 
     sdk: flutter
 
@@ -26,7 +33,8 @@ dev_dependencies:
     sdk: flutter
 
 flutter: 
-  uses-material-design: true
-  assets:
+  assets: 
     - assets/icons/
+    - assets/lottie/
+  uses-material-design: true
 

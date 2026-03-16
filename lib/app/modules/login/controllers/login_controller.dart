@@ -1,23 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
-  //TODO: Implement LoginController
+  RxBool isHide = true.obs;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final count = 0.obs;
+  late TextEditingController emailC;
+  late TextEditingController passC;
+
   @override
   void onInit() {
+    emailC = TextEditingController();
+    passC = TextEditingController();
+    isHide.value = true;
+
     super.onInit();
   }
 
   @override
-  void onReady() {
-    super.onReady();
+  void dispose() {
+    emailC.dispose();
+    passC.dispose();
+    isHide.value = true;
+
+    super.dispose();
   }
 
   @override
   void onClose() {
+    emailC.dispose();
+    passC.dispose();
+    isHide.value = true;
+
     super.onClose();
   }
-
-  void increment() => count.value++;
 }

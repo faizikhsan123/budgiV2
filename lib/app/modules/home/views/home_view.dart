@@ -1,16 +1,21 @@
+import 'package:budgi/app/controllers/auth_controller.dart';
+import 'package:budgi/app/controllers/page_index_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:format_indonesia_v2/format_indonesia_v2.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/home_controller.dart';
-import '../widgets/app_colors.dart';
-import '../widgets/balance_card.dart';
-import '../widgets/quick_actions_row.dart';
-import '../widgets/transaction_group_card.dart';
+import '../../widgets/app_colors.dart';
+import '../../widgets/quick_actions_row.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
+  final authC = Get.find<AuthController>();
+  final pageC = Get.find<PageIndexController>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +24,7 @@ class HomeView extends GetView<HomeController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 0.13, 0.40],
-            colors: [
-              Color(0xFFE2B9A3),
-              Color(0xFFEAC9B3),
-              Colors.white,
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(color: Color(0xF6F6F6F6)),
         child: SafeArea(
           bottom: false,
           child: Column(
@@ -38,241 +32,340 @@ class HomeView extends GetView<HomeController> {
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 16),
+                  child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    stream: controller.streamProfile(),
+                    builder: (context, asyncSnapshot) {
+                      if (asyncSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                      // ── User Greeting Row ──────────────────────────────
-                      Row(
+                      if (!asyncSnapshot.hasData) {
+                        return Center(child: Text("Data belum ada"));
+                      }
+
+                      var data = asyncSnapshot.data!;
+                      var rupiah = Rupiah();
+                      String imageUrl =
+                          "https://ui-avatars.com/api/?name=${data['name']}&background=random&size=256";
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SvgPicture.asset(
-                            'assets/icons/avatar.svg',
-                            width: 40,
-                            height: 40,
-                          ),
-                          const SizedBox(width: 13),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(height: 16),
+
+                          Row(
                             children: [
-                              Text(
-                                'Good Morning',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.textDark,
-                                  letterSpacing: -0.30,
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image:
+                                        data['photo_url'] == null ||
+                                            data['photo_url'] == ""
+                                        ? NetworkImage(imageUrl)
+                                        : NetworkImage(data['photo_url']),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Faiz Ihsan Fajrul Falah',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textDark,
-                                  letterSpacing: -0.45,
-                                ),
+
+                              const SizedBox(width: 13),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Good Morning',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.textDark,
+                                      letterSpacing: -0.30,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${data['name']}',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textDark,
+                                      letterSpacing: -0.45,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          const SizedBox(height: 24),
+
+                          // ── Balance Card ──────────────────────────────────
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFFDAC2E5), Color(0xFFBD9AC4)],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primaryPurple.withOpacity(
+                                    0.25,
+                                  ),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Total Balance',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textMutedPurple,
+                                      letterSpacing: -0.30,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 44),
+                                Text(
+                                  '${rupiah.convertToRupiah('${data['balance']}')}',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.white,
+                                    letterSpacing: -0.75,
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Expense: Rp*****',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.white,
+                                        letterSpacing: -0.30,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Income: Rp****',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.white,
+                                        letterSpacing: -0.30,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 28),
+
+                          // ── Quick Actions ─────────────────────────────────
+                          QuickActionsRow(),
+                          SizedBox(height: 24),
+
+                          // ── Recent Activity Header ────────────────────────
+                          Text(
+                            'Recent Activity',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textDark,
+                              letterSpacing: -0.30,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+
+                          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                            stream: controller.streamTransaction(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              if (!snapshot.hasData ||
+                                  snapshot.data!.docs.isEmpty) {
+                                return SizedBox(
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: const Center(
+                                    child: Text(
+                                      "Transaksi belum ada",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              var dataPerhari = snapshot.data!;
+
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: dataPerhari.docs.length,
+                                itemBuilder: (context, index) {
+                                  var doc = dataPerhari.docs[index];
+                                  String docId = doc.id;
+
+                                  return Container(
+                                    padding: EdgeInsets.all(10),
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    width: Get.width,
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        214,
+                                        212,
+                                        206,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // TANGGAL
+                                        Text(
+                                          "${doc['date']}",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 8),
+
+                                        // STREAM ITEMS
+                                        StreamBuilder<
+                                          QuerySnapshot<Map<String, dynamic>>
+                                        >(
+                                          stream: controller
+                                              .streamTransactionItem(docId),
+                                          builder: (context, itemSnapshot) {
+                                            if (itemSnapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+
+                                            if (!itemSnapshot.hasData) {
+                                              return Text(
+                                                "Belum ada transaksi",
+                                              );
+                                            }
+
+                                            var dataItem = itemSnapshot.data!;
+
+                                            return ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: dataItem.docs.length,
+                                              itemBuilder: (context, i) {
+                                                var item = dataItem.docs[i];
+
+                                                return Column(
+                                                  children: [
+                                                    ListTile(
+                                                      leading: CircleAvatar(
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                              item['icon'],
+                                                            ),
+                                                      ),
+                                                      title: Text(
+                                                        item['category'],
+                                                      ),
+                                                      subtitle: Text(
+                                                        item['notes'],
+                                                      ),
+                                                      trailing: Text(
+                                                        '${rupiah.convertToRupiah('${item['amount']}')}',
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              item['category'] ==
+                                                                  'income'
+                                                              ? Colors.green
+                                                              : Colors.red,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Divider(
+                                                      thickness: 1,
+                                                      height: 0,
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // ── Balance Card ──────────────────────────────────
-                      const BalanceCard(),
-                      const SizedBox(height: 28),
-
-                      // ── Quick Actions ─────────────────────────────────
-                      const QuickActionsRow(),
-                      const SizedBox(height: 24),
-
-                      // ── Recent Activity Header ────────────────────────
-                      Text(
-                        'Recent Activity',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textDark,
-                          letterSpacing: -0.30,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // ── Friday Group ──────────────────────────────────
-                      TransactionGroupCard(
-                        dateLabel: 'Friday, 27 February 2026',
-                        transactions: const [
-                          TransactionData(
-                            iconAsset: 'assets/icons/food.svg',
-                            category: 'Food',
-                            description: 'Geprek Bakar Cibus',
-                            amount: 'Rp15.000',
-                          ),
-                          TransactionData(
-                            iconAsset: 'assets/icons/transport.svg',
-                            category: 'Transport',
-                            description: 'Bensin Pertamax Turbo',
-                            amount: 'Rp50.000',
-                          ),
-                          TransactionData(
-                            iconAsset: 'assets/icons/income.svg',
-                            category: 'Income',
-                            description: 'Gaji bulan Februari',
-                            amount: 'Rp2.000.000',
-                            isIncome: true,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // ── Thursday Group ────────────────────────────────
-                      TransactionGroupCard(
-                        dateLabel: 'Thursday, 26 February 2026',
-                        transactions: const [
-                          TransactionData(
-                            iconAsset: 'assets/icons/food.svg',
-                            category: 'Food',
-                            description: 'Dubai Chewy Cookies',
-                            amount: 'Rp35.000',
-                          ),
-                          TransactionData(
-                            iconAsset: 'assets/icons/transport2.svg',
-                            category: 'Transport',
-                            description: 'Bensin Pertamax Turbo',
-                            amount: 'Rp50.000',
-                          ),
-                          TransactionData(
-                            iconAsset: 'assets/icons/income2.svg',
-                            category: 'Income',
-                            description: 'Gaji bulan Februari',
-                            amount: 'Rp2.000.000',
-                            isIncome: true,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),
 
               // ── Bottom Navigation Bar ─────────────────────────────────
-              _HomeBottomNavBar(),
+              ConvexAppBar(
+                //widget bottom navbar
+                backgroundColor: const Color.fromARGB(255, 189, 157, 195),
+                initialActiveIndex: pageC.CurrentIndex.value, //index active
+                
+                items: [
+                  TabItem(icon: Icons.home, title: 'Home'),
+                  TabItem(icon: Icons.add, title: 'Add'),
+                  TabItem(icon: Icons.person, title: 'Pofile'),
+                ],
+                onTap: (index) {
+                  pageC.changePage(index);
+                },
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _HomeBottomNavBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -2),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller.logout();
+        },
+        child: const Icon(Icons.logout_outlined),
       ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          // Home + Profile items
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Home
-                _NavItem(
-                  assetPath: 'assets/icons/nav_home.svg',
-                  label: 'Home',
-                  isActive: true,
-                ),
-                // Spacer for FAB
-                const SizedBox(width: 56),
-                // Profile
-                _NavItem(
-                  assetPath: 'assets/icons/nav_profile.svg',
-                  label: 'Profile',
-                  isActive: false,
-                ),
-              ],
-            ),
-          ),
-          // Center FAB
-          Positioned(
-            top: -20,
-            child: GestureDetector(
-              onTap: () {},
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryPurple,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryPurple.withOpacity(0.40),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(Icons.add, color: Colors.white, size: 28),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final String assetPath;
-  final String label;
-  final bool isActive;
-
-  const _NavItem({
-    required this.assetPath,
-    required this.label,
-    required this.isActive,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? AppColors.primaryPurple : AppColors.navGray;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SvgPicture.asset(
-          assetPath,
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-            color: color,
-            height: 1.33,
-          ),
-        ),
-      ],
     );
   }
 }
