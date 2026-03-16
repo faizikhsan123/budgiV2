@@ -1,3 +1,5 @@
+import 'package:budgi/app/modules/widgets/ButtonPink.dart';
+import 'package:budgi/app/modules/widgets/ButtonPink_transaksi.dart';
 import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -24,35 +27,43 @@ class PageIndexController extends GetxController {
   final categories = [
     {
       "name": "Food",
-      "icon": "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665552/Vector_k2mnaw.png",
     },
     {
       "name": "Transport",
-      "icon": "https://cdn-icons-png.flaticon.com/512/744/744465.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665566/car_3_fill_tn9bzs.png",
     },
     {
       "name": "Health",
-      "icon": "https://cdn-icons-png.flaticon.com/512/2966/2966480.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665583/healthicons_health_bvd1hp.png",
     },
     {
       "name": "Bill",
-      "icon": "https://cdn-icons-png.flaticon.com/512/2920/2920269.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665616/bill_fill_ygxibf.png",
     },
     {
       "name": "Shopping",
-      "icon": "https://cdn-icons-png.flaticon.com/512/3514/3514491.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665669/Group_2_lzddae.png",
     },
     {
-      "name": "Education",
-      "icon": "https://cdn-icons-png.flaticon.com/512/3135/3135755.png",
+      "name": "Transfer",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665624/Group_1_db9gng.png",
     },
     {
       "name": "Entertainment",
-      "icon": "https://cdn-icons-png.flaticon.com/512/3659/3659898.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665624/movie_fill_lmbyru.png",
     },
     {
       "name": "Other",
-      "icon": "https://cdn-icons-png.flaticon.com/512/565/565547.png",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665624/more_4_fill_dulejq.png",
     },
   ];
 
@@ -116,11 +127,12 @@ class PageIndexController extends GetxController {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "Add Transaction",
-                          style: TextStyle(
-                            fontSize: 18,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
+                            color: Colors.grey[900],
                           ),
                         ),
 
@@ -140,6 +152,13 @@ class PageIndexController extends GetxController {
                                               DateRangePickerSelectionMode
                                                   .single, //mode datepicker
 
+                                          initialSelectedDate: null,
+                                          initialSelectedRange: null,
+                                          showNavigationArrow: true,
+                                          selectionColor: Color(0xFFBC9CC6),
+
+                                          showTodayButton: false,
+                                          allowViewNavigation: true,
                                           showActionButtons:
                                               true, //tampilkan tombol
 
@@ -166,9 +185,19 @@ class PageIndexController extends GetxController {
                             () => Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${nilaiTanggal.value}"),
+                                Text(
+                                  "${nilaiTanggal.value}",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 SizedBox(width: 5),
-                                Icon(Icons.calendar_month_outlined, size: 21),
+                                Icon(
+                                  Icons.calendar_month_outlined,
+                                  size: 21,
+                                  color: Colors.black,
+                                ),
                               ],
                             ),
                           ),
@@ -187,20 +216,22 @@ class PageIndexController extends GetxController {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     transactionType.value == "expense"
-                                    ? const Color(0xFFA348B4)
+                                    ? Color(0xFFBC9CC6)
                                     : Colors.white,
                                 side: const BorderSide(
-                                  color: Color(0xFFA47ADF),
+                                  color: Color.fromARGB(255, 197, 160, 208),
                                   width: 2,
                                 ),
                               ),
                               onPressed: setExpense,
                               child: Text(
                                 "Expense",
-                                style: TextStyle(
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: transactionType.value == "expense"
                                       ? Colors.white
-                                      : Colors.black,
+                                      : const Color.fromARGB(255, 52, 51, 51),
                                 ),
                               ),
                             ),
@@ -213,20 +244,22 @@ class PageIndexController extends GetxController {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     transactionType.value == "income"
-                                    ? const Color(0xFFA348B4)
+                                    ? Color(0xFFBC9CC6)
                                     : Colors.white,
                                 side: const BorderSide(
-                                  color: Color(0xFFA47ADF),
+                                  color: Color.fromARGB(255, 197, 160, 208),
                                   width: 2,
                                 ),
                               ),
                               onPressed: setIncome,
                               child: Text(
-                                "Income",
-                                style: TextStyle(
+                                "income",
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: transactionType.value == "income"
                                       ? Colors.white
-                                      : Colors.black,
+                                      : const Color.fromARGB(255, 52, 51, 51),
                                 ),
                               ),
                             ),
@@ -238,7 +271,7 @@ class PageIndexController extends GetxController {
                     const SizedBox(height: 20),
 
                     /// AMOUNT
-                    input_rupiah(amountC: amountC),
+                    input_rupiah(amountC: amountC, hintText: "Rp. 0"),
 
                     Obx(
                       () => transactionType.value == "expense"
@@ -246,7 +279,6 @@ class PageIndexController extends GetxController {
                           : SizedBox(height: 20),
                     ),
 
-                    /// CATEGORY (ONLY EXPENSE)
                     Obx(
                       () => transactionType.value == "expense"
                           ? Padding(
@@ -260,7 +292,7 @@ class PageIndexController extends GetxController {
 
                                   return Wrap(
                                     spacing: 15,
-                                    runSpacing: 30,
+                                    runSpacing: 28,
                                     children: List.generate(
                                       categories.length,
                                       (index) => Obx(
@@ -274,20 +306,31 @@ class PageIndexController extends GetxController {
                                           child: Container(
                                             width: itemWidth,
                                             height: itemWidth,
+
                                             decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Color(0xFFBC9CC6),
+                                              ),
                                               color:
                                                   selectedCategoryIndex.value ==
                                                       index
-                                                  ? const Color(0xFFA348B4)
-                                                  : Colors.grey[300],
+                                                  ? Color.fromARGB(
+                                                      255,
+                                                      234,
+                                                      217,
+                                                      239,
+                                                    )
+                                                  : Color.fromARGB(
+                                                      255,
+                                                      255,
+                                                      255,
+                                                      255,
+                                                    ),
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                             ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Image.network(
-                                                categories[index]['icon']!,
-                                              ),
+                                            child: Image.network(
+                                              categories[index]['icon']!,
                                             ),
                                           ),
                                         ),
@@ -308,11 +351,27 @@ class PageIndexController extends GetxController {
                     /// NOTE
                     TextFormField(
                       controller: notesC,
-                      maxLines: 6,
+                      maxLines: 4,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color.fromARGB(255, 215, 204, 219),
+                            width: 2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color(0xffBC9CC6),
+                            width: 2,
+                          ),
+                        ),
+                        isDense: true,
                         hintText: "Catatan",
                       ),
                     ),
@@ -321,19 +380,21 @@ class PageIndexController extends GetxController {
 
                     Obx(
                       () => transactionType.value == "expense"
-                          ? ElevatedButton(
-                              onPressed: () {
+                          ? buildButtonPinkTransaksi(
+                              text: 'Save',
+                              onTap: () {
                                 tambahExpense(notesC.text);
                               },
-                              child: const Text("Tambah transaksi"),
                             )
-                          : ElevatedButton(
-                              onPressed: () {
+                          : buildButtonPinkTransaksi(
+                              text: 'Save',
+                              onTap: () {
                                 tambahTransaksiIncome(notesC.text);
                               },
-                              child: const Text("Tambah transaksi"),
                             ),
                     ),
+
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -497,7 +558,7 @@ class PageIndexController extends GetxController {
           .doc(waktu)
           .set({
             'type': "income",
-            "icon": "https://cdn-icons-png.flaticon.com/512/3135/3135706.png",
+            "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773693028/Group_3_c6c4wv.png",
             "category": "income",
             "date": nilaiTanggal.value,
             'amount': number,
