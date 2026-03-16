@@ -15,7 +15,7 @@ Widget buildButtonPink({
       boxShadow: const [
         BoxShadow(
           color: Colors.black26,
-          blurRadius: 20,
+          blurRadius: 1,
           offset: Offset(0, 6),
         ),
       ],
