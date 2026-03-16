@@ -44,10 +44,10 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         "Welcome to Budgi! 👋",
-                       style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
                           color: const Color.fromARGB(255, 7, 7, 7),
                           fontSize: 24,
                         ),
@@ -63,7 +63,10 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
 
                       const SizedBox(height: 20),
 
-                      input_rupiah(amountC: controller.balance),
+                      input_rupiah(
+                        amountC: controller.balance,
+                        hintText: "Current Balance",
+                      ),
 
                       const SizedBox(height: 20),
 

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class input_rupiah extends StatelessWidget {
-  const input_rupiah({super.key, required this.amountC});
+  const input_rupiah({super.key, required this.amountC,required this.hintText});
 
   final TextEditingController amountC;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +25,18 @@ class input_rupiah extends StatelessWidget {
         ),
       ],
       decoration: InputDecoration(
-        hintText: "Current balance",
+        hintText: hintText,
+        
         filled: true,
-        fillColor: Colors.white,
+        fillColor: const Color.fromARGB(255, 255, 255, 255),
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 215, 204, 219), width: 2),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

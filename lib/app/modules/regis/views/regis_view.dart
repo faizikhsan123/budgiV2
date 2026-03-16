@@ -93,8 +93,10 @@ class RegisView extends GetView<RegisController> {
                               initialSelectedDate: null,
                               maxDate: DateTime(2040),
                               todayHighlightColor: Colors.transparent,
+                              selectionColor: Color(0xFFBC9CC6),
                               showNavigationArrow: true,
                               showActionButtons: true,
+                              showTodayButton: false,
                               onCancel: () => Get.back(),
                               onSubmit: (obj) {
                                 DateTime date = obj as DateTime;

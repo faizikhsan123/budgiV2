@@ -27,7 +27,7 @@ class QuickActionsRow extends StatelessWidget {
         const SizedBox(width: 80),
         _ActionItem(
           label: 'Split Bill',
-          assetPath: 'assets/icons/split_bill.svg',
+          assetPath: 'assets/icons/scan_fill.svg',
           onTap: () {
             print("solit bioll");
           },
