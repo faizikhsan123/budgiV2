@@ -15,7 +15,7 @@ Widget buildButtonPink({
       boxShadow: const [
         BoxShadow(
           color: Colors.black26,
-          blurRadius: 10,
+          blurRadius: 20,
           offset: Offset(0, 6),
         ),
       ],
@@ -33,6 +33,7 @@ Widget buildButtonPink({
         style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          fontSize: 18,
         ),
       ),
     ),

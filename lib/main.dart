@@ -29,8 +29,8 @@ class NyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Budgi",
-      // initialRoute: Routes.COMPLETE_BALANCE,
-       home: AuthWrapper(),
+      initialRoute: Routes.COMPLETE_PROFILE,
+      //  home: AuthWrapper(),
       getPages: AppPages.routes,
     );
   }

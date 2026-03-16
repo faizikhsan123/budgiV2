@@ -346,6 +346,7 @@ class HomeView extends GetView<HomeController> {
                 //widget bottom navbar
                 backgroundColor: const Color.fromARGB(255, 189, 157, 195),
                 initialActiveIndex: pageC.CurrentIndex.value, //index active
+                
                 items: [
                   TabItem(icon: Icons.home, title: 'Home'),
                   TabItem(icon: Icons.add, title: 'Add'),
