@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
+
 class AuthController extends GetxController {
   RxBool isloading = false.obs;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -94,7 +95,7 @@ class AuthController extends GetxController {
         data: {
           "name": _currentUser!.displayName,
           "email": email,
-           "balance": 0,
+          "balance": 0,
           "phone": null,
           "tanggal_lahir": null,
           "photo_url": userCredential!.user!.photoURL,
@@ -209,16 +210,14 @@ class AuthController extends GetxController {
       return;
     }
 
-    isloading.value = true; // ✅ set sebelum proses
+    isloading.value = true;
+
     try {
+      await Future.delayed(Duration(seconds: 1)); // supaya lottie terlihat
+
       await auth.signInWithEmailAndPassword(email: email, password: password);
-      Get.toNamed(Routes.HOME);
-      Get.snackbar(
-        'Success',
-        'Login Berhasil',
-        colorText: Colors.green,
-        backgroundColor: Colors.white,
-      );
+
+      Get.offAllNamed(Routes.HOME);
     } catch (e) {
       Get.snackbar(
         'Gagal',
@@ -227,8 +226,7 @@ class AuthController extends GetxController {
         colorText: Colors.red.shade900,
       );
     } finally {
-      isloading.value = false; // ✅ selalu reset
+      isloading.value = false;
     }
-    // ❌ hapus baris signIn yang duplikat di sini
   }
 }

@@ -10,7 +10,10 @@ class CompleteBalanceController extends GetxController {
 
   final balance = TextEditingController();
   
-  Future<void> setBalance(int number) async {                                                                                             
+  Future<void> setBalance(int number) async {       
+
+    
+
     final uid = auth.currentUser!.uid;
     await firestore.collection("users").doc(uid).update({
       'balance': number,

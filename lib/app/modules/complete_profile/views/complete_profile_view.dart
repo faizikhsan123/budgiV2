@@ -1,5 +1,8 @@
+import 'package:budgi/app/modules/widgets/ButtonPink.dart';
+import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/complete_profile_controller.dart';
@@ -10,15 +13,8 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
     return Scaffold(
       // ✅ biar scaffold otomatis naik saat keyboard muncul
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color.fromARGB(252, 255, 255, 255),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFF3E7FF), Color(0xFFF6EBDD)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
         child: SafeArea(
           child: SingleChildScrollView(
             // ✅ ganti Column biasa ke SingleChildScrollView
@@ -26,7 +22,8 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
             child: ConstrainedBox(
               // ✅ pastikan konten minimal setinggi layar
               constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height -
+                minHeight:
+                    MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top -
                     MediaQuery.of(context).padding.bottom,
               ),
@@ -34,31 +31,34 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 160),
+                    const SizedBox(height: 80),
 
                     /// TITLE
-                    const Text(
-                      "To Continue Fill in\nYour Details",
-                      style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    Text(
+                      "Lengkapi Data Diri \n Anda",
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 32,
+                      ),
                     ),
 
                     const SizedBox(height: 8),
 
-                    const Text(
-                      "Enter your Birth of date & Phone Number",
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    Text(
+                      "Masukkan tanggal lahir dan nomor HP anda",
+                      style: GoogleFonts.plusJakartaSans(
+                        color: const Color.fromARGB(255, 84, 82, 82),
+                        fontSize: 14,
+                      ),
                     ),
 
                     const SizedBox(height: 40),
 
                     /// BIRTH DATE LABEL
-                    const Text(
-                      "Birth of date",
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
+                    buildLabel('Tanggal Lahir'),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 5),
 
                     /// BIRTH DATE FIELD
                     InkWell(
@@ -107,7 +107,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                               Expanded(
                                 child: Text(
                                   controller.nilaiTanggal.value.isEmpty
-                                      ? "Select Date"
+                                      ? "Tanggal Lahir"
                                       : controller.nilaiTanggal.value,
                                   style: TextStyle(
                                     fontSize: 15,
@@ -116,8 +116,8 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                                         : Colors.black,
                                     fontWeight:
                                         controller.nilaiTanggal.value.isEmpty
-                                            ? FontWeight.normal
-                                            : FontWeight.w500,
+                                        ? FontWeight.normal
+                                        : FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -132,15 +132,12 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       ),
                     ),
 
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 15),
 
                     /// PHONE LABEL
-                    const Text(
-                      "Phone Number",
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
+                    buildLabel('Nomor Telepon'),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 5),
 
                     /// PHONE FIELD
                     Container(
@@ -177,47 +174,13 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       ),
                     ),
 
-                    // ✅ Spacer diganti Expanded biar tetap works di dalam IntrinsicHeight
-                    const Expanded(child: SizedBox(height: 40)),
+                    SizedBox(height: 30),
 
                     /// CONTINUE BUTTON
-                    Obx(
-                      () => SizedBox(
-                        width: double.infinity,
-                        height: 55,
-                        child: ElevatedButton(
-                          onPressed: controller.isloading.value
-                              ? null
-                              : () => controller.LengkapiProfile(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFB18FCF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            elevation: 6,
-                          ),
-                          child: controller.isloading.value
-                              ? const SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  "Continue",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                        ),
-                      ),
+                    buildButtonPink(
+                      text: 'Lanjutkan',
+                      onTap: () => controller.LengkapiProfile(),
                     ),
-
-                    const SizedBox(height: 30),
                   ],
                 ),
               ),

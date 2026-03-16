@@ -1,5 +1,6 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
+import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,14 +22,15 @@ void main() async {
 class NyApp extends StatelessWidget {
   final authC = Get.put(AuthController(), permanent: true);
   final pageC = Get.put(PageIndexController(), permanent: true);
+  final loginC = Get.put(LoginController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Budgi",
-      // initialRoute: Routes.COMPLETE_BALANCE,
-       home: AuthWrapper(),
+      initialRoute: Routes.COMPLETE_BALANCE,
+      //  home: AuthWrapper(),
       getPages: AppPages.routes,
     );
   }

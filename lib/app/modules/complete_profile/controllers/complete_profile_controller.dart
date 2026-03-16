@@ -11,12 +11,11 @@ class CompleteProfileController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   RxString nilaiTanggal = "".obs;
-  RxBool isloading = false.obs;
+
   late PhoneNumber phoneC;
   late DateRangePickerController dateC;
 
   void LengkapiProfile() {
-    isloading.value = true;
     if (phoneC.phoneNumber!.length < 13) {
       Get.snackbar(
         "Error",
@@ -24,9 +23,8 @@ class CompleteProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      isloading.value = false;
+
       return;
-      
     }
 
     if (nilaiTanggal.value.isEmpty) {
@@ -36,7 +34,7 @@ class CompleteProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      isloading.value = false;
+
       return;
     }
 

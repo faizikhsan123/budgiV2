@@ -19,12 +19,12 @@ class RegisController extends GetxController {
   late TextEditingController emailC;
   late TextEditingController passC;
   late TextEditingController passReC;
+  late TextEditingController phoneTextC;
+
   late PhoneNumber phoneC;
   late DateRangePickerController dateC;
 
-  // ─── Validasi semua field, lalu panggil regis() ──────────────────────────────
   Future<void> jalankanRegis() async {
-    // Cek field kosong
     if (nameC.text.trim().isEmpty ||
         emailC.text.trim().isEmpty ||
         passC.text.trim().isEmpty ||
@@ -40,7 +40,6 @@ class RegisController extends GetxController {
       return;
     }
 
-    // Cek email valid
     if (!GetUtils.isEmail(emailC.text.trim())) {
       Get.snackbar(
         "Error",
@@ -51,7 +50,6 @@ class RegisController extends GetxController {
       return;
     }
 
-    // Cek password minimal 6 karakter
     if (passC.text.length < 6) {
       Get.snackbar(
         "Error",
@@ -62,7 +60,6 @@ class RegisController extends GetxController {
       return;
     }
 
-    // Cek password sama
     if (passC.text != passReC.text) {
       Get.snackbar(
         "Error",
@@ -73,19 +70,6 @@ class RegisController extends GetxController {
       return;
     }
 
-    // Cek nomor telepon valid
-    if (phoneC.phoneNumber!.length < 13) {
-      Get.snackbar(
-        "Error",
-        "Nomor telepon tidak valid",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    // Cek email sudah dipakai — ini async, tapi belum perlu loading
-    // karena masih tahap validasi
     final QuerySnapshot snapshot = await firestore
         .collection("users")
         .where("email", isEqualTo: emailC.text.trim())
@@ -101,52 +85,46 @@ class RegisController extends GetxController {
       return;
     }
 
-    // Semua validasi lolos — baru jalankan registrasi
     await _regis(emailC.text.trim(), passC.text.trim());
   }
 
-  // ─── Proses registrasi — loading hanya di sini ───────────────────────────────
   Future<void> _regis(String email, String pass) async {
-    isloading.value = true; // ✅ loading dimulai saat proses beneran
+    isloading.value = true;
 
     try {
-      await auth.signOut();
+      final UserCredential userCredential = await auth
+          .createUserWithEmailAndPassword(email: email, password: pass);
 
-      final UserCredential userCredential =
-          await auth.createUserWithEmailAndPassword(
-        email: email,
-        password: pass,
-      );
-
-      final String uid = userCredential.user!.uid;
+      final uid = userCredential.user!.uid;
 
       await firestore.collection("users").doc(uid).set({
         "name": nameC.text.trim(),
-        "email": emailC.text.trim(),
+        "email": email,
         "phone": phoneC.phoneNumber,
         "tanggal_lahir": nilaiTanggal.value,
+        "balance": 0,
+        "provider": "Form Pendaftaran",
         "created_at": Timestamp.now(),
         "updated_at": Timestamp.now(),
-        "photo_url": null,
-        "provider": "password",
-         "balance": 0,
       });
 
-      // Bersihkan form
       nameC.clear();
       emailC.clear();
       passC.clear();
       passReC.clear();
-      nilaiTanggal.value = "";
+      phoneTextC.clear();
 
-      Get.snackbar(
-        'Success',
-        'Registrasi berhasil',
+      nilaiTanggal.value = "";
+      phoneC = PhoneNumber(isoCode: 'ID');
+
+      await Get.snackbar(
+        "Success",
+        "Registrasi berhasil",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
 
-      Get.toNamed(Routes.LOGIN);
+      Get.offAllNamed(Routes.LOGIN);
     } catch (e) {
       Get.snackbar(
         "Error",
@@ -155,29 +133,32 @@ class RegisController extends GetxController {
         colorText: Colors.white,
       );
     } finally {
-      isloading.value = false; // ✅ selalu reset, sukses maupun error
+      isloading.value = false;
     }
   }
 
-  // ─── Lifecycle ───────────────────────────────────────────────────────────────
   @override
   void onInit() {
-    super.onInit();
     nameC = TextEditingController();
     emailC = TextEditingController();
     passC = TextEditingController();
     passReC = TextEditingController();
+    phoneTextC = TextEditingController();
+
     phoneC = PhoneNumber(isoCode: 'ID');
     dateC = DateRangePickerController();
+
+    super.onInit();
   }
 
   @override
-  void dispose() {
+  void onClose() {
     nameC.dispose();
     emailC.dispose();
     passC.dispose();
     passReC.dispose();
+    phoneTextC.dispose();
     dateC.dispose();
-    super.dispose();
+    super.onClose();
   }
 }
