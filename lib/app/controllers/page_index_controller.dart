@@ -558,7 +558,7 @@ class PageIndexController extends GetxController {
           .doc(waktu)
           .set({
             'type': "income",
-            "icon": "https://cdn-icons-png.flaticon.com/512/3135/3135706.png",
+            "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773693028/Group_3_c6c4wv.png",
             "category": "income",
             "date": nilaiTanggal.value,
             'amount': number,
