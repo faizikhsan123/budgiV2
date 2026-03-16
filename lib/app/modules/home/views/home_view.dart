@@ -8,6 +8,7 @@ import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/home_controller.dart';
 import '../../widgets/app_colors.dart';
@@ -53,7 +54,6 @@ class HomeView extends GetView<HomeController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 16),
-
                           Row(
                             children: [
                               Container(
@@ -100,27 +100,19 @@ class HomeView extends GetView<HomeController> {
                             ],
                           ),
                           const SizedBox(height: 24),
-
-                          // ── Balance Card ──────────────────────────────────
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                            padding: EdgeInsets.fromLTRB(24, 20, 24, 24),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [Color(0xFFDAC2E5), Color(0xFFBD9AC4)],
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  const Color(0xFFBC9CC6),
+                                  Color.fromARGB(255, 228, 221, 232),
+                                ],
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primaryPurple.withOpacity(
-                                    0.25,
-                                  ),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -128,49 +120,34 @@ class HomeView extends GetView<HomeController> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Total Balance',
+                                    'Your Balance',
                                     style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 10,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.w600,
-                                      color: AppColors.textMutedPurple,
+                                      color: const Color.fromARGB(
+                                        255,
+                                        255,
+                                        255,
+                                        255,
+                                      ),
                                       letterSpacing: -0.30,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 44),
-                                Text(
-                                  '${rupiah.convertToRupiah('${data['balance']}')}',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.white,
-                                    letterSpacing: -0.75,
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 30,
                                   ),
-                                ),
-                                const SizedBox(height: 40),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Expense: Rp*****',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.white,
-                                        letterSpacing: -0.30,
-                                      ),
+                                  child: Text(
+                                    '${rupiah.convertToRupiah('${data['balance']}')}',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.white,
+                                      letterSpacing: -0.75,
                                     ),
-                                    Text(
-                                      'Income: Rp****',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.white,
-                                        letterSpacing: -0.30,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -186,7 +163,7 @@ class HomeView extends GetView<HomeController> {
                           Text(
                             'Recent Activity',
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textDark,
                               letterSpacing: -0.30,
@@ -229,35 +206,55 @@ class HomeView extends GetView<HomeController> {
                                   String docId = doc.id;
 
                                   return Container(
-                                    padding: EdgeInsets.all(10),
                                     margin: const EdgeInsets.only(bottom: 20),
-                                    width: Get.width,
+                                    padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                        255,
-                                        214,
-                                        212,
-                                        206,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(18),
+                                      boxShadow: [
+                                        BoxShadow(
+                                         color: Color.fromARGB(255, 212, 194, 217),
+                                          blurRadius: 0.5,
+                                          offset: Offset(3, 3),
+                                        ),
+                                        BoxShadow(
+                                         color: Color.fromARGB(255, 212, 194, 217),
+                                        blurRadius: 0.5,
+                                          offset: Offset(3, 3),
+                                        ),
+                                        BoxShadow(
+                                          color: Color.fromARGB(255, 212, 194, 217),
+                                          blurRadius: 0.5,
+                                          offset: Offset(-3, 3),
+                                        ),
+                                        BoxShadow(
+                                          color: Color.fromARGB(255, 226, 222, 222),
+                                          blurRadius: 1,
+                                          offset: Offset(0, -1),
+                                        ),
+                                      ],
                                     ),
-
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        // TANGGAL
+                                        /// DATE
                                         Text(
-                                          "${doc['date']}",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
+                                          DateFormat(
+                                            'EEEE, d MMMM yyyy',
+                                          ).format(
+                                            DateFormat(
+                                              "d-M-yyyy",
+                                            ).parse(doc['date']),
+                                          ),
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey[900],
                                           ),
                                         ),
 
-                                        SizedBox(height: 8),
-
-                                        // STREAM ITEMS
+                                        const SizedBox(height: 10),
                                         StreamBuilder<
                                           QuerySnapshot<Map<String, dynamic>>
                                         >(
@@ -273,7 +270,7 @@ class HomeView extends GetView<HomeController> {
                                             }
 
                                             if (!itemSnapshot.hasData) {
-                                              return Text(
+                                              return const Text(
                                                 "Belum ada transaksi",
                                               );
                                             }
@@ -288,39 +285,79 @@ class HomeView extends GetView<HomeController> {
                                               itemBuilder: (context, i) {
                                                 var item = dataItem.docs[i];
 
+                                                bool isIncome =
+                                                    item['category'] ==
+                                                    'income';
+
                                                 return Column(
                                                   children: [
                                                     ListTile(
-                                                      leading: CircleAvatar(
-                                                        backgroundImage:
-                                                            NetworkImage(
-                                                              item['icon'],
-                                                            ),
-                                                      ),
-                                                      title: Text(
-                                                        item['category'],
-                                                      ),
-                                                      subtitle: Text(
-                                                        item['notes'],
-                                                      ),
-                                                      trailing: Text(
-                                                        '${rupiah.convertToRupiah('${item['amount']}')}',
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color:
-                                                              item['category'] ==
-                                                                  'income'
-                                                              ? Colors.green
-                                                              : Colors.red,
+                                                      contentPadding:
+                                                          EdgeInsets.zero,
+                                                      leading: Container(
+                                                        width: 42,
+                                                        height: 42,
+
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets.all(
+                                                                8,
+                                                              ),
+                                                          child: Image.network(
+                                                            item['icon'],
+                                                            fit: BoxFit.contain,
+                                                          ),
                                                         ),
                                                       ),
+
+                                                      title: Text(
+                                                        item['category'],
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 14,
+                                                            ),
+                                                      ),
+
+                                                      subtitle: Text(
+                                                        item['notes'],
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              fontSize: 12,
+                                                              color: Colors
+                                                                  .grey[900],
+                                                            ),
+                                                      ),
+
+                                                      trailing: Text(
+                                                        isIncome
+                                                            ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
+                                                            : "-${rupiah.convertToRupiah('${item['amount']}')}",
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              color: isIncome
+                                                                  ? Colors.green
+                                                                  : Colors.red,
+                                                            ),
+                                                      ),
                                                     ),
-                                                    Divider(
-                                                      thickness: 1,
-                                                      height: 0,
-                                                    ),
+
+                                                    if (i !=
+                                                        dataItem.docs.length -
+                                                            1)
+                                                      Divider(
+                                                        height: 16,
+                                                        thickness: 1,
+                                                        color: Color(
+                                                          0xFFBC9CC6,
+                                                        ),
+                                                      ),
                                                   ],
                                                 );
                                               },
@@ -346,7 +383,7 @@ class HomeView extends GetView<HomeController> {
                 //widget bottom navbar
                 backgroundColor: const Color.fromARGB(255, 189, 157, 195),
                 initialActiveIndex: pageC.CurrentIndex.value, //index active
-                
+
                 items: [
                   TabItem(icon: Icons.home, title: 'Home'),
                   TabItem(icon: Icons.add, title: 'Add'),
