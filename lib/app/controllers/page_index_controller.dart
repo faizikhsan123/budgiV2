@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -123,6 +124,19 @@ class PageIndexController extends GetxController {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(),
+                        IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+
                     /// HEADER
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -414,6 +428,7 @@ class PageIndexController extends GetxController {
         break;
 
       default:
+        CurrentIndex.value = index;
         Get.offAllNamed(Routes.HOME);
     }
   }
@@ -517,60 +532,198 @@ class PageIndexController extends GetxController {
       return;
     }
 
-    String uid = auth.currentUser!.uid;
-
-    Future<DocumentSnapshot<Map<String, dynamic>>> streamTransaction = firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .doc(nilaiTanggal.value)
-        .get();
-
-    var data = await streamTransaction.then((value) => value.data());
-
-    // tambah data transaksi wakttu s3ekatang
-    String waktu = DateFormat.jms().format(DateTime.now());
-
-    //jika hari ini belum ada transaksi
-    if (data == null || data.isEmpty) {
-      firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(nilaiTanggal.value)
-          .set({'date': nilaiTanggal.value, 'created_at': waktu});
+    if (number < 0) {
+      Get.snackbar(
+        'Error',
+        'Nominal tidak boleh negatif',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
+      return;
     }
+    var rupiah = Rupiah();
 
-    // tambah transaksi baru (tidak menimpa)
+    // dialog konfirmasi
+    Get.defaultDialog(
+      title: "Add ${rupiah.convertToRupiah(number)} to income?",
+      titlePadding: const EdgeInsets.only(top: 24, left: 20, right: 20),
+      middleText: "",
+      radius: 12,
+      backgroundColor: Colors.white,
+      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
 
-    Future<DocumentSnapshot<Map<String, dynamic>>> dataProfile = firestore
-        .collection("users")
-        .doc(uid)
-        .get();
-    dataProfile.then((snapshot) {
-      int balance = snapshot.data()?['balance'];
-      firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(nilaiTanggal.value)
-          .collection("items")
-          .doc(waktu)
-          .set({
-            'type': "income",
-            "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773693028/Group_3_c6c4wv.png",
-            "category": "income",
-            "date": nilaiTanggal.value,
-            'amount': number,
-            'notes': notes,
-            'created_at': waktu,
-          });
+      titleStyle: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
 
-      firestore.collection("users").doc(uid).update({
-        'balance': balance + number,
-      });
-    });
+      cancel: Container(
+        width: 120,
+        height: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Color(0xFFBC9CC6)),
+        ),
+        child: TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            "Cancel",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
 
-    Get.snackbar('berhasil', 'income berhasil ditambahkan');
+      confirm: Container(
+        width: 120,
+        height: 45,
+        decoration: BoxDecoration(
+          color: Color(0xFFBC9CC6),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: TextButton(
+          onPressed: () async {
+            String uid = auth.currentUser!.uid;
+
+            var docTransaction = await firestore
+                .collection("users")
+                .doc(uid)
+                .collection("transactions")
+                .doc(nilaiTanggal.value)
+                .get();
+
+            var data = docTransaction.data();
+
+            // waktu sekarang
+            String waktu = DateFormat.jms().format(DateTime.now());
+
+            // jika hari ini belum ada transaksi
+            if (data == null) {
+              await firestore
+                  .collection("users")
+                  .doc(uid)
+                  .collection("transactions")
+                  .doc(nilaiTanggal.value)
+                  .set({'date': nilaiTanggal.value, 'created_at': waktu});
+            }
+
+            // ambil profile user
+            var snapshot = await firestore.collection("users").doc(uid).get();
+
+            int balance = snapshot.data()?['balance'] ?? 0;
+
+            // tambah item transaksi
+            await firestore
+                .collection("users")
+                .doc(uid)
+                .collection("transactions")
+                .doc(nilaiTanggal.value)
+                .collection("items")
+                .doc(waktu)
+                .set({
+                  'type': "income",
+                  "icon":
+                      "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773693028/Group_3_c6c4wv.png",
+                  "category": "income",
+                  "date": nilaiTanggal.value,
+                  'amount': number,
+                  'notes': notes,
+                  'created_at': waktu,
+                });
+
+            // update balance
+            await firestore.collection("users").doc(uid).update({
+              'balance': balance + number,
+            });
+            Get.back(); //tutup dialog konfirmasi
+            Get.defaultDialog(
+              title: "Income Added!",
+              radius: 12,
+              backgroundColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 10,
+              ),
+              titleStyle: GoogleFonts.plusJakartaSans(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+              middleTextStyle: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: const Color.fromARGB(255, 51, 51, 51),
+              ),
+
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.network(
+                    'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773749076/Variant8_zfezgi.png',
+                    height: 100,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "All set! ${rupiah.convertToRupiah(number)} is now in your balance",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: const Color.fromARGB(255, 52, 52, 52),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  SizedBox(
+                    width: 150,
+                    height: 45,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Get.offAllNamed(Routes.HOME);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFBC9CC6)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        "Return Home",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+
+            // fungsi tambah transaksi disini
+          },
+          child: Text(
+            "Add",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+
+      //function add
+    );
   }
 }
