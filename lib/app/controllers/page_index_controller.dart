@@ -433,123 +433,234 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future tambahExpense(String notes) async {
-    try {
-      String cleanText = amountC.text
-          .replaceAll("Rp", "")
-          .replaceAll(".", "")
-          .trim();
+  void tambahExpense(String notes) async {
+    String cleanText = amountC.text
+        .replaceAll("Rp", "")
+        .replaceAll(".", "")
+        .trim();
 
-      int? number = int.tryParse(cleanText);
+    int? number = int.tryParse(cleanText);
 
-      /// VALIDASI NOMINAL
-      if (number == null) {
-        Get.snackbar(
-          'Error',
-          'Nominal wajib diisi',
-          backgroundColor: Colors.red.shade50,
-          colorText: Colors.red.shade900,
-        );
-        return;
-      }
-
-      if (number <= 0) {
-        Get.snackbar(
-          'Error',
-          'Nominal tidak valid',
-          backgroundColor: Colors.red.shade50,
-          colorText: Colors.red.shade900,
-        );
-        return;
-      }
-
-      /// VALIDASI KATEGORI
-      if (selectedCategoryIndex.value == -1) {
-        Get.snackbar(
-          'Error',
-          'Silakan pilih kategori terlebih dahulu',
-          backgroundColor: Colors.orange.shade50,
-          colorText: Colors.orange.shade900,
-        );
-        return;
-      }
-
-      String uid = auth.currentUser!.uid;
-
-      /// AMBIL DATA USER
-      var snapshot = await firestore.collection("users").doc(uid).get();
-      int balance = snapshot.data()?['balance'] ?? 0;
-
-      /// CEK SALDO
-      if (number > balance) {
-        Get.snackbar(
-          'Error',
-          'Saldo tidak mencukupi',
-          backgroundColor: Colors.red.shade50,
-          colorText: Colors.red.shade900,
-        );
-        return;
-      }
-
-      /// CEK TRANSAKSI HARI INI
-      var streamTransaction = await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(nilaiTanggal.value)
-          .get();
-
-      var data = streamTransaction.data();
-      String waktu = DateFormat.jms().format(DateTime.now());
-
-      if (data == null || data.isEmpty) {
-        await firestore
-            .collection("users")
-            .doc(uid)
-            .collection("transactions")
-            .doc(nilaiTanggal.value)
-            .set({'date': nilaiTanggal.value, 'created_at': waktu});
-      }
-
-      /// SIMPAN TRANSAKSI
-      await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(nilaiTanggal.value)
-          .collection("items")
-          .doc(waktu)
-          .set({
-            'type': "expense",
-            "date": nilaiTanggal.value,
-            "icon": categories[selectedCategoryIndex.value]['icon'],
-            'amount': number,
-            'notes': notes,
-            'category': categories[selectedCategoryIndex.value]['name'],
-            'created_at': waktu,
-          });
-
-      /// UPDATE SALDO
-      await firestore.collection("users").doc(uid).update({
-        'balance': balance - number,
-      });
-      Get.back();
-
-      Get.snackbar(
-        'Berhasil',
-        'Pengeluaran berhasil ditambahkan',
-        backgroundColor: Colors.green.shade50,
-        colorText: Colors.green.shade900,
-      );
-
-    } catch (e) {
+    /// VALIDASI NOMINAL
+    if (number == null) {
       Get.snackbar(
         'Error',
-        'Terjadi kesalahan: $e',
+        'Nominal wajib diisi',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
+      return;
     }
+
+    if (number <= 0) {
+      Get.snackbar(
+        'Error',
+        'Nominal tidak valid',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
+      return;
+    }
+
+    /// VALIDASI KATEGORI
+    if (selectedCategoryIndex.value == -1) {
+      Get.snackbar(
+        'Error',
+        'Silakan pilih kategori terlebih dahulu',
+        backgroundColor: Colors.orange.shade50,
+        colorText: Colors.orange.shade900,
+      );
+      return;
+    }
+
+    String uid = auth.currentUser!.uid;
+
+    /// AMBIL DATA USER
+    var snapshot = await firestore.collection("users").doc(uid).get();
+    int balance = snapshot.data()?['balance'] ?? 0;
+
+    /// CEK SALDO
+    if (number > balance) {
+      Get.snackbar(
+        'Error',
+        'Saldo tidak mencukupi',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
+      return;
+    }
+
+    var rupiah = Rupiah();
+
+    /// DIALOG KONFIRMASI (DESIGN SAMA SEPERTI INCOME)
+    Get.defaultDialog(
+      title: "Add ${rupiah.convertToRupiah(number)} to expense?",
+      titlePadding: const EdgeInsets.only(top: 24, left: 20, right: 20),
+      middleText: "",
+      radius: 12,
+      backgroundColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+
+      titleStyle: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+
+      cancel: Container(
+        width: 120,
+        height: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFBC9CC6)),
+        ),
+        child: TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            "Cancel",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+
+      confirm: Container(
+        width: 120,
+        height: 45,
+        decoration: BoxDecoration(
+          color: const Color(0xFFBC9CC6),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: TextButton(
+          onPressed: () async {
+            /// CEK TRANSAKSI HARI INI
+            var docTransaction = await firestore
+                .collection("users")
+                .doc(uid)
+                .collection("transactions")
+                .doc(nilaiTanggal.value)
+                .get();
+
+            var data = docTransaction.data();
+
+            String waktu = DateFormat.jms().format(DateTime.now());
+
+            /// JIKA BELUM ADA TRANSAKSI HARI INI
+            if (data == null) {
+              await firestore
+                  .collection("users")
+                  .doc(uid)
+                  .collection("transactions")
+                  .doc(nilaiTanggal.value)
+                  .set({'date': nilaiTanggal.value, 'created_at': waktu});
+            }
+
+            /// SIMPAN EXPENSE
+            await firestore
+                .collection("users")
+                .doc(uid)
+                .collection("transactions")
+                .doc(nilaiTanggal.value)
+                .collection("items")
+                .doc(waktu)
+                .set({
+                  'type': "expense",
+                  "icon": categories[selectedCategoryIndex.value]['icon'],
+                  "category": categories[selectedCategoryIndex.value]['name'],
+                  "date": nilaiTanggal.value,
+                  'amount': number,
+                  'notes': notes,
+                  'created_at': waktu,
+                });
+
+            /// UPDATE BALANCE (DIKURANGI)
+            await firestore.collection("users").doc(uid).update({
+              'balance': balance - number,
+            });
+
+            Get.back();
+
+            /// SUCCESS DIALOG (DESIGN SAMA)
+            Get.defaultDialog(
+              title: "Expense Added!",
+              radius: 12,
+              backgroundColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 10,
+              ),
+              titleStyle: GoogleFonts.plusJakartaSans(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.network(
+                    'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773749076/Variant8_zfezgi.png',
+                    height: 100,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "${rupiah.convertToRupiah(number)} has been deducted from your balance",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: const Color.fromARGB(255, 52, 52, 52),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  SizedBox(
+                    width: 150,
+                    height: 45,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Get.offAllNamed(Routes.HOME);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFBC9CC6)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        "Return Home",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+
+          child: Text(
+            "Add",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   // Fungsinya jadi:
@@ -761,8 +872,6 @@ class PageIndexController extends GetxController {
           ),
         ),
       ),
-
-      //function add
     );
   }
 }

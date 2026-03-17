@@ -25,7 +25,7 @@ class HomeView extends GetView<HomeController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(color: Color(0xF6F6F6F6)),
+        decoration: const BoxDecoration(color: Color.fromARGB(246, 255, 255, 255)),
         child: SafeArea(
           bottom: false,
           child: Column(
@@ -53,7 +53,7 @@ class HomeView extends GetView<HomeController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 16), 
                           Row(
                             children: [
                               Container(
@@ -333,6 +333,7 @@ class HomeView extends GetView<HomeController> {
 
                                             return ListView.builder(
                                               shrinkWrap: true,
+                                             
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
                                               itemCount: dataItem.docs.length,
