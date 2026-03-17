@@ -434,83 +434,122 @@ class PageIndexController extends GetxController {
   }
 
   Future tambahExpense(String notes) async {
-    String cleanText = amountC.text
-        .replaceAll("Rp", "")
-        .replaceAll(".", "")
-        .trim();
+    try {
+      String cleanText = amountC.text
+          .replaceAll("Rp", "")
+          .replaceAll(".", "")
+          .trim();
 
-    int? number = int.tryParse(cleanText);
+      int? number = int.tryParse(cleanText);
 
-    if (number == null) {
-      Get.snackbar(
-        'Error',
-        'Nominal wajib diisi',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      /// VALIDASI NOMINAL
+      if (number == null) {
+        Get.snackbar(
+          'Error',
+          'Nominal wajib diisi',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
+        return;
+      }
 
-    String uid = auth.currentUser!.uid;
+      if (number <= 0) {
+        Get.snackbar(
+          'Error',
+          'Nominal tidak valid',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
+        return;
+      }
 
-    var snapshot = await firestore.collection("users").doc(uid).get();
-    int balance = snapshot.data()?['balance'];
+      /// VALIDASI KATEGORI
+      if (selectedCategoryIndex.value == -1) {
+        Get.snackbar(
+          'Error',
+          'Silakan pilih kategori terlebih dahulu',
+          backgroundColor: Colors.orange.shade50,
+          colorText: Colors.orange.shade900,
+        );
+        return;
+      }
 
-    /// VALIDASI
-    if (number > balance) {
-      Get.snackbar(
-        'Error',
-        'Saldo tidak mencukupi',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      String uid = auth.currentUser!.uid;
 
-    /// CEK TRANSAKSI HARI INI
-    var streamTransaction = await firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .doc(nilaiTanggal.value)
-        .get();
+      /// AMBIL DATA USER
+      var snapshot = await firestore.collection("users").doc(uid).get();
+      int balance = snapshot.data()?['balance'] ?? 0;
 
-    var data = streamTransaction.data();
-    String waktu = DateFormat.jms().format(DateTime.now());
+      /// CEK SALDO
+      if (number > balance) {
+        Get.snackbar(
+          'Error',
+          'Saldo tidak mencukupi',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
+        return;
+      }
 
-    if (data == null || data.isEmpty) {
+      /// CEK TRANSAKSI HARI INI
+      var streamTransaction = await firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .doc(nilaiTanggal.value)
+          .get();
+
+      var data = streamTransaction.data();
+      String waktu = DateFormat.jms().format(DateTime.now());
+
+      if (data == null || data.isEmpty) {
+        await firestore
+            .collection("users")
+            .doc(uid)
+            .collection("transactions")
+            .doc(nilaiTanggal.value)
+            .set({'date': nilaiTanggal.value, 'created_at': waktu});
+      }
+
+      /// SIMPAN TRANSAKSI
       await firestore
           .collection("users")
           .doc(uid)
           .collection("transactions")
           .doc(nilaiTanggal.value)
-          .set({'date': nilaiTanggal.value, 'created_at': waktu});
+          .collection("items")
+          .doc(waktu)
+          .set({
+            'type': "expense",
+            "date": nilaiTanggal.value,
+            "icon": categories[selectedCategoryIndex.value]['icon'],
+            'amount': number,
+            'notes': notes,
+            'category': categories[selectedCategoryIndex.value]['name'],
+            'created_at': waktu,
+          });
+
+      /// UPDATE SALDO
+      await firestore.collection("users").doc(uid).update({
+        'balance': balance - number,
+      });
+      Get.back();
+
+      Get.snackbar(
+        'Berhasil',
+        'Pengeluaran berhasil ditambahkan',
+        backgroundColor: Colors.green.shade50,
+        colorText: Colors.green.shade900,
+      );
+
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Terjadi kesalahan: $e',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
     }
-
-    /// SIMPAN TRANSAKSI
-    await firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .doc(nilaiTanggal.value)
-        .collection("items")
-        .doc(waktu)
-        .set({
-          'type': "expense",
-          "date": nilaiTanggal.value,
-          "icon": categories[selectedCategoryIndex.value]['icon'],
-          'amount': number,
-          'notes': notes,
-          'category': categories[selectedCategoryIndex.value]['name'],
-          'created_at': waktu,
-        });
-
-    /// UPDATE SALDO
-    await firestore.collection("users").doc(uid).update({
-      'balance': balance - number,
-    });
-
-    Get.snackbar('berhasil', 'pengeluaran berhasil ditambahkan');
   }
 
   // Fungsinya jadi:
