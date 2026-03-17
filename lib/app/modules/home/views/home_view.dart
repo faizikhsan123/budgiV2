@@ -105,6 +105,42 @@ class HomeView extends GetView<HomeController> {
                             padding: EdgeInsets.fromLTRB(24, 20, 24, 24),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
+                              border: Border(
+                                top: BorderSide(
+                                  color: const Color(0xFFBC9CC6),
+                                  width: 3,
+                                ),
+                                bottom: BorderSide(
+                                  color: const Color(0xFFBC9CC6),
+                                  width: 3,
+                                ),
+                                left: BorderSide(
+                                  color: const Color(0xFFBC9CC6),
+                                  width: 3,
+                                ),
+                                right: BorderSide(
+                                  color: const Color(0xFFBC9CC6),
+                                  width: 3,
+                                ),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 1,
+                                  offset: Offset(0, 1),
+                                ),
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 1,
+                                  offset: Offset(1, 3),
+                                ),
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 1,
+                                  offset: Offset(-1, 1),
+                                ),
+                              ],
+
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
@@ -211,26 +247,44 @@ class HomeView extends GetView<HomeController> {
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(18),
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: const Color(0xFFBC9CC6),
+                                          width: 0.8,
+                                        ),
+                                        bottom: BorderSide(
+                                          color: const Color(0xFFBC9CC6),
+                                          width: 0.8,
+                                        ),
+                                        left: BorderSide(
+                                          color: const Color(0xFFBC9CC6),
+                                          width: 0.8,
+                                        ),
+                                        right: BorderSide(
+                                          color: const Color(0xFFBC9CC6),
+                                          width: 0.8,
+                                        ),
+                                      ),
                                       boxShadow: [
                                         BoxShadow(
-                                         color: Color.fromARGB(255, 212, 194, 217),
-                                          blurRadius: 0.5,
-                                          offset: Offset(3, 3),
+                                          color: const Color(0xFFBC9CC6),
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 1),
                                         ),
                                         BoxShadow(
-                                         color: Color.fromARGB(255, 212, 194, 217),
-                                        blurRadius: 0.5,
-                                          offset: Offset(3, 3),
+                                          color: const Color(0xFFBC9CC6),
+                                          blurRadius: 3,
+                                          offset: const Offset(0, -1),
                                         ),
                                         BoxShadow(
-                                          color: Color.fromARGB(255, 212, 194, 217),
-                                          blurRadius: 0.5,
-                                          offset: Offset(-3, 3),
+                                          color: const Color(0xFFBC9CC6),
+                                          blurRadius: 3,
+                                          offset: const Offset(1, 0),
                                         ),
                                         BoxShadow(
-                                          color: Color.fromARGB(255, 226, 222, 222),
-                                          blurRadius: 1,
-                                          offset: Offset(0, -1),
+                                          color: const Color(0xFFBC9CC6),
+                                          blurRadius: 3,
+                                          offset: const Offset(-1, 0),
                                         ),
                                       ],
                                     ),
