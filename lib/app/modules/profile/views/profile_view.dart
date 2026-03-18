@@ -164,10 +164,12 @@ class ProfileView extends GetView<ProfileController> {
                                         ),
 
                                         buildLabel("Phone Number"),
+                                        
 
                                         buildTextField(
                                           readonly: true,
                                           filled: true,
+
                                           hint: '${user['phone']}',
                                         ),
                                       ],
