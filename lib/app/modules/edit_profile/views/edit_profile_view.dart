@@ -1,3 +1,4 @@
+
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
@@ -38,18 +39,22 @@ class EditProfileView extends GetView<EditProfileController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(Icons.arrow_back_ios, size: 30),
+               
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(Icons.arrow_back_ios_outlined, size: 30),
+                    ),
                   ),
                   Expanded(
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Positioned(
-                          top: 150,
+                          top: 110,
                           left: 0,
                           right: 0,
                           bottom: 0,
@@ -253,38 +258,6 @@ class EditProfileView extends GetView<EditProfileController> {
 
                                         const SizedBox(height: 20),
 
-                                        // GetBuilder<EditProfileController>(
-                                        //   builder: (controller) => Row(
-                                        //     mainAxisAlignment:
-                                        //         MainAxisAlignment.spaceBetween,
-                                        //     children: [
-                                        //       Text(
-                                        //         controller.pickedIMage == null
-                                        //             ? "No image selected"
-                                        //             : controller
-                                        //                   .pickedIMage!
-                                        //                   .path
-                                        //                   .split('/')
-                                        //                   .last,
-                                        //         style: TextStyle(
-                                        //           color: Colors.black,
-                                        //         ),
-                                        //       ),
-                                        //       Spacer(),
-                                        //       TextButton(
-                                        //         onPressed: () =>
-                                        //             controller.selectImage(),
-                                        //         child: Text(
-                                        //           "Pilih File",
-                                        //           style: TextStyle(
-                                        //             color: Colors.blueAccent,
-                                        //             fontWeight: FontWeight.bold,
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //     ],
-                                        //   ),
-                                        // ),
                                         SizedBox(height: 20),
 
                                         buildButtonPink(
@@ -302,7 +275,7 @@ class EditProfileView extends GetView<EditProfileController> {
                         ),
 
                         Positioned(
-                          top: 100,
+                          top: 70,
                           left: 150,
                           child: Container(
                             width: 80,
@@ -350,7 +323,7 @@ class EditProfileView extends GetView<EditProfileController> {
                         ),
 
                         Positioned(
-                          top: 130,
+                          top: 90,
                           right: 160,
                           child: Container(
                             width: 40,
