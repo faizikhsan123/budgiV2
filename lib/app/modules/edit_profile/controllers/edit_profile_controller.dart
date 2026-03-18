@@ -32,10 +32,25 @@ class EditProfileController extends GetxController {
 
   Future selectImage() async {
     try {
+      final uid = auth.currentUser!.uid;
       final image = await imagePicker.pickImage(source: ImageSource.gallery);
       if (image != null) {
         //ketika user memilih gambar
         pickedIMage = image;
+        // Upload gambar dulu (parallel bisa pakai Future.wait jika ada banyak)
+        String? newImageUrl;
+        if (pickedIMage != null) {
+          Get.back();
+          isloading.value = true;
+          newImageUrl =
+              await _uploadImageOnly(); // return URL, jangan update Firestore di sini
+        }
+     
+        await firestore.collection("users").doc(uid).update({
+          'updated_at': Timestamp.now(),
+          if (newImageUrl != null) 'photo_url': newImageUrl,
+        });
+        Get.offAllNamed(Routes.PROFILE);
       }
       update(); //untuk memperbarui karena pakai get buildeedr
     } catch (e) {
@@ -43,44 +58,6 @@ class EditProfileController extends GetxController {
       Get.snackbar('gagal', 'anda tidak bisa mengambil gambar $e');
       pickedIMage = null;
       update();
-    }
-  }
-
-  Future uploadImage() async {
-    if (pickedIMage == null) return; // kalau tidak ada gambar, langsung stop
-
-    try {
-      String uid = auth.currentUser!.uid;
-
-      String cloudName = 'dzfi5acyl';
-      String uploadPreset = 'budgiv2';
-
-      var url = 'https://api.cloudinary.com/v1_1/$cloudName/image/upload';
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-
-      request.fields['upload_preset'] = uploadPreset;
-
-      request.files.add(
-        await http.MultipartFile.fromPath('file', pickedIMage!.path),
-      );
-
-      var response = await request.send();
-      var responseData = await response.stream.toBytes();
-      var responseString = String.fromCharCodes(responseData);
-      var data = jsonDecode(responseString);
-
-      imageurl = data['secure_url'];
-
-      await firestore.collection("users").doc(uid).update({
-        'photo_url': imageurl,
-      });
-    } catch (e) {
-      Get.snackbar(
-        'Gagal',
-        'Upload gambar gagal $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
     }
   }
 
@@ -155,19 +132,11 @@ class EditProfileController extends GetxController {
       isloading.value = true;
       final uid = auth.currentUser!.uid;
 
-      // Upload gambar dulu (parallel bisa pakai Future.wait jika ada banyak)
-      String? newImageUrl;
-      if (pickedIMage != null) {
-        newImageUrl =
-            await _uploadImageOnly(); // return URL, jangan update Firestore di sini
-      }
-
       await firestore.collection("users").doc(uid).update({
         'name': nameC.text,
         'phone': phoneC.phoneNumber,
         'tanggal_lahir': nilaiTanggal.value,
         'updated_at': Timestamp.now(),
-        if (newImageUrl != null) 'photo_url': newImageUrl,
       });
 
       Get.back();
@@ -240,6 +209,9 @@ class EditProfileController extends GetxController {
   }
 
   @override
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /// Dispose all the controllers and text editing controllers.
+  /*******  780a78d6-fab5-4f36-a4f3-c9bf5f08cc1c  *******/
   void dispose() {
     nameC.dispose();
     emailC.dispose();
