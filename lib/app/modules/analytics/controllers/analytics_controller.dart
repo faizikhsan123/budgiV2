@@ -6,6 +6,8 @@ class AnalyticsController extends GetxController {
   RxString transactionType = "expense".obs;
 
   FirebaseAuth auth = FirebaseAuth.instance;
+  DateTime? start;
+  DateTime? end = DateTime.now();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void liatExpense() {
@@ -16,6 +18,13 @@ class AnalyticsController extends GetxController {
     transactionType.value = "income";
   }
 
+    void pickDateRange(DateTime startDate, DateTime endDate) {
+    start = startDate;
+    end = endDate;
+    update(); // biar GetBuilder rebuild
+    Get.back();
+  }
+
   /// ambil semua transaksi
   Stream<QuerySnapshot<Map<String, dynamic>>> dataExpenseAll() {
     final uid = auth.currentUser!.uid;
@@ -24,7 +33,7 @@ class AnalyticsController extends GetxController {
         .collection("users")
         .doc(uid)
         .collection("transactions")
-        .orderBy("created_at", descending: true)
+        .orderBy("date", descending: true)
         .snapshots();
   }
 
@@ -39,6 +48,7 @@ class AnalyticsController extends GetxController {
         .doc(docId)
         .collection("items")
         .where("type", isEqualTo: "expense")
+        .orderBy("created_at", descending: true)
         .snapshots();
   }
 
@@ -50,7 +60,7 @@ class AnalyticsController extends GetxController {
         .collection("users")
         .doc(uid)
         .collection("transactions")
-         .orderBy("created_at", descending: true)
+         .orderBy("date", descending: true)
         .snapshots();
   }
 
@@ -64,6 +74,7 @@ class AnalyticsController extends GetxController {
         .doc(docId)
         .collection("items")
         .where("type", isEqualTo: "income")
+        .orderBy("created_at", descending: true)
         .snapshots();
   }
 }

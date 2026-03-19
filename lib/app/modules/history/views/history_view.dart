@@ -15,7 +15,7 @@ class HistoryView extends GetView<HistoryController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 214, 213, 213),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
 
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -47,6 +47,11 @@ class HistoryView extends GetView<HistoryController> {
                           selectionMode: DateRangePickerSelectionMode
                               .range, //ini bisa multipel
                           showActionButtons: true,
+                          initialSelectedDate: null,
+                          todayHighlightColor: Colors.transparent,
+                          showNavigationArrow: true,
+                          showTodayButton: false,
+                          selectionColor: Color(0xFFBC9CC6),
                           onCancel: () => Get.back(),
                           onSubmit: (obj) {
                             final range = obj as PickerDateRange;
@@ -108,10 +113,16 @@ class HistoryView extends GetView<HistoryController> {
             SizedBox(height: 10),
             // buildTextField(
             //   hint: "Search",
+            //   onchange: (value) {
+              
+                // controller.search(value);
+                
+            //   },
             //   filled: true,
             //   keyboardType: TextInputType.text,
-            //   // controller: controller.searchC,
+            //   controller: controller.searchC,
             //   suffixIcon: const Icon(Icons.search, size: 25),
+              
             // ),
 
             SizedBox(height: 10),

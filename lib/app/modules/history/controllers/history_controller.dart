@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:get/get.dart';
 
 class HistoryController extends GetxController {
@@ -8,6 +9,25 @@ class HistoryController extends GetxController {
 
   DateTime? start;
   DateTime? end = DateTime.now();
+  // late TextEditingController searchC;
+  // var tempSearch = [].obs;
+  // var queryResult = [].obs;
+
+
+  // void search(String value)async{
+  //   if (value.length == 0) {
+  //     queryResult.value = [];
+  //     tempSearch.value = [];
+  //   }else {
+  //     if (value.length !=0) {
+  //       var hurufkecil = value.toLowerCase();
+  //       print(hurufkecil);
+        
+  //     }
+
+  //   }
+
+  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> allTransactions() {
     String uid = auth.currentUser!.uid;
@@ -63,5 +83,17 @@ class HistoryController extends GetxController {
     end = endDate;
     update(); // biar GetBuilder rebuild
     Get.back();
+  }
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    // searchC = TextEditingController();
+    super.onInit();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    // searchC.dispose();
+    super.dispose();
   }
 }

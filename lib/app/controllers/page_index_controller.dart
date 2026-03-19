@@ -549,6 +549,9 @@ class PageIndexController extends GetxController {
             var data = docTransaction.data();
 
             String waktu = DateFormat.jms().format(DateTime.now());
+            DateTime filterTanggal = DateFormat(
+              "d-M-yyyy",
+            ).parse(nilaiTanggal.value);
 
             /// JIKA BELUM ADA TRANSAKSI HARI INI
             if (data == null) {
@@ -557,7 +560,11 @@ class PageIndexController extends GetxController {
                   .doc(uid)
                   .collection("transactions")
                   .doc(nilaiTanggal.value)
-                  .set({'date': nilaiTanggal.value, 'created_at': waktu});
+                  .set({
+                    'date': nilaiTanggal.value,
+                    'created_at': waktu,
+                    'filter_tanggal': filterTanggal.toIso8601String(),
+                  });
             }
 
             /// SIMPAN EXPENSE

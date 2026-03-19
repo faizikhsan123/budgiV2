@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget buildTextField({
   required String hint,
@@ -8,6 +11,7 @@ Widget buildTextField({
   TextInputType? keyboardType,
   bool? readonly,
   bool? filled,
+  Function(String)? onchange,
 }) {
   return TextField(
     controller: controller,
@@ -15,6 +19,7 @@ Widget buildTextField({
     autocorrect: false,
     obscureText: obscureText,
     keyboardType: keyboardType,
+    onChanged: onchange,
 
     decoration: InputDecoration(
       fillColor: const Color.fromARGB(255, 255, 255, 255),
