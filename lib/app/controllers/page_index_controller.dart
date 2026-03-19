@@ -752,7 +752,9 @@ class PageIndexController extends GetxController {
 
             // waktu sekarang
             String waktu = DateFormat.jms().format(DateTime.now());
-
+            DateTime filterTanggal = DateFormat(
+              "d-M-yyyy",
+            ).parse(nilaiTanggal.value);
             // jika hari ini belum ada transaksi
             if (data == null) {
               await firestore
@@ -760,7 +762,11 @@ class PageIndexController extends GetxController {
                   .doc(uid)
                   .collection("transactions")
                   .doc(nilaiTanggal.value)
-                  .set({'date': nilaiTanggal.value, 'created_at': waktu});
+                  .set({
+                    'date': nilaiTanggal.value,
+                    'created_at': waktu,
+                    'filter_tanggal': filterTanggal.toIso8601String(),
+                  });
             }
 
             // ambil profile user
