@@ -9,15 +9,24 @@ class CompleteBalanceController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final balance = TextEditingController();
-  
-  Future<void> setBalance(int number) async {       
 
-    
-
+  Future<void> setBalance(int number) async {
     final uid = auth.currentUser!.uid;
-    await firestore.collection("users").doc(uid).update({
-      'balance': number,
-    });
+    await firestore.collection("users").doc(uid).update({'balance': number});
     Get.offAllNamed(Routes.HOME);
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+  }
+
+  @override
+  void dispose() {
+    balance.dispose();
+
+    // TODO: implement dispose
+    super.dispose();
   }
 }

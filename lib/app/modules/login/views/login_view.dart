@@ -2,12 +2,12 @@ import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
+import 'package:budgi/app/modules/widgets/loading_overlay.dart';
 import 'package:budgi/app/modules/widgets/socialButton.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 
 class LoginView extends GetView<LoginController> {
   final authC = Get.find<AuthController>();
@@ -231,19 +231,7 @@ class LoginView extends GetView<LoginController> {
         /// LOADING OVERLAY
         Obx(() {
           if (!authC.isloading.value) return const SizedBox();
-
-          return Container(
-            width: Get.width,
-            height: Get.height,
-            color: Colors.black.withOpacity(0.4),
-            child: Center(
-              child: SizedBox(
-                width: 120,
-                height: 120,
-                child: Lottie.asset('assets/lottie/load.json'),
-              ),
-            ),
-          );
+          return loading_overlay();
         }),
       ],
     );

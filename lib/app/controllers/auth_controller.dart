@@ -217,7 +217,7 @@ class AuthController extends GetxController {
 
       await auth.signInWithEmailAndPassword(email: email, password: password);
 
-      Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.COMPLETE_BALANCE);
     } catch (e) {
       Get.snackbar(
         'Gagal',

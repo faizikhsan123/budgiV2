@@ -119,118 +119,62 @@ class AnalyticsView extends GetView<AnalyticsController> {
                     children: [
                       Obx(() {
                         return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () => controller.liatExpense(),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color:
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
                                       controller.transactionType.value ==
                                           "expense"
-                                      ? Color(0xFFB695C0)
+                                      ? Color(0xFFBC9CC6)
                                       : Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: const Color(0xFFBC9CC6),
-                                    width: 0.8,
+                                  side: const BorderSide(
+                                    color: Color.fromARGB(255, 197, 160, 208),
+                                    width: 2,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, -1),
-                                    ),
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(1, 0),
-                                    ),
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(-1, 0),
-                                    ),
-                                  ],
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 40,
-                                    vertical: 5,
-                                  ),
-                                  child: Text(
-                                    "Expense",
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          controller.transactionType.value ==
-                                              "expense"
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
+                                onPressed: controller.liatExpense,
+                                child: Text(
+                                  "Expense",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        controller.transactionType.value ==
+                                            "expense"
+                                        ? Colors.white
+                                        : const Color.fromARGB(255, 52, 51, 51),
                                   ),
                                 ),
                               ),
                             ),
-                            InkWell(
-                              onTap: () => controller.liatIncome(),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color:
+
+                            const SizedBox(width: 10),
+
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
                                       controller.transactionType.value ==
                                           "income"
-                                      ? Color(0xFFB695C0)
+                                      ? Color(0xFFBC9CC6)
                                       : Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: const Color(0xFFBC9CC6),
-                                    width: 0.8,
+                                  side: const BorderSide(
+                                    color: Color.fromARGB(255, 197, 160, 208),
+                                    width: 2,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, -1),
-                                    ),
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(1, 0),
-                                    ),
-                                    BoxShadow(
-                                      color: const Color(0xFFBC9CC6),
-                                      blurRadius: 3,
-                                      offset: const Offset(-1, 0),
-                                    ),
-                                  ],
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 40,
-                                    vertical: 5,
-                                  ),
-                                  child: Text(
-                                    "Income",
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          controller.transactionType.value ==
-                                              "income"
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
+                                onPressed: controller.liatIncome,
+                                child: Text(
+                                  "income",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        controller.transactionType.value ==
+                                            "income"
+                                        ? Colors.white
+                                        : const Color.fromARGB(255, 52, 51, 51),
                                   ),
                                 ),
                               ),
@@ -372,10 +316,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
                                                   if (!itemSnapshot.hasData) {
                                                     return const Text(
-                                                      "Belum ada transaksi expense",
-                                                      style: TextStyle(
-                                                        color: Color.fromARGB(255, 0, 0, 0),
-                                                      ),
+                                                      "Belum ada transaksi ",
                                                     );
                                                   }
 

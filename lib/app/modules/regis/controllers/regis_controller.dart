@@ -104,6 +104,7 @@ class RegisController extends GetxController {
         "tanggal_lahir": nilaiTanggal.value,
         "balance": 0,
         "provider": "Form Pendaftaran",
+        "photo_url": "",
         "created_at": Timestamp.now(),
         "updated_at": Timestamp.now(),
       });

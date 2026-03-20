@@ -1,7 +1,7 @@
-
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
+import 'package:budgi/app/modules/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -39,9 +39,11 @@ class EditProfileView extends GetView<EditProfileController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-               
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                     child: IconButton(
                       onPressed: () {
                         Get.back();
@@ -256,9 +258,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                           ),
                                         ),
 
-                                        const SizedBox(height: 20),
+                             
 
-                                        SizedBox(height: 20),
+                                        SizedBox(height: 30),
 
                                         buildButtonPink(
                                           text: 'Save',
@@ -474,8 +476,6 @@ class EditProfileView extends GetView<EditProfileController> {
                                     ),
                                   ),
                                 );
-
-                                // controller.deleteImage();
                               },
                               icon: Icon(
                                 Icons.camera_alt,
@@ -495,20 +495,7 @@ class EditProfileView extends GetView<EditProfileController> {
 
           // Loading overlay full screen
           Obx(
-            () => controller.isloading.value
-                ? Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Colors.black.withOpacity(0.4),
-                    child: Center(
-                      child: SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: Lottie.asset('assets/lottie/load.json'),
-                      ),
-                    ),
-                  )
-                : SizedBox(),
+            () => controller.isloading.value ? loading_overlay() : SizedBox(),
           ),
         ],
       ),

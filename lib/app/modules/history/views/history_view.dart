@@ -1,4 +1,4 @@
-import 'package:budgi/app/modules/widgets/TextField.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
@@ -51,6 +51,11 @@ class HistoryView extends GetView<HistoryController> {
                           todayHighlightColor: Colors.transparent,
                           showNavigationArrow: true,
                           showTodayButton: false,
+                          rangeSelectionColor: Color(0xFFBC9CC6),
+                       
+
+                         
+                      
 
                           startRangeSelectionColor: Color(0xFFBC9CC6),
                           endRangeSelectionColor: Color(0xFFBC9CC6),
@@ -113,20 +118,20 @@ class HistoryView extends GetView<HistoryController> {
               ],
             ),
             SizedBox(height: 10),
-
             // buildTextField(
             //   hint: "Search",
             //   onchange: (value) {
-
-            // controller.search(value);
-
+              
+                // controller.search(value);
+                
             //   },
             //   filled: true,
             //   keyboardType: TextInputType.text,
             //   controller: controller.searchC,
             //   suffixIcon: const Icon(Icons.search, size: 25),
-
+              
             // ),
+
             SizedBox(height: 10),
 
             Expanded(
