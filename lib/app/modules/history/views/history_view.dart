@@ -51,7 +51,9 @@ class HistoryView extends GetView<HistoryController> {
                           todayHighlightColor: Colors.transparent,
                           showNavigationArrow: true,
                           showTodayButton: false,
-                          selectionColor: Color(0xFFBC9CC6),
+
+                          startRangeSelectionColor: Color(0xFFBC9CC6),
+                          endRangeSelectionColor: Color(0xFFBC9CC6),
                           onCancel: () => Get.back(),
                           onSubmit: (obj) {
                             final range = obj as PickerDateRange;
@@ -111,20 +113,20 @@ class HistoryView extends GetView<HistoryController> {
               ],
             ),
             SizedBox(height: 10),
+
             // buildTextField(
             //   hint: "Search",
             //   onchange: (value) {
-              
-                // controller.search(value);
-                
+
+            // controller.search(value);
+
             //   },
             //   filled: true,
             //   keyboardType: TextInputType.text,
             //   controller: controller.searchC,
             //   suffixIcon: const Icon(Icons.search, size: 25),
-              
-            // ),
 
+            // ),
             SizedBox(height: 10),
 
             Expanded(

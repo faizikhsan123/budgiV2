@@ -41,10 +41,13 @@ class AnalyticsView extends GetView<AnalyticsController> {
                               .range, //ini bisa multipel
                           showActionButtons: true,
                           initialSelectedDate: null,
+
                           todayHighlightColor: Colors.transparent,
                           showNavigationArrow: true,
                           showTodayButton: false,
-                          selectionColor: Color(0xFFBC9CC6),
+
+                          startRangeSelectionColor: Color(0xFFBC9CC6),
+                          endRangeSelectionColor: Color(0xFFBC9CC6),
                           onCancel: () => Get.back(),
                           onSubmit: (obj) {
                             final range = obj as PickerDateRange;
@@ -242,7 +245,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                         () => controller.transactionType.value == "expense"
                             ? Expanded(
                                 child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                                  stream: controller.dataExpenseAll(),
+                                  stream: controller.datatransaksi(),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -356,7 +359,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                               >(
                                                 stream: controller
                                                     .streamExpenseItem(docId),
-                                                    
+
                                                 builder: (context, itemSnapshot) {
                                                   if (itemSnapshot
                                                           .connectionState ==
@@ -369,7 +372,10 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
                                                   if (!itemSnapshot.hasData) {
                                                     return const Text(
-                                                      "Belum ada transaksi",
+                                                      "Belum ada transaksi expense",
+                                                      style: TextStyle(
+                                                        color: Color.fromARGB(255, 0, 0, 0),
+                                                      ),
                                                     );
                                                   }
 
@@ -379,7 +385,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
                                                   return ListView.builder(
                                                     shrinkWrap: true,
-                                                    
+
                                                     physics:
                                                         const NeverScrollableScrollPhysics(),
                                                     itemCount:
@@ -465,7 +471,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                               )
                             : Expanded(
                                 child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                                  stream: controller.dataIncomeAll(),
+                                  stream: controller.datatransaksi(),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {

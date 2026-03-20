@@ -9,25 +9,6 @@ class HistoryController extends GetxController {
 
   DateTime? start;
   DateTime? end = DateTime.now();
-  // late TextEditingController searchC;
-  // var tempSearch = [].obs;
-  // var queryResult = [].obs;
-
-
-  // void search(String value)async{
-  //   if (value.length == 0) {
-  //     queryResult.value = [];
-  //     tempSearch.value = [];
-  //   }else {
-  //     if (value.length !=0) {
-  //       var hurufkecil = value.toLowerCase();
-  //       print(hurufkecil);
-        
-  //     }
-
-  //   }
-
-  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> allTransactions() {
     String uid = auth.currentUser!.uid;
@@ -37,11 +18,6 @@ class HistoryController extends GetxController {
           .collection("users")
           .doc(uid)
           .collection("transactions")
-          .where(
-            'filter_tanggal',
-            isLessThan:
-                end!.add(const Duration(days: 1)).toIso8601String(),
-          )
           .orderBy("filter_tanggal", descending: true)
           .snapshots();
     } else {

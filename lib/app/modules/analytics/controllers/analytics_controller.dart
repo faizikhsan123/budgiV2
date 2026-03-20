@@ -18,7 +18,7 @@ class AnalyticsController extends GetxController {
     transactionType.value = "income";
   }
 
-    void pickDateRange(DateTime startDate, DateTime endDate) {
+  void pickDateRange(DateTime startDate, DateTime endDate) {
     start = startDate;
     end = endDate;
     update(); // biar GetBuilder rebuild
@@ -26,15 +26,31 @@ class AnalyticsController extends GetxController {
   }
 
   /// ambil semua transaksi
-  Stream<QuerySnapshot<Map<String, dynamic>>> dataExpenseAll() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> datatransaksi() {
     final uid = auth.currentUser!.uid;
-
-    return firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .orderBy("date", descending: true)
-        .snapshots();
+    if (start == null) {
+      return firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .orderBy("filter_tanggal", descending: true)
+          .snapshots();
+    } else {
+      return firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .where(
+            "filter_tanggal",
+            isGreaterThanOrEqualTo: start!.toIso8601String(),
+          )
+          .where(
+            "filter_tanggal",
+            isLessThan: end!.add(const Duration(days: 1)).toIso8601String(),
+          )
+          .orderBy("filter_tanggal", descending: true)
+          .snapshots();
+    }
   }
 
   /// STREAM EXPENSE
@@ -53,16 +69,6 @@ class AnalyticsController extends GetxController {
   }
 
   /// STREAM INCOME
-  Stream<QuerySnapshot<Map<String, dynamic>>> dataIncomeAll() {
-    final uid = auth.currentUser!.uid;
-
-    return firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-         .orderBy("date", descending: true)
-        .snapshots();
-  }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamIncomeItem(String docId) {
     final uid = auth.currentUser!.uid;
