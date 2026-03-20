@@ -1,5 +1,6 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
+import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
@@ -78,14 +79,31 @@ class HomeView extends GetView<HomeController> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Good Morning',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.textDark,
-                                      letterSpacing: -0.30,
-                                    ),
+                                  Builder(
+                                    builder: (context) {
+                                      // Greeting berdasarkan jam
+                                      final hour = DateTime.now().hour;
+                                      String greeting;
+                                      if (hour >= 5 && hour < 12) {
+                                        greeting = 'Good Morning';
+                                      } else if (hour >= 12 && hour < 17) {
+                                        greeting = 'Good Afternoon';
+                                      } else if (hour >= 17 && hour < 21) {
+                                        greeting = 'Good Evening';
+                                      } else {
+                                        greeting = 'Good Night';
+                                      }
+
+                                      return Text(
+                                        greeting,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.textDark,
+                                          letterSpacing: -0.30,
+                                        ),
+                                      );
+                                    },
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
@@ -436,20 +454,7 @@ class HomeView extends GetView<HomeController> {
               ),
 
               // ── Bottom Navigation Bar ─────────────────────────────────
-              ConvexAppBar(
-                //widget bottom navbar
-                backgroundColor: const Color.fromARGB(255, 189, 157, 195),
-                initialActiveIndex: pageC.CurrentIndex.value, //index active
-
-                items: [
-                  TabItem(icon: Icons.home, title: 'Home'),
-                  TabItem(icon: Icons.add, title: 'Add'),
-                  TabItem(icon: Icons.person, title: 'Pofile'),
-                ],
-                onTap: (index) {
-                  pageC.changePage(index);
-                },
-              ),
+              bottom_navbar(pageC: pageC),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
-import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/ButtonPink_transaksi.dart';
 import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
+import 'package:budgi/app/modules/widgets/cancel_transaksi.dart';
+import 'package:budgi/app/modules/widgets/content_transaksi.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -507,27 +508,7 @@ class PageIndexController extends GetxController {
         color: Colors.black,
       ),
 
-      cancel: Container(
-        width: 120,
-        height: 45,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFFBC9CC6)),
-        ),
-        child: TextButton(
-          onPressed: () {
-            Get.back();
-          },
-          child: Text(
-            "Cancel",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ),
+      cancel: cancel_transaksi(),
 
       confirm: Container(
         width: 120,
@@ -607,52 +588,10 @@ class PageIndexController extends GetxController {
                 color: Colors.black,
               ),
 
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.network(
-                    'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773749076/Variant8_zfezgi.png',
-                    height: 100,
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Text(
-                    "${rupiah.convertToRupiah(number)} has been deducted from your balance",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: const Color.fromARGB(255, 52, 52, 52),
-                    ),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  SizedBox(
-                    width: 150,
-                    height: 45,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Get.offAllNamed(Routes.HOME);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFBC9CC6)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        "Return Home",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              content: content(
+                rupiah: rupiah,
+                number: number,
+                text: "saldo di kurangi",
               ),
             );
           },
@@ -715,27 +654,7 @@ class PageIndexController extends GetxController {
         color: Colors.black,
       ),
 
-      cancel: Container(
-        width: 120,
-        height: 45,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Color(0xFFBC9CC6)),
-        ),
-        child: TextButton(
-          onPressed: () {
-            Get.back();
-          },
-          child: Text(
-            "Cancel",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ),
+      cancel: cancel_transaksi(),
 
       confirm: Container(
         width: 120,
@@ -824,52 +743,10 @@ class PageIndexController extends GetxController {
                 color: const Color.fromARGB(255, 51, 51, 51),
               ),
 
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.network(
-                    'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773749076/Variant8_zfezgi.png',
-                    height: 100,
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Text(
-                    "All set! ${rupiah.convertToRupiah(number)} is now in your balance",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: const Color.fromARGB(255, 52, 52, 52),
-                    ),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  SizedBox(
-                    width: 150,
-                    height: 45,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Get.offAllNamed(Routes.HOME);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFBC9CC6)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        "Return Home",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              content: content(
+                rupiah: rupiah,
+                number: number,
+                text: "saldo anda bertambh",
               ),
             );
 

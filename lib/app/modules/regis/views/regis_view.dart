@@ -1,20 +1,19 @@
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
+import 'package:budgi/app/modules/widgets/loading_overlay.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
-import 'package:lottie/lottie.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
   @override
   Widget build(BuildContext context) {
-    String phoneNumber;
-    PhoneNumber number = PhoneNumber(isoCode: 'ID');
+
 
     return Scaffold(
       body: Stack(
@@ -288,18 +287,7 @@ class RegisView extends GetView<RegisController> {
           Obx(() {
             if (!controller.isloading.value) return const SizedBox();
 
-            return Container(
-              width: Get.width,
-              height: Get.height,
-              color: Colors.black.withOpacity(0.4),
-              child: Center(
-                child: SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: Lottie.asset('assets/lottie/load.json'),
-                ),
-              ),
-            );
+            return loading_overlay();
           }),
         ],
       ),
