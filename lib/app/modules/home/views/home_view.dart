@@ -2,7 +2,6 @@ import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
@@ -459,12 +458,7 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          controller.logout();
-        },
-        child: const Icon(Icons.logout_outlined),
-      ),
+     
     );
   }
 }
