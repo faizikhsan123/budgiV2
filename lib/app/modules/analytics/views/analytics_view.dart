@@ -4,6 +4,7 @@ import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/analytics_controller.dart';
 
@@ -183,6 +184,122 @@ class AnalyticsView extends GetView<AnalyticsController> {
                         );
                       }),
 
+                      StreamBuilder<List<CategoryData>>(
+                        stream: controller.streamChartData(),
+                        builder: (context, snapshot) {
+                          final chartData = snapshot.data ?? [];
+                          final isIncome =
+                              controller.transactionType.value == "income";
+                          final total = chartData.fold(
+                            0.0,
+                            (sum, d) => sum + d.value,
+                          );
+                          var rupiah = Rupiah();
+
+                          return Center(
+                            child: SfCircularChart(
+                              annotations: <CircularChartAnnotation>[
+                                CircularChartAnnotation(
+                                  widget: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Total Value",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        isIncome ? "Income" : "Expense",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              legend: Legend(
+                                isVisible:
+                                    !isIncome, // income gak perlu legend karena cuma 1 bar
+                                position: LegendPosition.bottom,
+                                overflowMode: LegendItemOverflowMode.wrap,
+                                legendItemBuilder:
+                                    (legendText, series, point, seriesIndex) {
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            margin: const EdgeInsets.only(
+                                              right: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: chartData.isNotEmpty
+                                                  ? chartData[seriesIndex %
+                                                            chartData.length]
+                                                        .color
+                                                  : Colors.grey,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          Text(
+                                            legendText,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                        ],
+                                      );
+                                    },
+                              ),
+                              series: <CircularSeries>[
+                                if (chartData.isEmpty)
+                                  RadialBarSeries<CategoryData, String>(
+                                    dataSource: [
+                                      CategoryData(
+                                        'No Data',
+                                        1,
+                                        Colors.grey.shade300,
+                                      ),
+                                    ],
+                                    xValueMapper: (d, _) => d.category,
+                                    yValueMapper: (d, _) => d.value,
+                                    pointColorMapper: (d, _) => d.color,
+                                    radius: '100%',
+                                    innerRadius: '50%',
+                                    gap: '3%',
+                                    maximumValue: 1,
+                                    cornerStyle: CornerStyle.bothCurve,
+                                    trackColor: const Color(0xFFEEEEEE),
+                                    trackBorderWidth: 0,
+                                  )
+                                else
+                                  RadialBarSeries<CategoryData, String>(
+                                    dataSource: chartData,
+                                    xValueMapper: (d, _) => d.category,
+                                    yValueMapper: (d, _) => d.value,
+                                    pointColorMapper: (d, _) => d.color,
+                                    radius: '100%',
+                                    innerRadius: '50%',
+                                    gap: '3%',
+                                    // income: bar penuh 100%, expense: proporsi relatif
+                                    maximumValue: isIncome ? total : total,
+                                    cornerStyle: CornerStyle.bothCurve,
+                                    trackColor: const Color(0xFFEEEEEE),
+                                    trackBorderWidth: 0,
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                       SizedBox(height: 30),
 
                       Obx(
@@ -642,4 +759,12 @@ class AnalyticsView extends GetView<AnalyticsController> {
       ),
     );
   }
+}
+
+class CategoryData {
+  final String category;
+  final double value;
+  final Color color;
+
+  CategoryData(this.category, this.value, this.color);
 }

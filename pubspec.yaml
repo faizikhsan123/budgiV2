@@ -2,18 +2,16 @@ name: budgi
 version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
-environment:
+environment: 
   sdk: ^3.9.2
 
-dependencies:
+dependencies: 
   cloud_firestore: 6.1.2
   convex_bottom_bar: 3.2.0
   cupertino_icons: ^1.0.8
   currency_text_input_formatter: 2.3.0
   firebase_auth: 6.1.4
   firebase_core: 4.4.0
-  flutter:
-    sdk: flutter
   flutter_facebook_auth: 7.1.5
   flutter_svg: ^2.0.10+1
   format_indonesia_v2: 0.0.8
@@ -27,14 +25,18 @@ dependencies:
   material_charts: ^0.0.39
   syncfusion_flutter_charts: 32.2.9
   syncfusion_flutter_datepicker: 32.2.8
-
-dev_dependencies:
-  flutter_lints: ^5.0.0
-  flutter_test:
+  connectivity_plus: 7.0.0
+  flutter: 
     sdk: flutter
 
-flutter:
-  assets:
+dev_dependencies: 
+  flutter_lints: ^5.0.0
+  flutter_test: 
+    sdk: flutter
+
+flutter: 
+  assets: 
     - assets/icons/
     - assets/lottie/
   uses-material-design: true
+

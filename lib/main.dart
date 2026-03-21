@@ -2,6 +2,7 @@ import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/firebase_options.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class NyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Budgi",
       // initialRoute: Routes.COMPLETE_BALANCE,
-       home: AuthWrapper(),
+      home: AuthWrapper(),
       getPages: AppPages.routes,
     );
   }
@@ -38,34 +39,48 @@ class NyApp extends StatelessWidget {
 
 class AuthWrapper extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final Connectivity connectivity = Connectivity();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: auth.authStateChanges(),
-      builder: (context, snapshot) {
-        // Loading
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return StreamBuilder<List<ConnectivityResult>>(
+      stream: connectivity.onConnectivityChanged,
+      builder: (context, connSnapshot) {
+        // ❌ Tidak ada koneksi sama sekali
+        if (connSnapshot.hasData &&
+            connSnapshot.data!.contains(ConnectivityResult.none)) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(child: Text("❌ Tidak ada koneksi internet")),
           );
         }
 
-        // ✅ Auto redirect berdasarkan status login
-        if (snapshot.hasData) {
-          // Sudah login → ke HOME
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Get.offAllNamed(Routes.HOME);
-          });
-        } else {
-          // Belum login → ke LOGIN
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Get.offAllNamed(Routes.LOGIN);
-          });
-        }
+        // 🔄 Cek login Firebase
+        return StreamBuilder<User?>(
+          stream: auth.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
 
-        // Tampilkan loading sementara redirect
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+            // ✅ Sudah login
+            if (snapshot.hasData) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Get.offAllNamed(Routes.HOME);
+              });
+            } else {
+              // ❌ Belum login
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Get.offAllNamed(Routes.LOGIN);
+              });
+            }
+
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          },
+        );
       },
     );
   }
