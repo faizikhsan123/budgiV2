@@ -224,8 +224,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                 ),
                               ],
                               legend: Legend(
-                                isVisible:
-                                    !isIncome, // income gak perlu legend karena cuma 1 bar
+                                isVisible:                                   !isIncome, // income gak perlu legend karena cuma 1 bar
                                 position: LegendPosition.bottom,
                                 overflowMode: LegendItemOverflowMode.wrap,
                                 legendItemBuilder:
