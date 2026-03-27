@@ -72,6 +72,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                               selectionMode:
                                   DateRangePickerSelectionMode.single,
                               minDate: DateTime(2000),
+                                   selectionColor: Color(0xFFBC9CC6),
                               initialSelectedDate: null,
                               maxDate: DateTime(2040),
                               todayHighlightColor: Colors.transparent,
@@ -110,8 +111,10 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                                       ? "Tanggal Lahir"
                                       : controller.nilaiTanggal.value,
                                   style: TextStyle(
+                                    
                                     fontSize: 15,
                                     color: controller.nilaiTanggal.value.isEmpty
+                                    
                                         ? Colors.grey.shade500
                                         : Colors.black,
                                     fontWeight:
@@ -163,6 +166,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                         ),
                         initialValue: PhoneNumber(isoCode: 'ID'),
                         textFieldController: TextEditingController(),
+                        
                         formatInput: true,
                         keyboardType: TextInputType.number,
                         inputDecoration: const InputDecoration(

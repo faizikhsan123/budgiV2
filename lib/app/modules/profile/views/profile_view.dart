@@ -1,8 +1,8 @@
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
+import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
 import 'package:flutter/material.dart';
 
@@ -23,12 +23,12 @@ class ProfileView extends GetView<ProfileController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
+            colors: [Color.fromARGB(255, 194, 170, 201), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0535, 0.3931],
-            colors: [AppColors.peachTop, Colors.white],
           ),
         ),
         child: SafeArea(
@@ -60,7 +60,7 @@ class ProfileView extends GetView<ProfileController> {
                           bottom: 0,
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 245, 242, 242),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
                                 topRight: Radius.circular(20),
@@ -96,7 +96,7 @@ class ProfileView extends GetView<ProfileController> {
                                           ),
                                         ),
 
-                                        const SizedBox(height: 6),
+                                        const SizedBox(height: 2),
 
                                         Text(
                                           '${user['email']}',
@@ -111,12 +111,14 @@ class ProfileView extends GetView<ProfileController> {
 
                                         buildLabel('Full Name'),
                                         buildTextField(
+                                          filled: true,
                                           readonly: true,
                                           hint: '${user['name']}',
                                         ),
 
                                         buildLabel('Email'),
                                         buildTextField(
+                                          filled: true,
                                           readonly: true,
                                           hint: '${user['email']}',
                                         ),
@@ -126,9 +128,6 @@ class ProfileView extends GetView<ProfileController> {
                                         Container(
                                           height: 55,
                                           decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.black,
-                                            ),
                                             color: Colors.white,
                                             borderRadius: BorderRadius.circular(
                                               14,
@@ -163,6 +162,8 @@ class ProfileView extends GetView<ProfileController> {
 
                                         buildTextField(
                                           readonly: true,
+                                          filled: true,
+
                                           hint: '${user['phone']}',
                                         ),
                                       ],
@@ -185,7 +186,7 @@ class ProfileView extends GetView<ProfileController> {
                               shape: BoxShape.circle,
                               color: const Color(0xFFD9B3E6),
                               border: Border.all(
-                                color: const Color.fromARGB(255, 224, 219, 219),
+                                color: const Color(0xFFD9B3E6),
                                 width: 3,
                               ),
                             ),
@@ -216,7 +217,7 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
+                                horizontal: 20,
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
@@ -241,19 +242,7 @@ class ProfileView extends GetView<ProfileController> {
               ),
 
               // BOTTOM NAVBAR
-              ConvexAppBar(
-                //widget bottom navbar
-                backgroundColor: const Color.fromARGB(255, 189, 157, 195),
-                initialActiveIndex: pageC.CurrentIndex.value, //index active
-                items: [
-                  TabItem(icon: Icons.home, title: 'Home'),
-                  TabItem(icon: Icons.add, title: 'Add'),
-                  TabItem(icon: Icons.person, title: 'Pofile'),
-                ],
-                onTap: (index) {
-                  pageC.changePage(index);
-                },
-              ),
+              bottom_navbar(pageC: pageC),
             ],
           ),
         ),

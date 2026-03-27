@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -28,12 +30,27 @@ class EditProfileController extends GetxController {
 
   PhoneNumber phoneC = PhoneNumber(isoCode: 'ID');
 
-  void selectImage() async {
+  Future selectImage() async {
     try {
+      final uid = auth.currentUser!.uid;
       final image = await imagePicker.pickImage(source: ImageSource.gallery);
       if (image != null) {
         //ketika user memilih gambar
         pickedIMage = image;
+        // Upload gambar dulu (parallel bisa pakai Future.wait jika ada banyak)
+        String? newImageUrl;
+        if (pickedIMage != null) {
+          Get.back();
+          isloading.value = true;
+          newImageUrl =
+              await _uploadImageOnly(); // return URL, jangan update Firestore di sini
+        }
+     
+        await firestore.collection("users").doc(uid).update({
+          'updated_at': Timestamp.now(),
+          if (newImageUrl != null) 'photo_url': newImageUrl,
+        });
+        Get.offAllNamed(Routes.PROFILE);
       }
       update(); //untuk memperbarui karena pakai get buildeedr
     } catch (e) {
@@ -44,61 +61,69 @@ class EditProfileController extends GetxController {
     }
   }
 
-  Future uploadImage() async {
-    if (pickedIMage == null) return; // kalau tidak ada gambar, langsung stop
-
-    try {
-      String uid = auth.currentUser!.uid;
-
-      String cloudName = 'dzfi5acyl';
-      String uploadPreset = 'budgiv2';
-
-      var url = 'https://api.cloudinary.com/v1_1/$cloudName/image/upload';
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-
-      request.fields['upload_preset'] = uploadPreset;
-
-      request.files.add(
-        await http.MultipartFile.fromPath('file', pickedIMage!.path),
-      );
-
-      var response = await request.send();
-      var responseData = await response.stream.toBytes();
-      var responseString = String.fromCharCodes(responseData);
-      var data = jsonDecode(responseString);
-
-      imageurl = data['secure_url'];
-
-      await firestore.collection("users").doc(uid).update({
-        'photo_url': imageurl,
-      });
-    } catch (e) {
-      Get.snackbar(
-        'Gagal',
-        'Upload gambar gagal $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
-
   void deleteImage() {
     Get.defaultDialog(
-      title: "Delete Image",
-      middleText: "Anda yakin ingin menghapus gambar ini?",
+      title: "Are you sure?",
+      titlePadding: const EdgeInsets.only(top: 24, left: 20, right: 20),
+      middleText: " Anda yakin ingin menghapus gambar ini?",
+      radius: 12,
       backgroundColor: Colors.white,
-      radius: 10,
-      textCancel: "No",
+      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
 
-      textConfirm: "Yes",
+      titleStyle: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
 
-      onConfirm: () async {
-        await firestore.collection("users").doc(auth.currentUser!.uid).update({
-          'photo_url': null,
-        });
-        Get.back();
-        Get.back();
-      },
+      cancel: Container(
+        width: 120,
+        height: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Color(0xFFBC9CC6)),
+        ),
+        child: TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            "Cancel",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+
+      confirm: Container(
+        width: 120,
+        height: 45,
+        decoration: BoxDecoration(
+          color: Color(0xFFBC9CC6),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: TextButton(
+          onPressed: () async {
+            // update balance
+            await firestore
+                .collection("users")
+                .doc(auth.currentUser!.uid)
+                .update({'photo_url': null});
+            Get.offAllNamed(Routes.PROFILE);
+          },
+          child: Text(
+            "Yes",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -107,19 +132,11 @@ class EditProfileController extends GetxController {
       isloading.value = true;
       final uid = auth.currentUser!.uid;
 
-      // Upload gambar dulu (parallel bisa pakai Future.wait jika ada banyak)
-      String? newImageUrl;
-      if (pickedIMage != null) {
-        newImageUrl =
-            await _uploadImageOnly(); // return URL, jangan update Firestore di sini
-      }
-
       await firestore.collection("users").doc(uid).update({
         'name': nameC.text,
         'phone': phoneC.phoneNumber,
         'tanggal_lahir': nilaiTanggal.value,
         'updated_at': Timestamp.now(),
-        if (newImageUrl != null) 'photo_url': newImageUrl,
       });
 
       Get.back();
@@ -192,6 +209,9 @@ class EditProfileController extends GetxController {
   }
 
   @override
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /// Dispose all the controllers and text editing controllers.
+  /*******  780a78d6-fab5-4f36-a4f3-c9bf5f08cc1c  *******/
   void dispose() {
     nameC.dispose();
     emailC.dispose();

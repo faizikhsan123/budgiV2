@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:lottie/lottie.dart';
 
+
 class AuthController extends GetxController {
   RxBool isloading = false.obs;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -217,7 +218,7 @@ class AuthController extends GetxController {
 
       await auth.signInWithEmailAndPassword(email: email, password: password);
 
-      Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.COMPLETE_BALANCE);
     } catch (e) {
       Get.snackbar(
         'Gagal',

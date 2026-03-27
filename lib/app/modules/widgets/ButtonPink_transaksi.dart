@@ -2,31 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget buildButtonPink({
+Widget buildButtonPinkTransaksi({
   required String text,
   required VoidCallback onTap,
 }) {
   return Container(
-    height: 55,
+    height: 50,
 
     width: Get.width,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(30),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black26,
-          blurRadius: 1,
-          offset: Offset(0, 6),
-        ),
-      ],
-    ),
+
     child: ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFB695C0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       child: Text(
         text,
