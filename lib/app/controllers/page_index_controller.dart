@@ -764,4 +764,7 @@ class PageIndexController extends GetxController {
       ),
     );
   }
+
 }
+
+

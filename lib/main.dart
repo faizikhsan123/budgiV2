@@ -4,6 +4,7 @@ import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/firebase_options.dart';
 import 'package:budgi/introduction.dart';
 import 'package:budgi/splash_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -65,7 +66,7 @@ class _SplashGateState extends State<SplashGate> {
       } else {
         // Sudah pernah → langsung cek auth
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => OnboardingScreen()), //authwrapper
+          MaterialPageRoute(builder: (_) => AuthWrapper()), //authwrapper
         );
       }
     }
@@ -79,7 +80,52 @@ class _SplashGateState extends State<SplashGate> {
 
 class AuthWrapper extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final Connectivity connectivity = Connectivity();
+
+  Future<Widget> _handleAuth() async {
+    final user = auth.currentUser;
+
+    /// ❌ BELUM LOGIN
+    if (user == null) {
+      return GetBuilder(builder: (_) => Container()); // dummy
+    }
+
+    /// 🔥 AMBIL DATA USER
+    final doc = await firestore.collection("users").doc(user.uid).get();
+    final data = doc.data();
+
+    /// 🔥 VALIDASI DATA
+    if (data == null ||
+        data["isOnboardingComplete"] != true ||
+        data["balance"] == null ||
+        data["name"] == null) {
+      return GetBuilder(builder: (_) => Container());
+    }
+
+    return GetBuilder(builder: (_) => Container());
+  }
+
+  void _redirect() async {
+    final user = auth.currentUser;
+
+    if (user == null) {
+      Get.offAllNamed(Routes.LOGIN);
+      return;
+    }
+
+    final doc = await firestore.collection("users").doc(user.uid).get();
+    final data = doc.data();
+
+    if (data == null ||
+        data["isOnboardingComplete"] != true ||
+        data["balance"] == null ||
+        data["name"] == null) {
+      Get.offAllNamed(Routes.COMPLETE_PROFILE);
+    } else {
+      Get.offAllNamed(Routes.HOME);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,15 +148,10 @@ class AuthWrapper extends StatelessWidget {
               );
             }
 
-            if (snapshot.hasData) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Get.offAllNamed(Routes.HOME);
-              });
-            } else {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Get.offAllNamed(Routes.LOGIN);
-              });
-            }
+            /// 🔥 PANGGIL REDIRECT SETELAH BUILD
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _redirect();
+            });
 
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),

@@ -4,14 +4,31 @@ import 'package:budgi/app/modules/analytics/views/analytics_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class AnalyticsController extends GetxController {
   RxString transactionType = "expense".obs;
+  RxString nilaiTanggal = "".obs;
 
   FirebaseAuth auth = FirebaseAuth.instance;
   DateTime? start;
   DateTime? end = DateTime.now();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  @override
+  void onInit() {
+    super.onInit();
+    nilaiTanggal.value = 'All Time';
+    print(nilaiTanggal.value);
+  }
+
+  Future<void> resetForm() async {
+    Future.delayed(Duration(seconds: 1), () {
+      return nilaiTanggal.value = DateFormat(
+        'dd-M-yyyy',
+      ).format(DateTime.now());
+    });
+  }
 
   void liatExpense() {
     transactionType.value = "expense";

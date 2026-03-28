@@ -83,11 +83,11 @@ class HomeView extends GetView<HomeController> {
                                       // Greeting berdasarkan jam
                                       final hour = DateTime.now().hour;
                                       String greeting;
-                                      if (hour >= 5 && hour < 12) {
+                                      if (hour >= 4 && hour < 10) {
                                         greeting = 'Good Morning';
-                                      } else if (hour >= 12 && hour < 17) {
+                                      } else if (hour >= 10 && hour < 15) {
                                         greeting = 'Good Afternoon';
-                                      } else if (hour >= 17 && hour < 21) {
+                                      } else if (hour >= 15 && hour < 18) {
                                         greeting = 'Good Evening';
                                       } else {
                                         greeting = 'Good Night';
@@ -459,7 +459,10 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-     
+    floatingActionButton: FloatingActionButton(onPressed: (){
+      authC.signOut();
+    }), 
     );
+    
   }
 }
