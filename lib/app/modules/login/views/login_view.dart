@@ -123,7 +123,7 @@ class LoginView extends GetView<LoginController> {
                             // controller: controller,
                             text: "Masuk",
                             onTap: () {
-                              authC.loginFOrm(
+                              authC.loginForm(
                                 controller.emailC.text,
                                 controller.passC.text,
                               );

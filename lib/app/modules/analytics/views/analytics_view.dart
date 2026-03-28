@@ -21,7 +21,10 @@ class AnalyticsView extends GetView<AnalyticsController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => Get.back(),
+                  onPressed: ()  async {
+                    Get.back();
+                    await controller.resetForm();
+                  } ,
                   icon: Icon(Icons.arrow_back, size: 30),
                 ),
                 Text(
@@ -51,6 +54,8 @@ class AnalyticsView extends GetView<AnalyticsController> {
                           endRangeSelectionColor: Color(0xFFBC9CC6),
                           onCancel: () => Get.back(),
                           onSubmit: (obj) {
+                            
+
                             final range = obj as PickerDateRange;
                             print(obj);
 
@@ -60,11 +65,17 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                 range.startDate!,
                                 range.startDate!,
                               );
+                              controller.nilaiTanggal.value = DateFormat(
+                                'EEEE, d MMMM yyyy',
+                              ).format(range.startDate!);
                             } else {
                               controller.pickDateRange(
                                 range.startDate!,
                                 range.endDate!,
                               );
+                              controller.nilaiTanggal.value =
+                                  "${DateFormat('EEEE, d MMMM yyyy').format(range.startDate!)} - "
+                                  "${DateFormat('EEEE, d MMMM yyyy').format(range.endDate!)}";
                             }
                           },
                         ),
@@ -402,7 +413,6 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                 width: 0.8,
                                               ),
                                             ),
-                                          
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
@@ -448,7 +458,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
                                                   if (!itemSnapshot.hasData) {
                                                     return const Text(
-                                                      "Belum ada transaksi ",
+                                                      "Belum ada pengeluaran",
                                                     );
                                                   }
 
@@ -603,15 +613,28 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                         children: [
                                           /// Header dengan tanggal
                                           Text(
-                                            DateFormat(
-                                              'EEEE, d MMMM yyyy',
-                                            ).format(DateTime.now()),
+                                            "${controller.nilaiTanggal.value}",
                                             style: GoogleFonts.plusJakartaSans(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.grey[900],
+                                              color: const Color.fromARGB(
+                                                255,
+                                                69,
+                                                69,
+                                                69,
+                                              ),
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
+                                          // Text(
+                                          //   "nilai ${controller.nilaiTanggal.value}",
+                                          //   // DateFormat(
+                                          //   //   'EEEE, d MMMM yyyy',
+                                          //   // ).format(DateTime.now()),
+                                          //   // style: GoogleFonts.plusJakartaSans(
+                                          //   //   fontSize: 13,
+                                          //   //   fontWeight: FontWeight.w500,
+                                          //   //   color: Colors.grey[900],
+                                          //   // ),
+                                          // ),
                                           const SizedBox(height: 16),
 
                                           /// Total Income
@@ -692,7 +715,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                'Balance',
+                                                'Total Transaksi',
                                                 style:
                                                     GoogleFonts.plusJakartaSans(
                                                       fontSize: 14,
