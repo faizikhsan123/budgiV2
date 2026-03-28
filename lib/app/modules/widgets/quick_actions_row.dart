@@ -27,10 +27,11 @@ class QuickActionsRow extends StatelessWidget {
         ),
         const SizedBox(width: 80),
         _ActionItem(
-          label: 'Split Bill',
-          assetPath: 'assets/icons/scan_fill.svg',
+          label: 'On Going',
+          assetPath: '',
           onTap: () {
-          Get.toNamed(Routes.SCAN);
+          // Get.toNamed(Routes.SCAN);
+          print("otw");
           },
         ),
       ],
