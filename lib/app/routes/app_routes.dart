@@ -16,6 +16,7 @@ abstract class Routes {
   static const COMPLETE_BALANCE = _Paths.COMPLETE_BALANCE;
   static const ANALYTICS = _Paths.ANALYTICS;
   static const HISTORY = _Paths.HISTORY;
+  static const SCAN = _Paths.SCAN;
 }
 
 abstract class _Paths {
@@ -33,4 +34,5 @@ abstract class _Paths {
   static const COMPLETE_BALANCE = '/complete-balance';
   static const ANALYTICS = '/analytics';
   static const HISTORY = '/history';
+  static const SCAN = '/scan';
 }

@@ -402,28 +402,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                 width: 0.8,
                                               ),
                                             ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFFBC9CC6),
-                                                blurRadius: 3,
-                                                offset: const Offset(0, 1),
-                                              ),
-                                              BoxShadow(
-                                                color: const Color(0xFFBC9CC6),
-                                                blurRadius: 3,
-                                                offset: const Offset(0, -1),
-                                              ),
-                                              BoxShadow(
-                                                color: const Color(0xFFBC9CC6),
-                                                blurRadius: 3,
-                                                offset: const Offset(1, 0),
-                                              ),
-                                              BoxShadow(
-                                                color: const Color(0xFFBC9CC6),
-                                                blurRadius: 3,
-                                                offset: const Offset(-1, 0),
-                                              ),
-                                            ],
+                                          
                                           ),
                                           child: Column(
                                             crossAxisAlignment:

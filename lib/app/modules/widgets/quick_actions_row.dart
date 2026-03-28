@@ -1,3 +1,4 @@
+import 'package:budgi/app/modules/scan/controllers/scan_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,7 +7,7 @@ import 'package:get/get.dart';
 import 'app_colors.dart';
 
 class QuickActionsRow extends StatelessWidget {
-  const QuickActionsRow({super.key});
+  final scanC = Get.put(ScanController());
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +27,11 @@ class QuickActionsRow extends StatelessWidget {
         ),
         const SizedBox(width: 80),
         _ActionItem(
-          label: 'Split Bill',
-          assetPath: 'assets/icons/scan_fill.svg',
+          label: 'On Going',
+          assetPath: '',
           onTap: () {
-            print("solit bioll");
+          // Get.toNamed(Routes.SCAN);
+          print("otw");
           },
         ),
       ],

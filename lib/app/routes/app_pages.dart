@@ -22,6 +22,9 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
+import '../modules/scan/bindings/scan_binding.dart';
+import '../modules/scan/views/scan_view.dart';
+
 part 'app_routes.dart';
 
 class AppPages {
@@ -36,7 +39,6 @@ class AppPages {
       binding: HomeBinding(),
       transition: Transition.fadeIn,
     ),
-  
     GetPage(
       name: _Paths.PROFILE,
       page: () => ProfileView(),
@@ -87,13 +89,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ANALYTICS,
-      page: () =>  AnalyticsView(),
+      page: () => AnalyticsView(),
       binding: AnalyticsBinding(),
     ),
     GetPage(
       name: _Paths.HISTORY,
-      page: () =>  HistoryView(),
+      page: () => HistoryView(),
       binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.SCAN,
+      page: () =>  ScanView(),
+      binding: ScanBinding(),
     ),
   ];
 }
