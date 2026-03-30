@@ -151,69 +151,65 @@ class PageIndexController extends GetxController {
                           ),
                         ),
 
-                        ElevatedButton(
-                          onPressed: () {
-                            Get.dialog(
-                              Dialog(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 400,
-                                        width: 300,
-                                        child: SfDateRangePicker(
-                                          selectionMode:
-                                              DateRangePickerSelectionMode
-                                                  .single, //mode datepicker
+                        InkWell(
+                          onTap: () => Get.dialog(
+                            Dialog(
+                              child: Container(
+                                height: 400,
+                                padding: const EdgeInsets.all(10),
+                                child: SfDateRangePicker(
+                                  selectionMode: DateRangePickerSelectionMode
+                                      .single, //ini bisa multipel
+                                  showActionButtons: true,
+                                  initialSelectedDate: null,
 
-                                          initialSelectedDate: null,
-                                          initialSelectedRange: null,
-                                          showNavigationArrow: true,
-                                          selectionColor: Color(0xFFBC9CC6),
+                                  todayHighlightColor: Colors.transparent,
+                                  showNavigationArrow: true,
+                                  showTodayButton: false,
 
-                                          showTodayButton: false,
-                                          allowViewNavigation: true,
-                                          showActionButtons:
-                                              true, //tampilkan tombol
-
-                                          onCancel: () =>
-                                              Get.back(), //ketika tombol cancel ditekan
-                                          /// ketika tombol submit ditekan
-                                          onSubmit: (obj) {
-                                            DateTime date = obj as DateTime;
-                                            nilaiTanggal.value =
-                                                "${date.day}-${date.month}-${date.year}";
-
-                                            print(nilaiTanggal.value);
-                                            Get.back();
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                 selectionColor: Color(0xFFBC9CC6),
+                                  onCancel: () => Get.back(),
+                                  onSubmit: (obj) {
+                                    DateTime date = obj as DateTime;
+                                    nilaiTanggal.value =
+                                        "${date.day}-${date.month}-${date.year}";
+                                    print(nilaiTanggal.value);
+                                    Get.back();
+                                  },
                                 ),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                           child: Obx(
-                            () => Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${nilaiTanggal.value}",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                            () => Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: const Color(0xFFBC9CC6),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${nilaiTanggal.value}",
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 5),
-                                Icon(
-                                  Icons.calendar_month_outlined,
-                                  size: 21,
-                                  color: Colors.black,
-                                ),
-                              ],
+                                  const SizedBox(width: 5),
+                                  const Icon(
+                                    Icons.calendar_month_outlined,
+                                    size: 21,
+                                    color: Colors.black,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -367,6 +363,7 @@ class PageIndexController extends GetxController {
                     TextFormField(
                       controller: notesC,
                       maxLines: 4,
+
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -570,6 +567,9 @@ class PageIndexController extends GetxController {
             await firestore.collection("users").doc(uid).update({
               'balance': balance - number,
             });
+            amountC.clear();
+            notesC.clear();
+            selectedCategoryIndex.value = -1;
 
             Get.back();
 
@@ -723,6 +723,8 @@ class PageIndexController extends GetxController {
             await firestore.collection("users").doc(uid).update({
               'balance': balance + number,
             });
+            amountC.clear();
+            notesC.clear();
             Get.back(); //tutup dialog konfirmasi
             Get.defaultDialog(
               title: "Income Added!",
@@ -764,7 +766,4 @@ class PageIndexController extends GetxController {
       ),
     );
   }
-
 }
-
-

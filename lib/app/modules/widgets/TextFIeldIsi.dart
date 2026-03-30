@@ -1,9 +1,9 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-Widget buildTextField({
+
+Widget TextFiledIsi({
   required String hint,
   TextEditingController? controller,
   bool obscureText = false,
@@ -31,7 +31,7 @@ Widget buildTextField({
       ),
 
       hintText: hint,
-      hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
+      hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
 
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),

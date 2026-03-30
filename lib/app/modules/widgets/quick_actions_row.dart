@@ -19,16 +19,16 @@ class QuickActionsRow extends StatelessWidget {
           assetPath: 'assets/icons/analytics.svg',
           onTap: () => Get.toNamed(Routes.ANALYTICS),
         ),
-        const SizedBox(width: 80),
+        const SizedBox(width: 70),
         _ActionItem(
           label: 'History',
           assetPath: 'assets/icons/history.svg',
           onTap: () => Get.toNamed(Routes.HISTORY),
         ),
-        const SizedBox(width: 80),
+        const SizedBox(width: 70),
         _ActionItem(
-          label: 'On Going',
-          assetPath: '',
+          label: 'Coming Soon',
+          assetPath: 'assets/icons/history.svg',
           onTap: () {
           // Get.toNamed(Routes.SCAN);
           print("otw");

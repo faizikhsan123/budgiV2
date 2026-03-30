@@ -2,13 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class HistoryController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  RxString nilaiTanggal = "".obs;
 
   DateTime? start;
   DateTime? end = DateTime.now();
+
+ 
 
   Stream<QuerySnapshot<Map<String, dynamic>>> allTransactions() {
     String uid = auth.currentUser!.uid;

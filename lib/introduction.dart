@@ -20,7 +20,7 @@ class OnboardingScreen extends StatelessWidget {
         PageViewModel(
           image: Container(
             alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(top: 200),
+            margin: EdgeInsets.only(top: 100),
             child: Center(
               child: Lottie.asset(
                 'assets/lottie/intro.json',
@@ -32,7 +32,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
 
           titleWidget: Text(
-            "Catat Transaksi Harian",
+            "Record Daily Transactions",
             style: GoogleFonts.plusJakartaSans(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -42,7 +42,7 @@ class OnboardingScreen extends StatelessWidget {
 
           bodyWidget: Text(
             textAlign: TextAlign.center,
-            "Kelola pemasukan dan pengeluaran Anda dengan mudah, praktis, dan cepat setiap harinya.",
+            "Manage your income and expenses easily, practically, and quickly every day.",
             style: GoogleFonts.plusJakartaSans(
               fontSize: 18,
               fontWeight: FontWeight.w400,
@@ -53,7 +53,7 @@ class OnboardingScreen extends StatelessWidget {
         PageViewModel(
           image: Container(
             alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(top: 200),
+            margin: EdgeInsets.only(top: 100),
             child: Center(
               child: Lottie.asset(
                 'assets/lottie/Analytics.json',
@@ -65,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
 
           titleWidget: Text(
-            "Analisa keuangan Cerdas",
+            "Smart Financial Analysis",
             style: GoogleFonts.plusJakartaSans(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -75,7 +75,7 @@ class OnboardingScreen extends StatelessWidget {
 
           bodyWidget: Text(
             textAlign: TextAlign.center,
-            "Pahami kebiasaan pengeluaran Anda melalui laporan statistik yang akurat dan mudah dibaca.",
+            "Understand your spending habits through accurate and easy-to-read statistical reports.",
             style: GoogleFonts.plusJakartaSans(
               fontSize: 18,
               fontWeight: FontWeight.w400,
@@ -86,7 +86,7 @@ class OnboardingScreen extends StatelessWidget {
         PageViewModel(
           image: Container(
             alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(top: 200),
+            margin: EdgeInsets.only(top: 100),
             child: Center(
               child: Lottie.asset(
                 'assets/lottie/bill.json',
@@ -98,7 +98,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
 
           titleWidget: Text(
-            "Split Bill Scan",
+            "Split Bills",
             style: GoogleFonts.plusJakartaSans(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -108,7 +108,7 @@ class OnboardingScreen extends StatelessWidget {
 
           bodyWidget: Text(
             textAlign: TextAlign.center,
-            "Bagi tagihan secara otomatis bersama teman hanya dengan memindadi foto struk berlanja anda.",
+            "Split bills automatically with friends by simply scanning a photo of your shopping receipt.",
             style: GoogleFonts.plusJakartaSans(
               fontSize: 18,
               fontWeight: FontWeight.w400,
@@ -121,7 +121,7 @@ class OnboardingScreen extends StatelessWidget {
       onSkip: _finishOnboarding, // ✅ Tombol Skip
       showSkipButton: true, // Tampilkan tombol Skip
       skip: Text(
-        'Lewati',
+        'Skip',
         style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.bold,
           fontSize: 18,
@@ -129,7 +129,7 @@ class OnboardingScreen extends StatelessWidget {
       ),
       next:  Icon(Icons.arrow_forward, size: 30),
       done: Text(
-        'Mulai',
+        'Start',
         style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.bold,
           fontSize: 18,

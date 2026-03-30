@@ -66,33 +66,30 @@ class AuthController extends GetxController {
   /// ===============================
   /// 🔁 HANDLE REDIRECT
   /// ===============================
-Future<void> _handleRedirect(String uid) async {
-  final doc = await firestore.collection("users").doc(uid).get();
+  Future<void> _handleRedirect(String uid) async {
+    final doc = await firestore.collection("users").doc(uid).get();
+    final data = doc.data();
 
-  final data = doc.data();
+    if (data == null) {
+      Get.offAllNamed(Routes.LOGIN);
+      return;
+    }
 
-  if (data == null) {
-    Get.offAllNamed(Routes.COMPLETE_PROFILE);
-    return;
+
+    final phone = data["phone"];
+    final tanggalLahir = data["tanggal_lahir"];
+
+    if ( phone == null || tanggalLahir == null) {
+      Get.offAllNamed(Routes.COMPLETE_PROFILE);
+    } else {
+      Get.offAllNamed(Routes.HOME);
+    }
   }
-
-  final isDone = data["isOnboardingComplete"] ?? false;
-  final phone = data["phone"];
-  final tanggal_lahir = data["tanggal_lahir"];
-  final balance = data["balance"];
-
-  /// 🔥 VALIDASI BERLAPIS
-  if (!isDone || phone == null || tanggal_lahir == null || balance == null) {
-    Get.offAllNamed(Routes.COMPLETE_PROFILE);
-  } else {
-    Get.offAllNamed(Routes.HOME);
-  }
-}
 
   /// ===============================
   /// 🔥 LOGIN GOOGLE
   /// ===============================
-  void loginWithGoogle() async {
+  Future loginWithGoogle() async {
     try {
       await _googleSignIn.signOut();
       await _googleSignIn.signIn().then((value) => _currentUser = value);

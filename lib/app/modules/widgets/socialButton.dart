@@ -24,7 +24,7 @@ class Socialbutton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 55,
+      height: 45,
       width: Get.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -42,7 +42,13 @@ class Socialbutton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(image),
+            Image.network(
+              image,
+              height: 20,
+              width: 20,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            ),
             SizedBox(width: item),
             Text(
               text,
