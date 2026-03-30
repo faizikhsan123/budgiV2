@@ -127,19 +127,19 @@ class HomeView extends GetView<HomeController> {
                               border: Border(
                                 top: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                                 bottom: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                                 left: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                                 right: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                               ),
                               boxShadow: [
