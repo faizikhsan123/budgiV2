@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
@@ -18,17 +17,19 @@ class HistoryView extends GetView<HistoryController> {
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
 
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 45, bottom: 0),
 
         child: Column(
           children: [
-            SizedBox(height: 10),
+     
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => Get.back(),
-                  icon: Icon(Icons.arrow_back, size: 30),
+                  onPressed: () async {
+                    Get.back();
+                  },
+                  icon: const Icon(Icons.arrow_back, size: 30),
                 ),
                 Text(
                   "History",
@@ -48,14 +49,10 @@ class HistoryView extends GetView<HistoryController> {
                               .range, //ini bisa multipel
                           showActionButtons: true,
                           initialSelectedDate: null,
+
                           todayHighlightColor: Colors.transparent,
                           showNavigationArrow: true,
                           showTodayButton: false,
-                          rangeSelectionColor: Color(0xFFBC9CC6),
-                       
-
-                         
-                      
 
                           startRangeSelectionColor: Color(0xFFBC9CC6),
                           endRangeSelectionColor: Color(0xFFBC9CC6),
@@ -83,7 +80,7 @@ class HistoryView extends GetView<HistoryController> {
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 209, 194, 214),
+                      color: const Color.fromARGB(255, 255, 255, 255),
                       border: Border.all(
                         color: const Color(0xFFBC9CC6),
                         width: 2,
@@ -99,17 +96,11 @@ class HistoryView extends GetView<HistoryController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            'Date',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
+                          Icon(
+                            Icons.calendar_month_outlined,
+                            size: 20,
+                            color: const Color.fromARGB(255, 0, 0, 0),
                           ),
-                          const SizedBox(width: 4),
-
-                          Icon(Icons.calendar_month_outlined, size: 20),
                         ],
                       ),
                     ),
@@ -118,19 +109,6 @@ class HistoryView extends GetView<HistoryController> {
               ],
             ),
             SizedBox(height: 10),
-            // buildTextField(
-            //   hint: "Search",
-            //   onchange: (value) {
-              
-                // controller.search(value);
-                
-            //   },
-            //   filled: true,
-            //   keyboardType: TextInputType.text,
-            //   controller: controller.searchC,
-            //   suffixIcon: const Icon(Icons.search, size: 25),
-              
-            // ),
 
             SizedBox(height: 10),
 

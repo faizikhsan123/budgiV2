@@ -43,7 +43,7 @@ class CompleteProfileController extends GetxController {
       'phone': phoneC.phoneNumber,
       'tanggal_lahir': nilaiTanggal.value,
     });
-    Get.offAllNamed(Routes.COMPLETE_BALANCE);
+    Get.offAllNamed(Routes.HOME);
   }
 
   @override

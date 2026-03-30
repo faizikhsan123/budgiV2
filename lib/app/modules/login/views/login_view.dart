@@ -38,49 +38,52 @@ class LoginView extends GetView<LoginController> {
                       minHeight: constraints.maxHeight,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 30,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 10),
-            
+                          const SizedBox(height: 30),
+
                           /// LOGO
                           SizedBox(
                             width: 90,
                             height: 90,
                             child: Image.network(
-                              'https://res.cloudinary.com/dzfi5acyl/image/upload/v1773415779/budgi_B_D_bentuk_babi_zyclve.png',
+                              'https://res.cloudinary.com/dzfi5acyl/image/upload/v1774848306/Stroke_Putih_y8ugnb.png',
                               filterQuality: FilterQuality.high,
                               fit: BoxFit.contain,
                             ),
                           ),
-            
+
                           const SizedBox(height: 30),
-            
+
                           /// TITLE
                           Text(
-                            "Masuk ke Akun\nAnda",
+                            "Sign In To Your\nAccount",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: const Color(0xff1A1C1E),
                             ),
                           ),
-            
+
                           const SizedBox(height: 10),
-            
+
                           /// SUBTITLE
                           Text(
-                            "Masukkan email dan kata sandi\nAnda untuk masuk.",
+                            "Enter your email and password \nto sign in.",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: const Color(0xff1A1C1E),
                             ),
                           ),
-            
+
                           const SizedBox(height: 30),
-            
+
                           /// EMAIL
                           buildTextField(
                             hint: 'budgi@gmail.com',
@@ -88,9 +91,9 @@ class LoginView extends GetView<LoginController> {
                             controller: controller.emailC,
                             filled: true,
                           ),
-            
+
                           const SizedBox(height: 15),
-            
+
                           /// PASSWORD
                           Obx(
                             () => buildTextField(
@@ -112,16 +115,16 @@ class LoginView extends GetView<LoginController> {
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 10),
-            
+
                           const SizedBox(height: 10),
-            
+
                           /// LOGIN BUTTON
                           buildButtonPink(
                             // authC: authC,
                             // controller: controller,
-                            text: "Masuk",
+                            text: "Start Now",
                             onTap: () {
                               authC.loginForm(
                                 controller.emailC.text,
@@ -131,19 +134,17 @@ class LoginView extends GetView<LoginController> {
                               controller.passC.clear();
                             },
                           ),
-            
-                          const SizedBox(height: 20),
-            
+
+                          const SizedBox(height: 15),
+
                           /// DIVIDER
                           Row(
                             children: [
-                              Expanded(
-                                child: Divider(color: Colors.grey[300]),
-                              ),
+                              Expanded(child: Divider(color: Colors.grey[300])),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
-                                  "Atau",
+                                  "Or",
                                   style: GoogleFonts.plusJakartaSans(
                                     color: const Color.fromARGB(
                                       255,
@@ -154,57 +155,62 @@ class LoginView extends GetView<LoginController> {
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                child: Divider(color: Colors.grey[300]),
-                              ),
+                              Expanded(child: Divider(color: Colors.grey[300])),
                             ],
                           ),
-            
-                          const SizedBox(height: 30),
-            
+
+                          const SizedBox(height: 20),
+
                           /// GOOGLE
                           Socialbutton(
                             fontsize: 16,
                             image:
                                 "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773417040/Google_Icon_fbdggy.png",
+
                             // authC: authC.loginFacebook(),
-                            text: "Masuk dengan Google",
+                            text: "Continue With Google",
                             // icon: Icons.g_mobiledata,
-                            onTap: () {
-                              authC.loginWithGoogle();
+                            onTap: ()  {
+                               authC.loginWithGoogle();
+                              controller.emailC.clear();
+                              controller.passC.clear();
                             },
-                            item: 15,
+                            item: 10,
                           ),
-            
+
                           const SizedBox(height: 15),
-            
+
                           /// FACEBOOK
                           Socialbutton(
-                            fontsize: 14,
-                            item: 20,
+                            fontsize: 15,
+                            item: 10,
                             image:
                                 "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773417026/logos_facebook_ti0ibh.png",
-                            text: "Masuk dengan Facebook",
+                            text: "Continue With Facebook",
                             // icon: Icons.facebook,
-                            onTap: () {
-                              authC.loginFacebook();
+                            onTap: ()  {
+                               authC.loginFacebook();
+                              controller.emailC.clear();
+                              controller.passC.clear();
                             },
                           ),
-            
-                          const SizedBox(height: 90),
-            
+
+                          const SizedBox(height: 30),
+
                           /// REGISTER
                           Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text("Belum punya akun? "),
+                                const Text("Don't have an account?"),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.toNamed(Routes.REGIS);
+                                     Get.toNamed(Routes.REGIS);
+                                    controller.emailC.clear();
+                                    controller.passC.clear();
                                   },
                                   child: const Text(
-                                    "Daftar",
+                                    " Sign Up",
                                     style: TextStyle(
                                       color: Colors.blue,
                                       fontWeight: FontWeight.bold,
@@ -214,7 +220,7 @@ class LoginView extends GetView<LoginController> {
                               ],
                             ),
                           ),
-            
+
                           const SizedBox(height: 20),
                         ],
                       ),

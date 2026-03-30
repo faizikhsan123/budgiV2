@@ -13,14 +13,15 @@ class bottom_navbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConvexAppBar(
+     
       height: 50,
       //widget bottom navbar
       backgroundColor: const Color.fromARGB(255, 189, 157, 195),
       initialActiveIndex: pageC.CurrentIndex.value, //index active
       items: [
         TabItem(icon: Icons.home, title: 'Home'),
-        TabItem(icon: Icons.add, title: 'Add'),
-        TabItem(icon: Icons.person, title: 'Pofile'),
+        TabItem(icon: Icons.add, title: 'Transaction'),
+        TabItem(icon: Icons.person, title: 'Profile'),
       ],
       onTap: (index) {
         pageC.changePage(index);

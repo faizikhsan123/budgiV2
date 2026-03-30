@@ -7,7 +7,7 @@ Widget buildButtonPink({
   required VoidCallback onTap,
 }) {
   return Container(
-    height: 55,
+    height: 45,
 
     width: Get.width,
     decoration: BoxDecoration(

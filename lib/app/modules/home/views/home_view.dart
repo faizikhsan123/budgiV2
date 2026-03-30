@@ -243,7 +243,7 @@ class HomeView extends GetView<HomeController> {
                                   height: 200,
                                   child: const Center(
                                     child: Text(
-                                      "Transaksi belum ada",
+                                      "No transactions yet",
                                       textAlign: TextAlign.center,
                                     ),
                                   ),

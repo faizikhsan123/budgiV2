@@ -12,13 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:introduction_screen/introduction_screen.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await GetStorage.init(); // 👈 Init GetStorage
+  await GetStorage.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(NyApp());
 }
@@ -52,21 +51,19 @@ class _SplashGateState extends State<SplashGate> {
   }
 
   Future<void> _goToNext() async {
-    await Future.delayed(const Duration(seconds: 3)); // ⏱️ Durasi splash
+    await Future.delayed(const Duration(seconds: 3));
 
     final box = GetStorage();
     final onboardingDone = box.read('onboarding_done') ?? false;
 
     if (mounted) {
       if (!onboardingDone) {
-        // Belum pernah buka → tampilkan onboarding
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => OnboardingScreen()),
         );
       } else {
-        // Sudah pernah → langsung cek auth
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => AuthWrapper()), //authwrapper
+          MaterialPageRoute(builder: (_) => AuthWrapper()),
         );
       }
     }
@@ -74,91 +71,140 @@ class _SplashGateState extends State<SplashGate> {
 
   @override
   Widget build(BuildContext context) {
-    return Splashscreen(); // 👈 Splash screen kamu
+    return Splashscreen();
   }
 }
 
-class AuthWrapper extends StatelessWidget {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final Connectivity connectivity = Connectivity();
+class AuthWrapper extends StatefulWidget {
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
 
-  Future<Widget> _handleAuth() async {
-    final user = auth.currentUser;
+class _AuthWrapperState extends State<AuthWrapper> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Connectivity _connectivity = Connectivity();
 
-    /// ❌ BELUM LOGIN
-    if (user == null) {
-      return GetBuilder(builder: (_) => Container()); // dummy
-    }
+  bool _isOffline = false;
+  bool _isLoading = true;
+  bool _hasRedirected = false;
 
-    /// 🔥 AMBIL DATA USER
-    final doc = await firestore.collection("users").doc(user.uid).get();
-    final data = doc.data();
-
-    /// 🔥 VALIDASI DATA
-    if (data == null ||
-        data["isOnboardingComplete"] != true ||
-        data["balance"] == null ||
-        data["name"] == null) {
-      return GetBuilder(builder: (_) => Container());
-    }
-
-    return GetBuilder(builder: (_) => Container());
+  @override
+  void initState() {
+    super.initState();
+    _init();
   }
 
-  void _redirect() async {
-    final user = auth.currentUser;
+  Future<void> _init() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _hasRedirected = false;
+      });
+    }
+
+    final result = await _connectivity.checkConnectivity();
+    final offline = result.contains(ConnectivityResult.none);
+
+    if (mounted) {
+      setState(() {
+        _isOffline = offline;
+        _isLoading = false;
+      });
+    }
+
+    if (!offline) {
+      await _redirect();
+    }
+
+    _connectivity.onConnectivityChanged.listen((result) async {
+      final nowOffline = result.contains(ConnectivityResult.none);
+      if (mounted) {
+        setState(() => _isOffline = nowOffline);
+      }
+      if (!nowOffline && !_hasRedirected) {
+        await _redirect();
+      }
+    });
+  }
+
+  Future<void> _redirect() async {
+    if (_hasRedirected) return;
+
+    final user = _auth.currentUser;
 
     if (user == null) {
+      _hasRedirected = true;
       Get.offAllNamed(Routes.LOGIN);
       return;
     }
 
-    final doc = await firestore.collection("users").doc(user.uid).get();
-    final data = doc.data();
+    try {
+      final doc = await _firestore.collection("users").doc(user.uid).get();
+      final data = doc.data();
 
-    if (data == null ||
-        data["isOnboardingComplete"] != true ||
-        data["balance"] == null ||
-        data["name"] == null) {
-      Get.offAllNamed(Routes.COMPLETE_PROFILE);
-    } else {
-      Get.offAllNamed(Routes.HOME);
+      _hasRedirected = true;
+
+      if (data == null) {
+        Get.offAllNamed(Routes.COMPLETE_PROFILE);
+        return;
+      }
+
+      // ✅ Samakan dengan auth_controller — hanya cek phone & tanggal_lahir
+      final phone = data["phone"];
+      final tanggalLahir = data["tanggal_lahir"];
+
+      if (phone == null || tanggalLahir == null) {
+        Get.offAllNamed(Routes.COMPLETE_PROFILE);
+      } else {
+        Get.offAllNamed(Routes.HOME);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isOffline = true);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<ConnectivityResult>>(
-      stream: connectivity.onConnectivityChanged,
-      builder: (context, connSnapshot) {
-        if (connSnapshot.hasData &&
-            connSnapshot.data!.contains(ConnectivityResult.none)) {
-          return const Scaffold(
-            body: Center(child: Text("❌ Tidak ada koneksi internet")),
-          );
-        }
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-        return StreamBuilder<User?>(
-          stream: auth.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
+    if (_isOffline) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.wifi_off_rounded, size: 72, color: Colors.grey),
+              const SizedBox(height: 16),
+              const Text(
+                "No Connection Internet",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                "Check your connection and try again",
+                style: TextStyle(fontSize: 13, color: Colors.grey),
+              ),
+              const SizedBox(height: 28),
+              ElevatedButton.icon(
+                onPressed: _init,
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text("Try Again"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
-            /// 🔥 PANGGIL REDIRECT SETELAH BUILD
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _redirect();
-            });
-
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          },
-        );
-      },
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }
