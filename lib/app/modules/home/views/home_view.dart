@@ -459,9 +459,7 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-    floatingActionButton: FloatingActionButton(onPressed: (){
-      authC.signOut();
-    }), 
+   
     );
     
   }

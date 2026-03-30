@@ -34,7 +34,7 @@ class RegisView extends GetView<RegisController> {
                     const SizedBox(height: 20),
 
                     Text(
-                      "Signup",
+                      "Sign up",
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.bold,
                         fontSize: 32,

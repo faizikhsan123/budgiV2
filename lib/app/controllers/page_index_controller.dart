@@ -167,7 +167,7 @@ class PageIndexController extends GetxController {
                                   showNavigationArrow: true,
                                   showTodayButton: false,
 
-                                 selectionColor: Color(0xFFBC9CC6),
+                                  selectionColor: Color(0xFFBC9CC6),
                                   onCancel: () => Get.back(),
                                   onSubmit: (obj) {
                                     DateTime date = obj as DateTime;
@@ -314,35 +314,51 @@ class PageIndexController extends GetxController {
                                               "data categories sesuai index : ${categories[index]['name']}",
                                             );
                                           },
-                                          child: Container(
-                                            width: itemWidth,
-                                            height: itemWidth,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: itemWidth,
+                                                height: itemWidth,
 
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Color(0xFFBC9CC6),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Color(0xFFBC9CC6),
+                                                  ),
+                                                  color:
+                                                      selectedCategoryIndex
+                                                              .value ==
+                                                          index
+                                                      ? Color.fromARGB(
+                                                          255,
+                                                          234,
+                                                          217,
+                                                          239,
+                                                        )
+                                                      : Color.fromARGB(
+                                                          255,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Image.network(
+                                                  categories[index]['icon']!,
+                                                ),
                                               ),
-                                              color:
-                                                  selectedCategoryIndex.value ==
-                                                      index
-                                                  ? Color.fromARGB(
-                                                      255,
-                                                      234,
-                                                      217,
-                                                      239,
-                                                    )
-                                                  : Color.fromARGB(
-                                                      255,
-                                                      255,
-                                                      255,
-                                                      255,
+
+                                              Text(
+                                                "${categories[index]['name']}",
+                                                style:
+                                                    GoogleFonts.plusJakartaSans(
+                                                      color: Colors.black,
+                                                      fontSize: 9,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Image.network(
-                                              categories[index]['icon']!,
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),

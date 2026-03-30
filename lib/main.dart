@@ -146,7 +146,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       _hasRedirected = true;
 
       if (data == null) {
-        Get.offAllNamed(Routes.COMPLETE_PROFILE);
+        Get.offAllNamed(Routes.LOGIN);
         return;
       }
 
