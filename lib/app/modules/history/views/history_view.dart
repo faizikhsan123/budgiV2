@@ -108,9 +108,8 @@ class HistoryView extends GetView<HistoryController> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+          
 
-            SizedBox(height: 10),
 
             Expanded(
               child: GetBuilder<HistoryController>(

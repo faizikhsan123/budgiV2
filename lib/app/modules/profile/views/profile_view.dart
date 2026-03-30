@@ -1,3 +1,4 @@
+import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/TextFIeldIsi.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
@@ -15,6 +16,7 @@ import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
   final pageC = Get.find<PageIndexController>();
+  final authC = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +196,7 @@ class ProfileView extends GetView<ProfileController> {
                                   /// 🔥 LOGOUT BUTTON (CLEAN)
                                   GestureDetector(
                                     onTap: () {
+                                      authC.signOut();
                                       // controller.logout(); // 🔥 pastikan ada di controller
                                     },
                                     child: Container(
