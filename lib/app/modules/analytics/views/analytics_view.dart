@@ -518,7 +518,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                                     Colors.red,
                                                               ),
                                                             ),
-                                                          ),
+                                                          ),    
                                                           if (i !=
                                                               dataItem
                                                                       .docs

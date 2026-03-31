@@ -27,7 +27,7 @@ class QuickActionsRow extends StatelessWidget {
         const SizedBox(width: 70),
         _ActionItem(
           label: 'Coming Soon',
-          assetPath: 'assets/icons/history.svg',
+          assetPath: 'assets/icons/sca.svg',
           onTap: () {
           // Get.toNamed(Routes.SCAN);
           print("otw");

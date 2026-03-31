@@ -19,174 +19,165 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
           child: SingleChildScrollView(
             // ✅ ganti Column biasa ke SingleChildScrollView
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: ConstrainedBox(
-              // ✅ pastikan konten minimal setinggi layar
-              constraints: BoxConstraints(
-                minHeight:
-                    MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).padding.top -
-                    MediaQuery.of(context).padding.bottom,
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 80),
-
-                    /// TITLE
-                    Text(
-                      "Complete Your Personal\n Information",
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 32,
-                      ),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 80),
+            
+                  /// TITLE
+                  Text(
+                    "Complete Your Personal\n Information",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 32,
                     ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      "Please fill the form below to complete your personal information",
-                      style: GoogleFonts.plusJakartaSans(
-                        color: const Color.fromARGB(255, 84, 82, 82),
-                        fontSize: 14,
-                      ),
+                  ),
+            
+                  const SizedBox(height: 8),
+            
+                  Text(
+                    "Please fill the form below to complete your personal information",
+                    style: GoogleFonts.plusJakartaSans(
+                      color: const Color.fromARGB(255, 84, 82, 82),
+                      fontSize: 14,
                     ),
-
-                    const SizedBox(height: 40),
-
-                    /// BIRTH DATE LABEL
-                    buildLabel('Birth Date'),
-
-                    const SizedBox(height: 5),
-
-                    /// BIRTH DATE FIELD
-                    InkWell(
-                      onTap: () => Get.dialog(
-                        Dialog(
-                          child: Container(
-                            height: 400,
-                            padding: const EdgeInsets.all(10),
-                            child: SfDateRangePicker(
-                              controller: controller.dateC,
-                              selectionMode:
-                                  DateRangePickerSelectionMode.single,
-                              minDate: DateTime(2000),
-                                   selectionColor: Color(0xFFBC9CC6),
-                              initialSelectedDate: null,
-                              maxDate: DateTime(2040),
-                              todayHighlightColor: Colors.transparent,
-                              showNavigationArrow: true,
-                              showActionButtons: true,
-                              onCancel: () => Get.back(),
-                              onSubmit: (obj) {
-                                DateTime date = obj as DateTime;
-                                controller.nilaiTanggal.value =
-                                    "${date.day}/${date.month}/${date.year}";
-                                Get.back();
-                              },
-                            ),
+                  ),
+            
+                  const SizedBox(height: 40),
+            
+                  /// BIRTH DATE LABEL
+                  buildLabel('Birth Date'),
+            
+                  const SizedBox(height: 5),
+            
+                  /// BIRTH DATE FIELD
+                  InkWell(
+                    onTap: () => Get.dialog(
+                      Dialog(
+                        child: Container(
+                          height: 400,
+                          padding: const EdgeInsets.all(10),
+                          child: SfDateRangePicker(
+                            controller: controller.dateC,
+                            selectionMode:
+                                DateRangePickerSelectionMode.single,
+                            minDate: DateTime(2000),
+                                 selectionColor: Color(0xFFBC9CC6),
+                            initialSelectedDate: null,
+                            maxDate: DateTime(2040),
+                            todayHighlightColor: Colors.transparent,
+                            showNavigationArrow: true,
+                            showActionButtons: true,
+                            onCancel: () => Get.back(),
+                            onSubmit: (obj) {
+                              DateTime date = obj as DateTime;
+                              controller.nilaiTanggal.value =
+                                  "${date.day}/${date.month}/${date.year}";
+                              Get.back();
+                            },
                           ),
                         ),
                       ),
-                      child: Obx(
-                        () => Container(
-                          height: 55,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  controller.nilaiTanggal.value.isEmpty
-                                      ? "Tanggal Lahir"
-                                      : controller.nilaiTanggal.value,
-                                  style: TextStyle(
-                                    
-                                    fontSize: 15,
-                                    color: controller.nilaiTanggal.value.isEmpty
-                                    
-                                        ? Colors.grey.shade500
-                                        : Colors.black,
-                                    fontWeight:
-                                        controller.nilaiTanggal.value.isEmpty
-                                        ? FontWeight.normal
-                                        : FontWeight.w500,
-                                  ),
+                    ),
+                    child: Obx(
+                      () => Container(
+                        height: 55,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                controller.nilaiTanggal.value.isEmpty
+                                    ? "Tanggal Lahir"
+                                    : controller.nilaiTanggal.value,
+                                style: TextStyle(
+                                  
+                                  fontSize: 15,
+                                  color: controller.nilaiTanggal.value.isEmpty
+                                  
+                                      ? Colors.grey.shade500
+                                      : Colors.black,
+                                  fontWeight:
+                                      controller.nilaiTanggal.value.isEmpty
+                                      ? FontWeight.normal
+                                      : FontWeight.w500,
                                 ),
                               ),
-                              const Icon(
-                                Icons.calendar_today_outlined,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                            ],
-                          ),
+                            ),
+                            const Icon(
+                              Icons.calendar_today_outlined,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ],
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 15),
-
-                    /// PHONE LABEL
-                    buildLabel('Phone Number'),
-
-                    const SizedBox(height: 5),
-
-                    /// PHONE FIELD
-                    Container(
-                      height: 55,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                          ),
-                        ],
+                  ),
+            
+                  const SizedBox(height: 15),
+            
+                  /// PHONE LABEL
+                  buildLabel('Phone Number'),
+            
+                  const SizedBox(height: 5),
+            
+                  /// PHONE FIELD
+                  Container(
+                    height: 55,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: InternationalPhoneNumberInput(
+                      onInputChanged: (PhoneNumber number) {
+                        controller.phoneC = number;
+                      },
+                      selectorConfig: const SelectorConfig(
+                        selectorType: PhoneInputSelectorType.DROPDOWN,
+                        showFlags: true,
                       ),
-                      child: InternationalPhoneNumberInput(
-                        onInputChanged: (PhoneNumber number) {
-                          controller.phoneC = number;
-                        },
-                        selectorConfig: const SelectorConfig(
-                          selectorType: PhoneInputSelectorType.DROPDOWN,
-                          showFlags: true,
-                        ),
-                        initialValue: PhoneNumber(isoCode: 'ID'),
-                        textFieldController: TextEditingController(),
-                        
-                        formatInput: true,
-                        keyboardType: TextInputType.number,
-                        inputDecoration: const InputDecoration(
-                          border: InputBorder.none,
-                          isCollapsed: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 18),
-                          hintText: "812-3456-7890",
-                        ),
+                      initialValue: PhoneNumber(isoCode: 'ID'),
+                      textFieldController: TextEditingController(),
+                      
+                      formatInput: true,
+                      keyboardType: TextInputType.number,
+                      inputDecoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isCollapsed: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 18),
+                        hintText: "812-3456-7890",
                       ),
                     ),
-
-                    SizedBox(height: 30),
-
-                    /// CONTINUE BUTTON
-                    buildButtonPink(
-                      text: 'Continue',
-                      onTap: () => controller.LengkapiProfile(),
-                    ),
-                  ],
-                ),
+                  ),
+            
+                  SizedBox(height: 30),
+            
+                  /// CONTINUE BUTTON
+                  buildButtonPink(
+                    text: 'Continue',
+                    onTap: () => controller.LengkapiProfile(),
+                  ),
+                ],
               ),
             ),
           ),
