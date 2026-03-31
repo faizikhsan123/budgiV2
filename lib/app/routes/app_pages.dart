@@ -15,8 +15,7 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
-import '../modules/scan/bindings/scan_binding.dart';
-import '../modules/scan/views/scan_view.dart';
+
 
 part 'app_routes.dart';
 
@@ -65,7 +64,6 @@ class AppPages {
       page: () => EditProfileView(),
       binding: EditProfileBinding(),
     ),
-   
     GetPage(
       name: _Paths.ANALYTICS,
       page: () => AnalyticsView(),
@@ -75,11 +73,6 @@ class AppPages {
       name: _Paths.HISTORY,
       page: () => HistoryView(),
       binding: HistoryBinding(),
-    ),
-    GetPage(
-      name: _Paths.SCAN,
-      page: () =>  ScanView(),
-      binding: ScanBinding(),
     ),
   ];
 }
