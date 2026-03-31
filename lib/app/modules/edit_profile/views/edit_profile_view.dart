@@ -34,7 +34,7 @@ class EditProfileView extends GetView<EditProfileController> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color.fromARGB(255, 218, 206, 222), Colors.white],
+                 colors: [Color(0xFFEADCF0), Colors.white],
               ),
             ),
             child: SafeArea(

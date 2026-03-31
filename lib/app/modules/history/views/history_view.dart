@@ -127,7 +127,7 @@ class HistoryView extends GetView<HistoryController> {
                           height: 200,
                           child: const Center(
                             child: Text(
-                              "History transaksi blm ada",
+                              "History is empty",
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -184,7 +184,7 @@ class HistoryView extends GetView<HistoryController> {
 
                                     if (!itemSnapshot.hasData ||
                                         itemSnapshot.data!.docs.isEmpty) {
-                                      return const Text("Belum ada transaksi");
+                                      return const Text("History is empty");
                                     }
 
                                     var dataItem = itemSnapshot.data!;

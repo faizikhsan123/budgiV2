@@ -55,7 +55,7 @@ class EditProfileController extends GetxController {
       update(); //untuk memperbarui karena pakai get buildeedr
     } catch (e) {
       //kalo user klik cancel pada pemilihan gamabar
-      Get.snackbar('gagal', 'anda tidak bisa mengambil gambar $e');
+      Get.snackbar('Failed', 'You cannot pick the image: $e');
       pickedIMage = null;
       update();
     }
@@ -63,9 +63,9 @@ class EditProfileController extends GetxController {
 
   void deleteImage() {
     Get.defaultDialog(
-      title: "Are you sure?",
+      title: "Delete?",
       titlePadding: const EdgeInsets.only(top: 24, left: 20, right: 20),
-      middleText: " Anda yakin ingin menghapus gambar ini?",
+      middleText: " Are you sure you want to delete your profile photo?",
       radius: 12,
       backgroundColor: Colors.white,
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -149,7 +149,7 @@ class EditProfileController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Gagal update profile $e',
+        'Failed to update profile: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -176,8 +176,8 @@ class EditProfileController extends GetxController {
       return data['secure_url'];
     } catch (e) {
       Get.snackbar(
-        'Gagal',
-        'Upload gambar gagal $e',
+        'Failed',
+        'Failed to upload image: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

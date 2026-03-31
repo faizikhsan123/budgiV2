@@ -35,7 +35,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
 
                     /// TITLE
                     Text(
-                      "Lengkapi Data Diri \n Anda",
+                      "Complete Your Personal\n Information",
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.bold,
                         color: const Color.fromARGB(255, 0, 0, 0),
@@ -46,7 +46,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                     const SizedBox(height: 8),
 
                     Text(
-                      "Masukkan tanggal lahir dan nomor HP anda",
+                      "Please fill the form below to complete your personal information",
                       style: GoogleFonts.plusJakartaSans(
                         color: const Color.fromARGB(255, 84, 82, 82),
                         fontSize: 14,
@@ -56,7 +56,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                     const SizedBox(height: 40),
 
                     /// BIRTH DATE LABEL
-                    buildLabel('Tanggal Lahir'),
+                    buildLabel('Birth Date'),
 
                     const SizedBox(height: 5),
 
@@ -138,7 +138,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                     const SizedBox(height: 15),
 
                     /// PHONE LABEL
-                    buildLabel('Nomor Telepon'),
+                    buildLabel('Phone Number'),
 
                     const SizedBox(height: 5),
 
@@ -182,7 +182,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
 
                     /// CONTINUE BUTTON
                     buildButtonPink(
-                      text: 'Lanjutkan',
+                      text: 'Continue',
                       onTap: () => controller.LengkapiProfile(),
                     ),
                   ],

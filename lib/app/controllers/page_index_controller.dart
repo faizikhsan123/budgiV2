@@ -167,7 +167,7 @@ class PageIndexController extends GetxController {
                                   showNavigationArrow: true,
                                   showTodayButton: false,
 
-                                 selectionColor: Color(0xFFBC9CC6),
+                                  selectionColor: Color(0xFFBC9CC6),
                                   onCancel: () => Get.back(),
                                   onSubmit: (obj) {
                                     DateTime date = obj as DateTime;
@@ -314,35 +314,51 @@ class PageIndexController extends GetxController {
                                               "data categories sesuai index : ${categories[index]['name']}",
                                             );
                                           },
-                                          child: Container(
-                                            width: itemWidth,
-                                            height: itemWidth,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: itemWidth,
+                                                height: itemWidth,
 
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Color(0xFFBC9CC6),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Color(0xFFBC9CC6),
+                                                  ),
+                                                  color:
+                                                      selectedCategoryIndex
+                                                              .value ==
+                                                          index
+                                                      ? Color.fromARGB(
+                                                          255,
+                                                          234,
+                                                          217,
+                                                          239,
+                                                        )
+                                                      : Color.fromARGB(
+                                                          255,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Image.network(
+                                                  categories[index]['icon']!,
+                                                ),
                                               ),
-                                              color:
-                                                  selectedCategoryIndex.value ==
-                                                      index
-                                                  ? Color.fromARGB(
-                                                      255,
-                                                      234,
-                                                      217,
-                                                      239,
-                                                    )
-                                                  : Color.fromARGB(
-                                                      255,
-                                                      255,
-                                                      255,
-                                                      255,
+
+                                              Text(
+                                                "${categories[index]['name']}",
+                                                style:
+                                                    GoogleFonts.plusJakartaSans(
+                                                      color: Colors.black,
+                                                      fontSize: 9,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Image.network(
-                                              categories[index]['icon']!,
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -442,8 +458,8 @@ class PageIndexController extends GetxController {
     /// VALIDASI NOMINAL
     if (number == null) {
       Get.snackbar(
-        'Error',
-        'Nominal wajib diisi',
+        'Failed',
+        'Amount is required',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -452,8 +468,8 @@ class PageIndexController extends GetxController {
 
     if (number <= 0) {
       Get.snackbar(
-        'Error',
-        'Nominal tidak valid',
+        'Failed',
+        'Amount must be greater than 0',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -463,8 +479,8 @@ class PageIndexController extends GetxController {
     /// VALIDASI KATEGORI
     if (selectedCategoryIndex.value == -1) {
       Get.snackbar(
-        'Error',
-        'Silakan pilih kategori terlebih dahulu',
+        'Failed',
+        'Category is required',
         backgroundColor: Colors.orange.shade50,
         colorText: Colors.orange.shade900,
       );
@@ -480,8 +496,8 @@ class PageIndexController extends GetxController {
     /// CEK SALDO
     if (number > balance) {
       Get.snackbar(
-        'Error',
-        'Saldo tidak mencukupi',
+        'Failed',
+        'Not enough balance',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -591,7 +607,7 @@ class PageIndexController extends GetxController {
               content: content(
                 rupiah: rupiah,
                 number: number,
-                text: "saldo di kurangi",
+                text: "Balance has been deducted",
               ),
             );
           },
@@ -620,8 +636,8 @@ class PageIndexController extends GetxController {
 
     if (number == null) {
       Get.snackbar(
-        'Error',
-        'Nominal wajib diisi',
+        'Failed',
+        'Amount is required',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -630,8 +646,8 @@ class PageIndexController extends GetxController {
 
     if (number < 0) {
       Get.snackbar(
-        'Error',
-        'Nominal tidak boleh negatif',
+        'Failed',
+        'Amount must be greater than 0',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -748,7 +764,7 @@ class PageIndexController extends GetxController {
               content: content(
                 rupiah: rupiah,
                 number: number,
-                text: "saldo anda bertambh",
+                text: "Balance has been added",
               ),
             );
 

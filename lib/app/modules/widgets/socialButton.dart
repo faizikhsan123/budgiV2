@@ -31,8 +31,8 @@ class Socialbutton extends StatelessWidget {
         boxShadow: const [
           BoxShadow(
             color: Colors.black26,
-            blurRadius: 10,
-            offset: Offset(0, 6),
+            blurRadius: 2,
+            offset: Offset(0, 2),
           ),
         ],
       ),

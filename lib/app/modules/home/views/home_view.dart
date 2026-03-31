@@ -44,7 +44,7 @@ class HomeView extends GetView<HomeController> {
                       }
 
                       if (!asyncSnapshot.hasData) {
-                        return Center(child: Text("Data belum ada"));
+                        return Center(child: Text("Data Is Empty"));
                       }
 
                       var data = asyncSnapshot.data!;
@@ -344,7 +344,7 @@ class HomeView extends GetView<HomeController> {
 
                                             if (!itemSnapshot.hasData) {
                                               return const Text(
-                                                "Belum ada transaksi",
+                                                "Transaction is empty",
                                               );
                                             }
 
@@ -459,9 +459,7 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-    floatingActionButton: FloatingActionButton(onPressed: (){
-      authC.signOut();
-    }), 
+   
     );
     
   }

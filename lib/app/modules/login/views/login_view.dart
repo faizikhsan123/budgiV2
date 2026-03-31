@@ -202,7 +202,7 @@ class LoginView extends GetView<LoginController> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text("Don't have an account?"),
+                                const Text("Doesn't have an account? "),
                                 GestureDetector(
                                   onTap: () {
                                      Get.toNamed(Routes.REGIS);

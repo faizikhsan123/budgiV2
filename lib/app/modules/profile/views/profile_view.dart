@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../widgets/app_colors.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 
@@ -112,13 +111,13 @@ class ProfileView extends GetView<ProfileController> {
                                           ),
                                           decoration: BoxDecoration(
                                             color: const Color(0xFFF3E5F5),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
                                           ),
                                           child: Text(
-                                            "Edit",
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            "Edit Profile",
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
                                               color: Colors.purple,
@@ -150,17 +149,16 @@ class ProfileView extends GetView<ProfileController> {
                                   Container(
                                     height: 55,
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
+                                      horizontal: 16,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.circular(14),
+                                      borderRadius: BorderRadius.circular(14),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black
-                                              .withOpacity(0.03),
+                                          color: Colors.black.withOpacity(0.03),
                                           blurRadius: 6,
-                                        )
+                                        ),
                                       ],
                                     ),
                                     child: Row(
@@ -168,8 +166,7 @@ class ProfileView extends GetView<ProfileController> {
                                         Expanded(
                                           child: Text(
                                             user['tanggal_lahir'],
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -196,18 +193,128 @@ class ProfileView extends GetView<ProfileController> {
                                   /// 🔥 LOGOUT BUTTON (CLEAN)
                                   GestureDetector(
                                     onTap: () {
-                                      authC.signOut();
+                                      Get.defaultDialog(
+                                        title: "",
+                                        titleStyle: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF1A1A2E),
+                                        ),
+                                        radius: 16,
+
+                                        // Custom content buat icon
+                                        content: Column(
+                                          children: [
+                                            Container(
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: const Color(0xFFFFEEEE),
+                                                border: Border.all(
+                                                  color: const Color(
+                                                    0xFFFFCCCC,
+                                                  ),
+                                                  width: 1.5,
+                                                ),
+                                              ),
+                                              child: const Icon(
+                                                Icons.logout_rounded,
+                                                color: Color(0xFFE53935),
+                                                size: 28,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            const Text(
+                                              "Logout",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xFF1A1A2E),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "Are you sure want to logout?",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.grey[500],
+                                                height: 1.5,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                          ],
+                                        ),
+
+                                        // Tombol Cancel
+                                        cancel: SizedBox(
+                                          width: 250,
+                                          child: OutlinedButton(
+                                            onPressed: () => Get.back(),
+                                            style: OutlinedButton.styleFrom(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 13,
+                                                  ),
+                                              side: BorderSide(
+                                                color: const Color.fromARGB(255, 182, 182, 182)!,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: const Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                color: Color(0xFF555555),
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+
+                                        // Tombol Confirm
+                                        confirm: SizedBox(
+                                          width: 250,
+
+                                          child: ElevatedButton(
+                                            onPressed: () => authC.signOut(),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: const Color(
+                                                0xFFE53935,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 13,
+                                                  ),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: const Text(
+                                              "Yes, Logout",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
                                       // controller.logout(); // 🔥 pastikan ada di controller
                                     },
                                     child: Container(
                                       width: double.infinity,
-                                      padding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.red.shade50,
-                                        borderRadius:
-                                            BorderRadius.circular(14),
+                                        borderRadius: BorderRadius.circular(14),
                                         border: Border.all(
                                           color: Colors.red.shade200,
                                         ),
@@ -223,8 +330,7 @@ class ProfileView extends GetView<ProfileController> {
                                           const SizedBox(width: 8),
                                           Text(
                                             "Logout",
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontWeight: FontWeight.w600,
                                               color: Colors.red,
                                             ),
@@ -260,16 +366,18 @@ class ProfileView extends GetView<ProfileController> {
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.1),
                                     blurRadius: 10,
-                                  )
+                                  ),
                                 ],
                               ),
                               child: ClipOval(
-                                child: user['photo_url'] == null ||
+                                child:
+                                    user['photo_url'] == null ||
                                         user['photo_url'] == ''
-                                    ? Image.network(imageUrl,
-                                        fit: BoxFit.cover)
-                                    : Image.network(user['photo_url'],
-                                        fit: BoxFit.cover),
+                                    ? Image.network(imageUrl, fit: BoxFit.cover)
+                                    : Image.network(
+                                        user['photo_url'],
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                           ),
