@@ -7,7 +7,7 @@ Widget buildLabel(String text) {
     child: Text(
       text,
       style: GoogleFonts.plusJakartaSans(
-        color: const Color.fromARGB(255, 67, 64, 64),
+        color: const Color.fromARGB(255, 45, 43, 43),
       ),
     ),
   );

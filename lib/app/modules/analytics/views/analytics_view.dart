@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,16 +14,19 @@ class AnalyticsView extends GetView<AnalyticsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 50, bottom: 0),
         child: Column(
           children: [
+            // ── AppBar ──────────────────────────────────────────────────────
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => Get.back(),
-                  icon: Icon(Icons.arrow_back, size: 30),
+                  onPressed: () async {
+                    Get.back();
+                    await controller.resetForm();
+                  },
+                  icon: const Icon(Icons.arrow_back, size: 30),
                 ),
                 Text(
                   "Analytics",
@@ -36,35 +40,35 @@ class AnalyticsView extends GetView<AnalyticsController> {
                     Dialog(
                       child: Container(
                         height: 400,
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(10),
                         child: SfDateRangePicker(
-                          selectionMode: DateRangePickerSelectionMode
-                              .range, //ini bisa multipel
+                          selectionMode: DateRangePickerSelectionMode.range,
                           showActionButtons: true,
                           initialSelectedDate: null,
-
                           todayHighlightColor: Colors.transparent,
                           showNavigationArrow: true,
                           showTodayButton: false,
-
                           startRangeSelectionColor: Color(0xFFBC9CC6),
                           endRangeSelectionColor: Color(0xFFBC9CC6),
                           onCancel: () => Get.back(),
                           onSubmit: (obj) {
                             final range = obj as PickerDateRange;
-                            print(obj);
-
                             if (range.endDate == null) {
-                              //single date
                               controller.pickDateRange(
                                 range.startDate!,
                                 range.startDate!,
                               );
+                              controller.nilaiTanggal.value = DateFormat(
+                                'EEEE, d MMMM yyyy',
+                              ).format(range.startDate!);
                             } else {
                               controller.pickDateRange(
                                 range.startDate!,
                                 range.endDate!,
                               );
+                              controller.nilaiTanggal.value =
+                                  "${DateFormat('EEEE, d MMMM yyyy').format(range.startDate!)} - "
+                                  "${DateFormat('EEEE, d MMMM yyyy').format(range.endDate!)}";
                             }
                           },
                         ),
@@ -73,12 +77,11 @@ class AnalyticsView extends GetView<AnalyticsController> {
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 209, 194, 214),
+                      color: Colors.white,
                       border: Border.all(
                         color: const Color(0xFFBC9CC6),
                         width: 2,
                       ),
-
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
@@ -86,21 +89,10 @@ class AnalyticsView extends GetView<AnalyticsController> {
                         vertical: 5,
                         horizontal: 10,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Date',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-
-                          Icon(Icons.calendar_month_outlined, size: 20),
-                        ],
+                      child: Icon(
+                        Icons.calendar_month_outlined,
+                        size: 20,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -109,6 +101,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
             ),
 
             const SizedBox(height: 20),
+
             Expanded(
               child: GetBuilder<AnalyticsController>(
                 builder: (controller) => Padding(
@@ -118,6 +111,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                   ),
                   child: Column(
                     children: [
+                      // ── Toggle Expense / Income ────────────────────────────
                       Obx(() {
                         return Row(
                           children: [
@@ -127,7 +121,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                   backgroundColor:
                                       controller.transactionType.value ==
                                           "expense"
-                                      ? Color(0xFFBC9CC6)
+                                      ? const Color(0xFFBC9CC6)
                                       : Colors.white,
                                   side: const BorderSide(
                                     color: Color.fromARGB(255, 197, 160, 208),
@@ -149,16 +143,14 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                 ),
                               ),
                             ),
-
                             const SizedBox(width: 10),
-
                             Expanded(
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
                                       controller.transactionType.value ==
                                           "income"
-                                      ? Color(0xFFBC9CC6)
+                                      ? const Color(0xFFBC9CC6)
                                       : Colors.white,
                                   side: const BorderSide(
                                     color: Color.fromARGB(255, 197, 160, 208),
@@ -167,7 +159,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                 ),
                                 onPressed: controller.liatIncome,
                                 child: Text(
-                                  "income",
+                                  "Income",
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -183,10 +175,10 @@ class AnalyticsView extends GetView<AnalyticsController> {
                           ],
                         );
                       }),
+
+                      // ── Chart ──────────────────────────────────────────────
                       Obx(() {
-                        final _ = controller
-                            .transactionType
-                            .value; // Trigger rebuild saat transactionType berubah
+                        final currentType = controller.transactionType.value;
                         return FutureBuilder<Map<String, double>>(
                           future: controller.getChartMetrics(),
                           builder: (context, metricsSnapshot) {
@@ -199,22 +191,17 @@ class AnalyticsView extends GetView<AnalyticsController> {
                             final metrics = metricsSnapshot.data!;
                             final totalIncome = metrics['totalIncome'] ?? 0;
                             final totalExpense = metrics['totalExpense'] ?? 0;
+                            final isIncome = currentType == "income";
+                            final maxValue = isIncome
+                                ? totalIncome
+                                : totalExpense;
 
                             return StreamBuilder<List<CategoryData>>(
+                              // ✅ key memaksa rebuild saat type berubah
+                              key: ValueKey(currentType),
                               stream: controller.streamChartData(),
                               builder: (context, snapshot) {
                                 final chartData = snapshot.data ?? [];
-                                final isIncome =
-                                    controller.transactionType.value ==
-                                    "income";
-
-                                // Untuk income: maksimum adalah total income
-                                // Untuk expense: maksimum adalah total expense
-                                final maxValue = isIncome
-                                    ? totalIncome
-                                    : totalExpense;
-
-                                var rupiah = Rupiah();
 
                                 return Center(
                                   child: SfCircularChart(
@@ -246,9 +233,9 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                         ),
                                       ),
                                     ],
+                                    // ✅ FIXED: legend tampil untuk income maupun expense
                                     legend: Legend(
-                                      isVisible:
-                                          !isIncome, // income gak perlu legend karena cuma 1 bar
+                                      isVisible: chartData.isNotEmpty,
                                       position: LegendPosition.bottom,
                                       overflowMode: LegendItemOverflowMode.wrap,
                                       legendItemBuilder:
@@ -319,7 +306,6 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                           radius: '100%',
                                           innerRadius: '50%',
                                           gap: '3%',
-                                          // Proporsional dengan maksimum (total income untuk income, total expense untuk expense)
                                           maximumValue: maxValue > 0
                                               ? maxValue
                                               : 1,
@@ -336,10 +322,10 @@ class AnalyticsView extends GetView<AnalyticsController> {
                         );
                       }),
 
-                      SizedBox(height: 30),
-
+                      // ── List / Summary ─────────────────────────────────────
                       Obx(
                         () => controller.transactionType.value == "expense"
+                            // ── EXPENSE: list per tanggal ──────────────────
                             ? Expanded(
                                 child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                                   stream: controller.datatransaksi(),
@@ -355,12 +341,35 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                         snapshot.data!.docs.isEmpty) {
                                       return SizedBox(
                                         width: double.infinity,
-                                        height: 200,
-                                        child: const Center(
-                                          child: Text(
-                                            "Pengeluaran belum ada",
-                                            textAlign: TextAlign.center,
-                                          ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.receipt_long_outlined,
+                                              size: 48,
+                                              color: Colors.grey[400],
+                                            ),
+                                            const SizedBox(height: 12),
+                                            Obx(
+                                              () => Text(
+                                                controller
+                                                        .nilaiTanggal
+                                                        .value
+                                                        .isEmpty
+                                                    ? "No expenses found"
+                                                    : "No expenses on\n${controller.nilaiTanggal.value}",
+                                                textAlign: TextAlign.center,
+                                                style:
+                                                    GoogleFonts.plusJakartaSans(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.grey[500],
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       );
                                     }
@@ -384,31 +393,15 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                             borderRadius: BorderRadius.circular(
                                               18,
                                             ),
-                                            border: Border(
-                                              top: BorderSide(
-                                                color: const Color(0xFFBC9CC6),
-                                                width: 0.8,
-                                              ),
-                                              bottom: BorderSide(
-                                                color: const Color(0xFFBC9CC6),
-                                                width: 0.8,
-                                              ),
-                                              left: BorderSide(
-                                                color: const Color(0xFFBC9CC6),
-                                                width: 0.8,
-                                              ),
-                                              right: BorderSide(
-                                                color: const Color(0xFFBC9CC6),
-                                                width: 0.8,
-                                              ),
+                                            border: Border.all(
+                                              color: const Color(0xFFBC9CC6),
+                                              width: 0.8,
                                             ),
-                                          
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              /// DATE
                                               Text(
                                                 DateFormat(
                                                   'EEEE, d MMMM yyyy',
@@ -425,9 +418,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                       color: Colors.grey[900],
                                                     ),
                                               ),
-
                                               const SizedBox(height: 10),
-
                                               StreamBuilder<
                                                 QuerySnapshot<
                                                   Map<String, dynamic>
@@ -435,7 +426,6 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                               >(
                                                 stream: controller
                                                     .streamExpenseItem(docId),
-
                                                 builder: (context, itemSnapshot) {
                                                   if (itemSnapshot
                                                           .connectionState ==
@@ -446,9 +436,24 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                     );
                                                   }
 
-                                                  if (!itemSnapshot.hasData) {
-                                                    return const Text(
-                                                      "Belum ada transaksi ",
+                                                  if (!itemSnapshot.hasData ||
+                                                      itemSnapshot
+                                                          .data!
+                                                          .docs
+                                                          .isEmpty) {
+                                                    return Center(
+                                                      child: Text(
+                                                        "No expenses found Today",
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Colors
+                                                                  .grey[600],
+                                                            ),
+                                                      ),
                                                     );
                                                   }
 
@@ -458,7 +463,6 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
                                                   return ListView.builder(
                                                     shrinkWrap: true,
-
                                                     physics:
                                                         const NeverScrollableScrollPhysics(),
                                                     itemCount:
@@ -466,13 +470,12 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                     itemBuilder: (context, i) {
                                                       var item =
                                                           dataItem.docs[i];
-
                                                       return Column(
                                                         children: [
                                                           ListTile(
                                                             contentPadding:
                                                                 EdgeInsets.zero,
-                                                            leading: Container(
+                                                            leading: SizedBox(
                                                               width: 42,
                                                               height: 42,
                                                               child: Padding(
@@ -480,7 +483,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                                     const EdgeInsets.all(
                                                                       8,
                                                                     ),
-                                                                child: Image.network(
+                                                                child: SvgPicture.network(
                                                                   item['icon'],
                                                                   fit: BoxFit
                                                                       .contain,
@@ -521,7 +524,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                                       .docs
                                                                       .length -
                                                                   1)
-                                                            Divider(
+                                                            const Divider(
                                                               height: 16,
                                                               thickness: 1,
                                                               color: Color(
@@ -542,6 +545,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                   },
                                 ),
                               )
+                            // ── INCOME: hanya Total Income ─────────────────
                             : FutureBuilder<Map<String, double>>(
                                 future: controller.calculateTotals(),
                                 builder: (context, snapshot) {
@@ -551,24 +555,17 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                       child: CircularProgressIndicator(),
                                     );
                                   }
-
-                                  if (!snapshot.hasData) {
+                                  if (!snapshot.hasData)
                                     return const SizedBox.shrink();
-                                  }
 
                                   final totals = snapshot.data!;
                                   final totalIncome =
                                       totals['totalIncome'] ?? 0;
-                                  final totalExpense =
-                                      totals['totalExpense'] ?? 0;
-                                  final balance = totals['balance'] ?? 0;
-
                                   var rupiah = Rupiah();
 
                                   return SingleChildScrollView(
                                     child: Container(
-                                      margin: const EdgeInsets.only(top: 20),
-                                      padding: const EdgeInsets.all(16),
+                                      padding: const EdgeInsets.all(20),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(18),
@@ -576,45 +573,56 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                           color: const Color(0xFFBC9CC6),
                                           width: 0.8,
                                         ),
-                                        boxShadow: [
+                                        boxShadow: const [
                                           BoxShadow(
-                                            color: const Color(0xFFBC9CC6),
+                                            color: Color(0xFFBC9CC6),
                                             blurRadius: 3,
-                                            offset: const Offset(0, 1),
+                                            offset: Offset(0, 1),
                                           ),
                                           BoxShadow(
-                                            color: const Color(0xFFBC9CC6),
+                                            color: Color(0xFFBC9CC6),
                                             blurRadius: 3,
-                                            offset: const Offset(0, -1),
+                                            offset: Offset(0, -1),
                                           ),
                                           BoxShadow(
-                                            color: const Color(0xFFBC9CC6),
+                                            color: Color(0xFFBC9CC6),
                                             blurRadius: 3,
-                                            offset: const Offset(1, 0),
+                                            offset: Offset(1, 0),
                                           ),
                                           BoxShadow(
-                                            color: const Color(0xFFBC9CC6),
+                                            color: Color(0xFFBC9CC6),
                                             blurRadius: 3,
-                                            offset: const Offset(-1, 0),
+                                            offset: Offset(-1, 0),
                                           ),
                                         ],
                                       ),
                                       child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          /// Header dengan tanggal
-                                          Text(
-                                            DateFormat(
-                                              'EEEE, d MMMM yyyy',
-                                            ).format(DateTime.now()),
-                                            style: GoogleFonts.plusJakartaSans(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.grey[900],
+                                          Obx(
+                                            () => Text(
+                                              controller
+                                                      .nilaiTanggal
+                                                      .value
+                                                      .isEmpty
+                                                  ? "All time"
+                                                  : controller
+                                                        .nilaiTanggal
+                                                        .value,
+                                              textAlign: TextAlign.center,
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: const Color.fromARGB(
+                                                      255,
+                                                      69,
+                                                      69,
+                                                      69,
+                                                    ),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                             ),
                                           ),
                                           const SizedBox(height: 16),
-
-                                          /// Total Income
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -637,80 +645,6 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                       fontWeight:
                                                           FontWeight.w700,
                                                       color: Colors.green,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 12),
-
-                                          /// Divider
-                                          Divider(
-                                            color: const Color(0xFFBC9CC6),
-                                            thickness: 0.8,
-                                            height: 16,
-                                          ),
-
-                                          /// Total Expense
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Total Expense',
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.grey[900],
-                                                    ),
-                                              ),
-                                              Text(
-                                                '-${rupiah.convertToRupiah('$totalExpense')}',
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: Colors.red,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 12),
-
-                                          /// Divider
-                                          Divider(
-                                            color: const Color(0xFFBC9CC6),
-                                            thickness: 0.8,
-                                            height: 16,
-                                          ),
-
-                                          /// Balance
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Balance',
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.grey[900],
-                                                    ),
-                                              ),
-                                              Text(
-                                                rupiah.convertToRupiah(
-                                                  '$balance',
-                                                ),
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: Colors.grey[900],
                                                     ),
                                               ),
                                             ],

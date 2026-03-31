@@ -6,9 +6,12 @@ import 'package:get/get.dart';
 class HistoryController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  RxString nilaiTanggal = "".obs;
 
   DateTime? start;
   DateTime? end = DateTime.now();
+
+ 
 
   Stream<QuerySnapshot<Map<String, dynamic>>> allTransactions() {
     String uid = auth.currentUser!.uid;

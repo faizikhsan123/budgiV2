@@ -4,14 +4,31 @@ import 'package:budgi/app/modules/analytics/views/analytics_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class AnalyticsController extends GetxController {
   RxString transactionType = "expense".obs;
+  RxString nilaiTanggal = "".obs;
 
   FirebaseAuth auth = FirebaseAuth.instance;
   DateTime? start;
   DateTime? end = DateTime.now();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  @override
+  void onInit() {
+    super.onInit();
+    nilaiTanggal.value = 'All Time';
+    print(nilaiTanggal.value);
+  }
+
+  Future<void> resetForm() async {
+    Future.delayed(Duration(seconds: 1), () {
+      return nilaiTanggal.value = DateFormat(
+        'dd-M-yyyy',
+      ).format(DateTime.now());
+    });
+  }
 
   void liatExpense() {
     transactionType.value = "expense";
@@ -24,11 +41,11 @@ class AnalyticsController extends GetxController {
   void pickDateRange(DateTime startDate, DateTime endDate) {
     start = startDate;
     end = endDate;
-    update(); // biar GetBuilder rebuild
+    update();
     Get.back();
   }
 
-  /// ambil semua transaksi
+  /// Ambil semua transaksi
   Stream<QuerySnapshot<Map<String, dynamic>>> datatransaksi() {
     final uid = auth.currentUser!.uid;
     if (start == null) {
@@ -66,7 +83,6 @@ class AnalyticsController extends GetxController {
     final docs = txSnap.docs;
 
     for (final doc in docs) {
-      // Hitung income
       final incomeSnap = await firestore
           .collection("users")
           .doc(uid)
@@ -80,7 +96,6 @@ class AnalyticsController extends GetxController {
         totalIncome += (item['amount'] as num).toDouble();
       }
 
-      // Hitung expense
       final expenseSnap = await firestore
           .collection("users")
           .doc(uid)
@@ -95,8 +110,6 @@ class AnalyticsController extends GetxController {
       }
     }
 
-    // Untuk income: maksimum adalah total income (agar balance tampil proporsional)
-    // Untuk expense: maksimum adalah total expense (agar kategori tampil proporsional)
     return {
       'totalIncome': totalIncome,
       'totalExpense': totalExpense,
@@ -114,7 +127,6 @@ class AnalyticsController extends GetxController {
     final docs = txSnap.docs;
 
     for (final doc in docs) {
-      // Hitung income
       final incomeSnap = await firestore
           .collection("users")
           .doc(uid)
@@ -128,7 +140,6 @@ class AnalyticsController extends GetxController {
         totalIncome += (item['amount'] as num).toDouble();
       }
 
-      // Hitung expense
       final expenseSnap = await firestore
           .collection("users")
           .doc(uid)
@@ -150,41 +161,56 @@ class AnalyticsController extends GetxController {
     };
   }
 
+  /// Warna per kategori untuk EXPENSE
+  Color getExpenseCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case "food":
+        return const Color(0xFFFF9800); // orange
+      case "transport":
+        return const Color(0xFF2196F3); // biru
+      case "health":
+        return const Color(0xFF4CAF50); // hijau
+      case "bill":
+        return const Color(0xFFE91E63); // merah
+      case "shopping":
+        return const Color(0xFFFF5D78); // pink
+      case "transfer":
+        return const Color(0xFFFFEB3B); // kuning
+      case "entertainment":
+        return const Color(0xFF9C27B0); // ungu
+      case "other":
+        return const Color(0xFFC2C2C2); // abu
+      default:
+        return const Color(0xFF8D8D8D);
+    }
+  }
+
+  /// Warna per kategori untuk INCOME (nuansa hijau)
+  Color getIncomeCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case "salary":
+        return const Color(0xFF4CAF50); // hijau utama
+      case "freelance":
+        return const Color(0xFF81C784); // hijau muda
+      case "investment":
+        return const Color(0xFF00897B); // teal
+      case "bonus":
+        return const Color(0xFF66BB6A); // hijau terang
+      case "transfer":
+        return const Color(0xFFA5D6A7); // hijau pastel
+      case "gift":
+        return const Color(0xFF26A69A); // teal muda
+      case "other":
+        return const Color(0xFFC8E6C9); // hijau sangat muda
+      default:
+        return const Color(0xFF388E3C); // hijau gelap default
+    }
+  }
+
   /// Stream agregasi chart per kategori (expense atau income)
+  /// ✅ FIXED: sekarang handle keduanya expense dan income
   Stream<List<CategoryData>> streamChartData() async* {
     final uid = auth.currentUser!.uid;
-    // final colors = [
-    //   const Color(0xFF4CAF50),
-    //   const Color(0xFF2196F3),
-    //   const Color(0xFFFF9800),
-    //   const Color(0xFFE91E63),
-    //   const Color(0xFF9C27B0),
-    //   const Color(0xFF00BCD4),
-    //   const Color(0xFFFF5722),
-    //   const Color(0xFFFFEB3B),
-    // ];
-    Color getCategoryColor(String category) {
-      switch (category.toLowerCase()) {
-        case "food":
-          return const Color(0xFFFF9800); //oren
-        case "transport":
-          return const Color(0xFF2196F3); //biru
-        case "health":
-          return const Color(0xFF4CAF50); //ijo
-        case "bill":
-          return const Color(0xFFE91E63); //merah
-        case "shopping":
-          return const Color(0xFFFF5D78); //pink
-        case "transfer":
-          return const Color(0xFFFFEB3B); //kuning
-        case "entertainment":
-          return const Color(0xFF9C27B0); //ungu
-        case "other":
-          return const Color(0xFFC2C2C2); //abu
-        default:
-          return const Color(0xFF8D8D8D);
-      }
-    }
 
     await for (final txSnap in datatransaksi()) {
       final docs = txSnap.docs;
@@ -193,55 +219,8 @@ class AnalyticsController extends GetxController {
         continue;
       }
 
-      // ── INCOME: balance (income - expense) ──────────────────────────────
-      if (transactionType.value == "income") {
-        double totalIncome = 0;
-        double totalExpense = 0;
-
-        for (final doc in docs) {
-          // Hitung income
-          final incomeSnap = await firestore
-              .collection("users")
-              .doc(uid)
-              .collection("transactions")
-              .doc(doc.id)
-              .collection("items")
-              .where("type", isEqualTo: "income")
-              .get();
-
-          for (final item in incomeSnap.docs) {
-            totalIncome += (item['amount'] as num).toDouble();
-          }
-
-          // Hitung expense
-          final expenseSnap = await firestore
-              .collection("users")
-              .doc(uid)
-              .collection("transactions")
-              .doc(doc.id)
-              .collection("items")
-              .where("type", isEqualTo: "expense")
-              .get();
-
-          for (final item in expenseSnap.docs) {
-            totalExpense += (item['amount'] as num).toDouble();
-          }
-        }
-
-        double balance = totalIncome - totalExpense;
-
-        // Gunakan total income sebagai maximum value untuk persentase
-        // Jika balance negatif, set ke 0
-        double displayBalance = balance < 0 ? 0 : balance;
-
-        yield [
-          CategoryData('Balance', displayBalance, const Color(0xFF4CAF50)),
-        ];
-        continue;
-      }
-
-      // ── EXPENSE: per kategori ────────────────────────────
       final Map<String, double> categoryTotals = {};
+      final currentType = transactionType.value; // "income" atau "expense"
 
       for (final doc in docs) {
         final itemsSnap = await firestore
@@ -250,7 +229,7 @@ class AnalyticsController extends GetxController {
             .collection("transactions")
             .doc(doc.id)
             .collection("items")
-            .where("type", isEqualTo: "expense")
+            .where("type", isEqualTo: currentType)
             .get();
 
         for (final item in itemsSnap.docs) {
@@ -268,20 +247,18 @@ class AnalyticsController extends GetxController {
       final sorted = categoryTotals.entries.toList()
         ..sort((a, b) => b.value.compareTo(a.value));
 
-      yield sorted.asMap().entries.map((entry) {
-        return CategoryData(
-          entry.value.key,
-          entry.value.value,
-          getCategoryColor(entry.value.key),
-        );
+      yield sorted.map((entry) {
+        final color = currentType == "income"
+            ? getIncomeCategoryColor(entry.key)
+            : getExpenseCategoryColor(entry.key);
+        return CategoryData(entry.key, entry.value, color);
       }).toList();
     }
   }
 
-  /// STREAM EXPENSE
+  /// STREAM EXPENSE ITEMS
   Stream<QuerySnapshot<Map<String, dynamic>>> streamExpenseItem(String docId) {
     final uid = auth.currentUser!.uid;
-
     return firestore
         .collection("users")
         .doc(uid)
@@ -293,11 +270,9 @@ class AnalyticsController extends GetxController {
         .snapshots();
   }
 
-  /// STREAM INCOME
-
+  /// STREAM INCOME ITEMS
   Stream<QuerySnapshot<Map<String, dynamic>>> streamIncomeItem(String docId) {
     final uid = auth.currentUser!.uid;
-
     return firestore
         .collection("users")
         .doc(uid)

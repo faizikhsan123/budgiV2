@@ -4,6 +4,7 @@ import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 
 import 'package:get/get.dart';
@@ -44,7 +45,7 @@ class HomeView extends GetView<HomeController> {
                       }
 
                       if (!asyncSnapshot.hasData) {
-                        return Center(child: Text("Data belum ada"));
+                        return Center(child: Text("Data Is Empty"));
                       }
 
                       var data = asyncSnapshot.data!;
@@ -83,11 +84,11 @@ class HomeView extends GetView<HomeController> {
                                       // Greeting berdasarkan jam
                                       final hour = DateTime.now().hour;
                                       String greeting;
-                                      if (hour >= 5 && hour < 12) {
+                                      if (hour >= 4 && hour < 10) {
                                         greeting = 'Good Morning';
-                                      } else if (hour >= 12 && hour < 17) {
+                                      } else if (hour >= 10 && hour < 15) {
                                         greeting = 'Good Afternoon';
-                                      } else if (hour >= 17 && hour < 21) {
+                                      } else if (hour >= 15 && hour < 18) {
                                         greeting = 'Good Evening';
                                       } else {
                                         greeting = 'Good Night';
@@ -127,19 +128,19 @@ class HomeView extends GetView<HomeController> {
                               border: Border(
                                 top: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                                 bottom: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                                 left: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                                 right: BorderSide(
                                   color: const Color(0xFFBC9CC6),
-                                  width: 3,
+                                  width: 1,
                                 ),
                               ),
                               boxShadow: [
@@ -243,7 +244,7 @@ class HomeView extends GetView<HomeController> {
                                   height: 200,
                                   child: const Center(
                                     child: Text(
-                                      "Transaksi belum ada",
+                                      "No transactions yet",
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -344,7 +345,7 @@ class HomeView extends GetView<HomeController> {
 
                                             if (!itemSnapshot.hasData) {
                                               return const Text(
-                                                "Belum ada transaksi",
+                                                "Transaction is empty",
                                               );
                                             }
 
@@ -377,7 +378,7 @@ class HomeView extends GetView<HomeController> {
                                                               const EdgeInsets.all(
                                                                 8,
                                                               ),
-                                                          child: Image.network(
+                                                          child: SvgPicture.network(
                                                             item['icon'],
                                                             fit: BoxFit.contain,
                                                           ),
@@ -459,7 +460,8 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-     
+   
     );
+    
   }
 }

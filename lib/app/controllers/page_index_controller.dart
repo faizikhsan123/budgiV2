@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,8 +21,10 @@ class PageIndexController extends GetxController {
   late DateRangePickerController dateC;
   RxString nilaiTanggal = "".obs;
 
-  final amountC = TextEditingController();
-  final notesC = TextEditingController();
+  final amount1C = TextEditingController();
+  final amount2C = TextEditingController();
+  final notes1C = TextEditingController();
+  final notes2C = TextEditingController();
 
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -30,42 +33,42 @@ class PageIndexController extends GetxController {
     {
       "name": "Food",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665552/Vector_k2mnaw.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--fork-spoon-fill_k44lpk.svg",
     },
     {
       "name": "Transport",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665566/car_3_fill_tn9bzs.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--car-fill_oyvkvd.svg",
     },
     {
       "name": "Health",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665583/healthicons_health_bvd1hp.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974433/mingcute--shield-line_es79kq.svg",
     },
     {
       "name": "Bill",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665616/bill_fill_ygxibf.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--bill-fill_f1txbv.svg",
     },
     {
       "name": "Shopping",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665669/Group_2_lzddae.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--shopping-cart-2-fill_dbgrgo.svg",
     },
     {
       "name": "Transfer",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665624/Group_1_db9gng.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--transfer-3-fill_vywadq.svg",
     },
     {
-      "name": "Entertainment",
+      "name": "Entertaiment",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665624/movie_fill_lmbyru.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--movie-fill_kps26w.svg",
     },
     {
       "name": "Other",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773665624/more_4_fill_dulejq.png",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--more-4-fill_g3maa8.svg",
     },
   ];
 
@@ -80,8 +83,11 @@ class PageIndexController extends GetxController {
   /// RESET FORM
   void resetForm() {
     selectedCategoryIndex.value = -1;
-    amountC.clear();
-    notesC.clear();
+    amount1C.clear();
+    amount2C.clear();
+    notes1C.clear();
+    notes2C.clear();
+
     Future.delayed(Duration(seconds: 1), () {
       nilaiTanggal.value = DateFormat('dd-M-yyyy').format(DateTime.now());
     });
@@ -97,8 +103,10 @@ class PageIndexController extends GetxController {
   @override
   void onClose() {
     // TODO: implement onClose
-    amountC.dispose();
-    notesC.dispose();
+    amount1C.dispose();
+    amount2C.dispose();
+    notes1C.dispose();
+    notes2C.dispose();
     dateC.dispose();
     super.onClose();
   }
@@ -151,69 +159,65 @@ class PageIndexController extends GetxController {
                           ),
                         ),
 
-                        ElevatedButton(
-                          onPressed: () {
-                            Get.dialog(
-                              Dialog(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 400,
-                                        width: 300,
-                                        child: SfDateRangePicker(
-                                          selectionMode:
-                                              DateRangePickerSelectionMode
-                                                  .single, //mode datepicker
+                        InkWell(
+                          onTap: () => Get.dialog(
+                            Dialog(
+                              child: Container(
+                                height: 400,
+                                padding: const EdgeInsets.all(10),
+                                child: SfDateRangePicker(
+                                  selectionMode: DateRangePickerSelectionMode
+                                      .single, //ini bisa multipel
+                                  showActionButtons: true,
+                                  initialSelectedDate: null,
 
-                                          initialSelectedDate: null,
-                                          initialSelectedRange: null,
-                                          showNavigationArrow: true,
-                                          selectionColor: Color(0xFFBC9CC6),
+                                  todayHighlightColor: Colors.transparent,
+                                  showNavigationArrow: true,
+                                  showTodayButton: false,
 
-                                          showTodayButton: false,
-                                          allowViewNavigation: true,
-                                          showActionButtons:
-                                              true, //tampilkan tombol
-
-                                          onCancel: () =>
-                                              Get.back(), //ketika tombol cancel ditekan
-                                          /// ketika tombol submit ditekan
-                                          onSubmit: (obj) {
-                                            DateTime date = obj as DateTime;
-                                            nilaiTanggal.value =
-                                                "${date.day}-${date.month}-${date.year}";
-
-                                            print(nilaiTanggal.value);
-                                            Get.back();
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  selectionColor: Color(0xFFBC9CC6),
+                                  onCancel: () => Get.back(),
+                                  onSubmit: (obj) {
+                                    DateTime date = obj as DateTime;
+                                    nilaiTanggal.value =
+                                        "${date.day}-${date.month}-${date.year}";
+                                    print(nilaiTanggal.value);
+                                    Get.back();
+                                  },
                                 ),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                           child: Obx(
-                            () => Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${nilaiTanggal.value}",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                            () => Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: const Color(0xFFBC9CC6),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${nilaiTanggal.value}",
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 5),
-                                Icon(
-                                  Icons.calendar_month_outlined,
-                                  size: 21,
-                                  color: Colors.black,
-                                ),
-                              ],
+                                  const SizedBox(width: 5),
+                                  const Icon(
+                                    Icons.calendar_month_outlined,
+                                    size: 21,
+                                    color: Colors.black,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -286,7 +290,14 @@ class PageIndexController extends GetxController {
                     const SizedBox(height: 20),
 
                     /// AMOUNT
-                    input_rupiah(amountC: amountC, hintText: "Rp. 0"),
+                    Obx(
+                      () => input_rupiah(
+                        amountC: transactionType.value == "expense"
+                            ? amount1C
+                            : amount2C,
+                        hintText: "Rp. 0",
+                      ),
+                    ),
 
                     Obx(
                       () => transactionType.value == "expense"
@@ -318,35 +329,77 @@ class PageIndexController extends GetxController {
                                               "data categories sesuai index : ${categories[index]['name']}",
                                             );
                                           },
-                                          child: Container(
-                                            width: itemWidth,
-                                            height: itemWidth,
-
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Color(0xFFBC9CC6),
-                                              ),
-                                              color:
-                                                  selectedCategoryIndex.value ==
-                                                      index
-                                                  ? Color.fromARGB(
-                                                      255,
-                                                      234,
-                                                      217,
-                                                      239,
-                                                    )
-                                                  : Color.fromARGB(
-                                                      255,
-                                                      255,
-                                                      255,
-                                                      255,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: itemWidth,
+                                                height: itemWidth,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: const Color(
+                                                      0xFFBC9CC6,
                                                     ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Image.network(
-                                              categories[index]['icon']!,
-                                            ),
+                                                  ),
+                                                  color:
+                                                      selectedCategoryIndex
+                                                              .value ==
+                                                          index
+                                                      ? const Color.fromARGB(
+                                                          255,
+                                                          234,
+                                                          217,
+                                                          239,
+                                                        )
+                                                      : Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 2,
+                                                      ),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Center(
+                                                          child: SvgPicture.network(
+                                                            "${categories[index]['icon']}",
+                                                            fit: BoxFit.contain,
+                                                            width:
+                                                                itemWidth *
+                                                                0.45,
+                                                            height:
+                                                                itemWidth *
+                                                                0.45,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "${categories[index]['name']}",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -364,30 +417,35 @@ class PageIndexController extends GetxController {
                     ),
 
                     /// NOTE
-                    TextFormField(
-                      controller: notesC,
-                      maxLines: 4,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 215, 204, 219),
-                            width: 2,
+                    Obx(
+                      () => TextField(
+                        controller: transactionType.value == "expense"
+                            ? notes1C
+                            : notes2C,
+                        maxLines: 2,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
                           ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xffBC9CC6),
-                            width: 2,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 215, 204, 219),
+                              width: 2,
+                            ),
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xffBC9CC6),
+                              width: 2,
+                            ),
+                          ),
+                          isDense: true,
+                          hintText: "Catatan",
                         ),
-                        isDense: true,
-                        hintText: "Catatan",
                       ),
                     ),
 
@@ -398,13 +456,13 @@ class PageIndexController extends GetxController {
                           ? buildButtonPinkTransaksi(
                               text: 'Save',
                               onTap: () {
-                                tambahExpense(notesC.text);
+                                tambahExpense(notes1C.text);
                               },
                             )
                           : buildButtonPinkTransaksi(
                               text: 'Save',
                               onTap: () {
-                                tambahTransaksiIncome(notesC.text);
+                                tambahTransaksiIncome(notes2C.text);
                               },
                             ),
                     ),
@@ -434,8 +492,8 @@ class PageIndexController extends GetxController {
     }
   }
 
-  void tambahExpense(String notes) async {
-    String cleanText = amountC.text
+  void tambahExpense(String notes1C) async {
+    String cleanText = amount1C.text
         .replaceAll("Rp", "")
         .replaceAll(".", "")
         .trim();
@@ -445,8 +503,8 @@ class PageIndexController extends GetxController {
     /// VALIDASI NOMINAL
     if (number == null) {
       Get.snackbar(
-        'Error',
-        'Nominal wajib diisi',
+        'Failed',
+        'Amount is required',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -455,8 +513,8 @@ class PageIndexController extends GetxController {
 
     if (number <= 0) {
       Get.snackbar(
-        'Error',
-        'Nominal tidak valid',
+        'Failed',
+        'Amount must be greater than 0',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -466,8 +524,8 @@ class PageIndexController extends GetxController {
     /// VALIDASI KATEGORI
     if (selectedCategoryIndex.value == -1) {
       Get.snackbar(
-        'Error',
-        'Silakan pilih kategori terlebih dahulu',
+        'Failed',
+        'Category is required',
         backgroundColor: Colors.orange.shade50,
         colorText: Colors.orange.shade900,
       );
@@ -483,8 +541,8 @@ class PageIndexController extends GetxController {
     /// CEK SALDO
     if (number > balance) {
       Get.snackbar(
-        'Error',
-        'Saldo tidak mencukupi',
+        'Failed',
+        'Not enough balance',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -562,7 +620,7 @@ class PageIndexController extends GetxController {
                   "category": categories[selectedCategoryIndex.value]['name'],
                   "date": nilaiTanggal.value,
                   'amount': number,
-                  'notes': notes,
+                  'notes': notes1C,
                   'created_at': waktu,
                 });
 
@@ -570,6 +628,9 @@ class PageIndexController extends GetxController {
             await firestore.collection("users").doc(uid).update({
               'balance': balance - number,
             });
+            amount1C.clear();
+          
+            selectedCategoryIndex.value = -1;
 
             Get.back();
 
@@ -591,7 +652,7 @@ class PageIndexController extends GetxController {
               content: content(
                 rupiah: rupiah,
                 number: number,
-                text: "saldo di kurangi",
+                text: "Balance has been deducted",
               ),
             );
           },
@@ -610,8 +671,8 @@ class PageIndexController extends GetxController {
   }
 
   // Fungsinya jadi:
-  void tambahTransaksiIncome(String notes) async {
-    String cleanText = amountC.text
+  void tambahTransaksiIncome(String notes2C) async {
+    String cleanText = amount2C.text
         .replaceAll("Rp", "")
         .replaceAll(".", "")
         .trim();
@@ -620,8 +681,8 @@ class PageIndexController extends GetxController {
 
     if (number == null) {
       Get.snackbar(
-        'Error',
-        'Nominal wajib diisi',
+        'Failed',
+        'Amount is required',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -630,8 +691,8 @@ class PageIndexController extends GetxController {
 
     if (number < 0) {
       Get.snackbar(
-        'Error',
-        'Nominal tidak boleh negatif',
+        'Failed',
+        'Amount must be greater than 0',
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -711,11 +772,11 @@ class PageIndexController extends GetxController {
                 .set({
                   'type': "income",
                   "icon":
-                      "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773693028/Group_3_c6c4wv.png",
+                      "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774979395/mingcute--cash-line_nsv7vc.svg",
                   "category": "income",
                   "date": nilaiTanggal.value,
                   'amount': number,
-                  'notes': notes,
+                  'notes': notes2C,
                   'created_at': waktu,
                 });
 
@@ -723,6 +784,8 @@ class PageIndexController extends GetxController {
             await firestore.collection("users").doc(uid).update({
               'balance': balance + number,
             });
+            amount2C.clear();
+           
             Get.back(); //tutup dialog konfirmasi
             Get.defaultDialog(
               title: "Income Added!",
@@ -746,7 +809,7 @@ class PageIndexController extends GetxController {
               content: content(
                 rupiah: rupiah,
                 number: number,
-                text: "saldo anda bertambh",
+                text: "Balance has been added",
               ),
             );
 

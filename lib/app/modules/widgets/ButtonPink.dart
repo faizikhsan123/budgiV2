@@ -7,7 +7,7 @@ Widget buildButtonPink({
   required VoidCallback onTap,
 }) {
   return Container(
-    height: 55,
+    height: 45,
 
     width: Get.width,
     decoration: BoxDecoration(
@@ -15,8 +15,8 @@ Widget buildButtonPink({
       boxShadow: const [
         BoxShadow(
           color: Colors.black26,
-          blurRadius: 1,
-          offset: Offset(0, 6),
+          blurRadius: 2,
+          offset: Offset(0, 3),
         ),
       ],
     ),

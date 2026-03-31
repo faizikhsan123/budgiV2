@@ -18,8 +18,8 @@ class CompleteProfileController extends GetxController {
   void LengkapiProfile() {
     if (phoneC.phoneNumber!.length < 13) {
       Get.snackbar(
-        "Error",
-        "Nomor telepon tidak valid",
+        "Failed",
+        "Invalid phone number",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -29,8 +29,8 @@ class CompleteProfileController extends GetxController {
 
     if (nilaiTanggal.value.isEmpty) {
       Get.snackbar(
-        "Error",
-        "Tanggal lahir tidak boleh kosong",
+        "Failed",
+        "Date of birth is required",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -43,7 +43,7 @@ class CompleteProfileController extends GetxController {
       'phone': phoneC.phoneNumber,
       'tanggal_lahir': nilaiTanggal.value,
     });
-    Get.offAllNamed(Routes.COMPLETE_BALANCE);
+    Get.offAllNamed(Routes.HOME);
   }
 
   @override

@@ -7,43 +7,34 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
-import 'package:lottie/lottie.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFFEDE7F6), Color(0xFFF5EBDC)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                colors: [Color.fromARGB(255, 243, 242, 244), Color.fromARGB(255, 243, 242, 244)],
               ),
             ),
             child: SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 10),
-
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                    ),
-
                     const SizedBox(height: 20),
 
                     Text(
-                      "Daftar",
+                      "Sign up",
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
@@ -54,14 +45,14 @@ class RegisView extends GetView<RegisController> {
                     const SizedBox(height: 6),
 
                     Text(
-                      "Buat akun untuk melanjutkan!",
+                      "Create your account!",
                       style: GoogleFonts.plusJakartaSans(
                         color: const Color.fromARGB(255, 45, 43, 43),
                       ),
                     ),
                     const SizedBox(height: 20),
 
-                    buildLabel("Nama Lengkap"),
+                    buildLabel("Complete Name"),
                     buildTextField(
                       hint: "John Doe",
                       controller: controller.nameC,
@@ -239,7 +230,7 @@ class RegisView extends GetView<RegisController> {
                     const SizedBox(height: 30),
 
                     buildButtonPink(
-                      text: "Daftar",
+                      text: "Register",
                       onTap: () async {
                         await controller.jalankanRegis();
 
@@ -256,7 +247,7 @@ class RegisView extends GetView<RegisController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Sudah punya akun?",
+                            "Already have an account?",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -266,7 +257,7 @@ class RegisView extends GetView<RegisController> {
                           TextButton(
                             onPressed: () => Get.toNamed(Routes.LOGIN),
                             child: Text(
-                              "Masuk",
+                              "Login",
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
