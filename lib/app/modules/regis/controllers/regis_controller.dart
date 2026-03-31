@@ -102,7 +102,6 @@ class RegisController extends GetxController {
         "email": email,
         "phone": phoneC.phoneNumber,
         "tanggal_lahir": nilaiTanggal.value,
-        "balance": 0,
         "provider": "Form Pendaftaran",
         "photo_url": "",
         "created_at": Timestamp.now(),

@@ -62,9 +62,9 @@ class _SplashGateState extends State<SplashGate> {
           MaterialPageRoute(builder: (_) => OnboardingScreen()),
         );
       } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => AuthWrapper()),
-        );
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (_) => AuthWrapper()));
       }
     }
   }
@@ -153,9 +153,16 @@ class _AuthWrapperState extends State<AuthWrapper> {
       // ✅ Samakan dengan auth_controller — hanya cek phone & tanggal_lahir
       final phone = data["phone"];
       final tanggalLahir = data["tanggal_lahir"];
+      final balance = data["balance"];
 
       if (phone == null || tanggalLahir == null) {
         Get.offAllNamed(Routes.COMPLETE_PROFILE);
+        return;
+      }
+
+      if (balance == null) {
+        Get.offAllNamed(Routes.COMPLETE_BALANCE);
+        return;
       } else {
         Get.offAllNamed(Routes.HOME);
       }
@@ -169,9 +176,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_isOffline) {
@@ -203,8 +208,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
       );
     }
 
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

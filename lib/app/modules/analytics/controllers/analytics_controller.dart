@@ -176,7 +176,7 @@ class AnalyticsController extends GetxController {
         return const Color(0xFFFF5D78); // pink
       case "transfer":
         return const Color(0xFFFFEB3B); // kuning
-      case "entertainment":
+      case "entertaiment":
         return const Color(0xFF9C27B0); // ungu
       case "other":
         return const Color(0xFFC2C2C2); // abu

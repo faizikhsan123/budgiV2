@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
+
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
+import '../modules/complete_balance/bindings/complete_balance_binding.dart';
+import '../modules/complete_balance/views/complete_balance_view.dart';
 import '../modules/complete_profile/bindings/complete_profile_binding.dart';
 import '../modules/complete_profile/views/complete_profile_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
@@ -15,8 +18,6 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
-import '../modules/scan/bindings/scan_binding.dart';
-import '../modules/scan/views/scan_view.dart';
 
 part 'app_routes.dart';
 
@@ -65,7 +66,6 @@ class AppPages {
       page: () => EditProfileView(),
       binding: EditProfileBinding(),
     ),
-   
     GetPage(
       name: _Paths.ANALYTICS,
       page: () => AnalyticsView(),
@@ -77,9 +77,9 @@ class AppPages {
       binding: HistoryBinding(),
     ),
     GetPage(
-      name: _Paths.SCAN,
-      page: () =>  ScanView(),
-      binding: ScanBinding(),
+      name: _Paths.COMPLETE_BALANCE,
+      page: () => const CompleteBalanceView(),
+      binding: CompleteBalanceBinding(),
     ),
   ];
 }

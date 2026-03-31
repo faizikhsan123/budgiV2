@@ -1,4 +1,3 @@
-import 'package:budgi/app/modules/scan/controllers/scan_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +6,7 @@ import 'package:get/get.dart';
 import 'app_colors.dart';
 
 class QuickActionsRow extends StatelessWidget {
-  final scanC = Get.put(ScanController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class QuickActionsRow extends StatelessWidget {
         const SizedBox(width: 70),
         _ActionItem(
           label: 'Coming Soon',
-          assetPath: 'assets/icons/history.svg',
+          assetPath: 'assets/icons/sca.svg',
           onTap: () {
           // Get.toNamed(Routes.SCAN);
           print("otw");
