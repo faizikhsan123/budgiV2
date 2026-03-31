@@ -368,7 +368,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                                       itemSnapshot.data!.docs.isEmpty) {
                                                     return Center(
                                                       child: Text(
-                                                        "Pengeluaran hari ini belum ada",
+                                                        "No expenses found Today",
                                                         style: GoogleFonts.plusJakartaSans(
                                                           fontSize: 13,
                                                           fontWeight: FontWeight.w500,

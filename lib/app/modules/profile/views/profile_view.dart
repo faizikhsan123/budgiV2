@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../widgets/app_colors.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 

@@ -102,8 +102,8 @@ class AuthController extends GetxController {
 
       if (existingProvider != null && existingProvider != "google") {
         Get.snackbar(
-          '❌ Error',
-          'Gunakan login $existingProvider',
+          '❌ Failed',
+          'Please login with $existingProvider',
           backgroundColor: Colors.red.shade50,
           colorText: Colors.red.shade900,
         );
@@ -135,7 +135,7 @@ class AuthController extends GetxController {
 
       await _handleRedirect(uid);
     } catch (e) {
-      print("ERROR GOOGLE: $e");
+      print("Failed GOOGLE: $e");
     }
   }
 
@@ -154,7 +154,7 @@ class AuthController extends GetxController {
 
       final email = userData['email'];
       if (email == null) {
-        Get.snackbar('Error', 'Facebook tidak punya email');
+        Get.snackbar('Failed', 'Facebook email is empty');
         await FacebookAuth.instance.logOut();
         return;
       }
@@ -163,7 +163,7 @@ class AuthController extends GetxController {
 
       if (existingProvider != null && existingProvider != "facebook") {
         Get.snackbar(
-          '❌ Error',
+          '❌ Failed',
           'Gunakan login $existingProvider',
         );
         await FacebookAuth.instance.logOut();
@@ -191,7 +191,7 @@ class AuthController extends GetxController {
 
       await _handleRedirect(uid);
     } catch (e) {
-      print("ERROR FACEBOOK: $e");
+      print("Failed FACEBOOK: $e");
     }
   }
 
@@ -200,7 +200,7 @@ class AuthController extends GetxController {
   /// ===============================
   Future<void> loginForm(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar('Error', 'Field wajib diisi');
+      Get.snackbar('Failed', 'all fields are required');
       return;
     }
 
@@ -216,7 +216,7 @@ class AuthController extends GetxController {
 
       await _handleRedirect(uid);
     } catch (e) {
-      Get.snackbar('Error', 'Login gagal');
+      Get.snackbar('Failed', 'Login failed $e');
     } finally {
       isloading.value = false;
     }

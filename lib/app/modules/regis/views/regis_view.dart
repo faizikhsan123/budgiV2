@@ -230,7 +230,7 @@ class RegisView extends GetView<RegisController> {
                     const SizedBox(height: 30),
 
                     buildButtonPink(
-                      text: "Daftar",
+                      text: "Register",
                       onTap: () async {
                         await controller.jalankanRegis();
 
@@ -247,7 +247,7 @@ class RegisView extends GetView<RegisController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Sudah punya akun?",
+                            "Already have an account?",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -257,7 +257,7 @@ class RegisView extends GetView<RegisController> {
                           TextButton(
                             onPressed: () => Get.toNamed(Routes.LOGIN),
                             child: Text(
-                              "Masuk",
+                              "Login",
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

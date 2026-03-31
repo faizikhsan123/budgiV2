@@ -32,8 +32,8 @@ class RegisController extends GetxController {
         phoneC.phoneNumber == null ||
         nilaiTanggal.value.isEmpty) {
       Get.snackbar(
-        "Error",
-        "Semua field wajib diisi",
+        "Failed",
+        "All fields are required",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -42,8 +42,8 @@ class RegisController extends GetxController {
 
     if (!GetUtils.isEmail(emailC.text.trim())) {
       Get.snackbar(
-        "Error",
-        "Email tidak valid",
+        "Failed",
+        "Email is not valid",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -52,8 +52,8 @@ class RegisController extends GetxController {
 
     if (passC.text.length < 6) {
       Get.snackbar(
-        "Error",
-        "Password minimal 6 karakter",
+        "Failed",
+        "Password must be at least 6 characters",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -62,8 +62,8 @@ class RegisController extends GetxController {
 
     if (passC.text != passReC.text) {
       Get.snackbar(
-        "Error",
-        "Password tidak sama",
+        "Failed",
+        "Password does not match",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -77,8 +77,8 @@ class RegisController extends GetxController {
 
     if (snapshot.docs.isNotEmpty) {
       Get.snackbar(
-        "Error",
-        "Email sudah digunakan",
+        "Failed",
+        "Email already exists",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -120,7 +120,7 @@ class RegisController extends GetxController {
 
       await Get.snackbar(
         "Success",
-        "Registrasi berhasil",
+        "Registration successful",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
@@ -128,7 +128,7 @@ class RegisController extends GetxController {
       Get.offAllNamed(Routes.LOGIN);
     } catch (e) {
       Get.snackbar(
-        "Error",
+        "Failed",
         e.toString(),
         backgroundColor: Colors.red,
         colorText: Colors.white,

@@ -1,9 +1,4 @@
 import 'package:get/get.dart';
-
-import '../modules/add_transaksi/bindings/add_transaksi_binding.dart';
-import '../modules/add_transaksi/views/add_transaksi_view.dart';
-import '../modules/all_transaction/bindings/all_transaction_binding.dart';
-import '../modules/all_transaction/views/all_transaction_view.dart';
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_profile/bindings/complete_profile_binding.dart';
@@ -42,16 +37,6 @@ class AppPages {
       page: () => ProfileView(),
       binding: ProfileBinding(),
       transition: Transition.fadeIn,
-    ),
-    GetPage(
-      name: _Paths.ALL_TRANSACTION,
-      page: () => AllTransactionView(),
-      binding: AllTransactionBinding(),
-    ),
-    GetPage(
-      name: _Paths.ADD_TRANSAKSI,
-      page: () => AddTransaksiView(),
-      binding: AddTransaksiBinding(),
     ),
     GetPage(
       name: _Paths.LOGIN,
