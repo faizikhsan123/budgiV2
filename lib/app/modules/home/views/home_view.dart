@@ -97,10 +97,10 @@ class HomeView extends GetView<HomeController> {
                                       return Text(
                                         greeting,
                                         style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 12,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.w400,
                                           color: AppColors.textDark,
-                                          letterSpacing: -0.30,
+                                          letterSpacing: 1.25,
                                         ),
                                       );
                                     },
@@ -378,10 +378,12 @@ class HomeView extends GetView<HomeController> {
                                                               const EdgeInsets.all(
                                                                 8,
                                                               ),
-                                                          child: SvgPicture.network(
-                                                            item['icon'],
-                                                            fit: BoxFit.contain,
-                                                          ),
+                                                          child:
+                                                              SvgPicture.network(
+                                                                item['icon'],
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
                                                         ),
                                                       ),
 
@@ -455,13 +457,10 @@ class HomeView extends GetView<HomeController> {
 
               // ── Bottom Navigation Bar ─────────────────────────────────
               bottom_navbar(pageC: pageC),
-              
             ],
           ),
         ),
       ),
-   
     );
-    
   }
 }

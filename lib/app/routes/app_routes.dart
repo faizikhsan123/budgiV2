@@ -17,6 +17,7 @@ abstract class Routes {
   static const ANALYTICS = _Paths.ANALYTICS;
   static const HISTORY = _Paths.HISTORY;
   static const SCAN = _Paths.SCAN;
+ 
 }
 
 abstract class _Paths {
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const ANALYTICS = '/analytics';
   static const HISTORY = '/history';
   static const SCAN = '/scan';
+ 
 }

@@ -27,8 +27,9 @@ class AuthController extends GetxController {
         .get();
 
     if (query.docs.isNotEmpty) {
-      final providers =
-          List<String>.from(query.docs.first.data()['providers'] ?? []);
+      final providers = List<String>.from(
+        query.docs.first.data()['providers'] ?? [],
+      );
       return providers.isNotEmpty ? providers.first : null;
     }
     return null;
@@ -38,30 +39,31 @@ class AuthController extends GetxController {
   /// 💾 SAVE USER (ANTI RESET)
   /// ===============================
   Future<void> _saveUserIfNotExists({
-    required String uid,
-    required Map<String, dynamic> data,
-    required String provider,
-  }) async {
-    final docRef = firestore.collection("users").doc(uid);
-    final doc = await docRef.get();
+  required String uid,
+  required Map<String, dynamic> data,
+  required String provider,
+}) async {
+  final docRef = firestore.collection("users").doc(uid);
+  final doc = await docRef.get();
 
-    if (!doc.exists) {
-      /// ✅ USER BARU
-      await docRef.set({
-        ...data,
-        "providers": [provider],
-        "balance": 0,
-        "isOnboardingComplete": false,
-        "created_at": Timestamp.now(),
-        "updated_at": Timestamp.now(),
-      });
-    } else {
-      /// ✅ USER LAMA (JANGAN RESET)
-      await docRef.set({
-        "updated_at": Timestamp.now(),
-      }, SetOptions(merge: true));
-    }
+  if (!doc.exists) {
+    /// ✅ USER BARU
+    await docRef.set({
+      ...data,
+      "providers": [provider],
+      // ❌ jangan kasih balance default
+      // "balance": 0,
+      "isOnboardingComplete": false,
+      "created_at": Timestamp.now(),
+      "updated_at": Timestamp.now(),
+    });
+  } else {
+    /// ✅ USER LAMA
+    await docRef.set({
+      "updated_at": Timestamp.now(),
+    }, SetOptions(merge: true));
   }
+}
 
   /// ===============================
   /// 🔁 HANDLE REDIRECT
@@ -75,12 +77,18 @@ class AuthController extends GetxController {
       return;
     }
 
-
     final phone = data["phone"];
     final tanggalLahir = data["tanggal_lahir"];
+    final balance = data["balance"];
 
-    if ( phone == null || tanggalLahir == null) {
+    if (phone == null || tanggalLahir == null) {
       Get.offAllNamed(Routes.COMPLETE_PROFILE);
+      return;
+    }
+
+    if (balance == null) {
+      Get.offAllNamed(Routes.COMPLETE_BALANCE);
+      return;
     } else {
       Get.offAllNamed(Routes.HOME);
     }
@@ -118,8 +126,9 @@ class AuthController extends GetxController {
         accessToken: googleAuth.accessToken,
       );
 
-      userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       final uid = userCredential!.user!.uid;
 
@@ -162,10 +171,7 @@ class AuthController extends GetxController {
       final existingProvider = await _getExistingProvider(email);
 
       if (existingProvider != null && existingProvider != "facebook") {
-        Get.snackbar(
-          '❌ Failed',
-          'Gunakan login $existingProvider',
-        );
+        Get.snackbar('❌ Failed', 'Gunakan login $existingProvider');
         await FacebookAuth.instance.logOut();
         return;
       }
@@ -174,8 +180,9 @@ class AuthController extends GetxController {
         result.accessToken!.tokenString,
       );
 
-      userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       final uid = userCredential!.user!.uid;
 
@@ -207,10 +214,7 @@ class AuthController extends GetxController {
     isloading.value = true;
 
     try {
-      await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      await auth.signInWithEmailAndPassword(email: email, password: password);
 
       final uid = auth.currentUser!.uid;
 

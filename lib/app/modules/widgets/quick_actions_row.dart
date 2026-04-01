@@ -27,7 +27,8 @@ class QuickActionsRow extends StatelessWidget {
         const SizedBox(width: 70),
         _ActionItem(
           label: 'Coming Soon',
-          assetPath: 'assets/icons/history.svg',
+          assetPath: 'assets/icons/scan.svg',
+          iconSize: 48,
           onTap: () {
           // Get.toNamed(Routes.SCAN);
           print("otw");
@@ -42,11 +43,13 @@ class _ActionItem extends StatelessWidget {
   final String label;
   final String assetPath;
   final void Function()? onTap;
+  final double iconSize;
 
   const _ActionItem({
     required this.label,
     required this.assetPath,
     required this.onTap,
+    this.iconSize = 40,
   });
 
   @override
@@ -56,7 +59,8 @@ class _ActionItem extends StatelessWidget {
       child: Container(
         child: Column(
           children: [
-            SvgPicture.asset(assetPath, width: 40, height: 40),
+            //SvgPicture.asset(assetPath, width: 40, height: 40),
+            SvgPicture.asset(assetPath, width: iconSize, height: iconSize),
             const SizedBox(height: 4),
             Text(
               label,
