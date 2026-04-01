@@ -22,7 +22,6 @@ class HistoryView extends GetView<HistoryController> {
 
         child: Column(
           children: [
-     
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -109,8 +108,6 @@ class HistoryView extends GetView<HistoryController> {
                 ),
               ],
             ),
-          
-
 
             Expanded(
               child: GetBuilder<HistoryController>(
@@ -125,12 +122,26 @@ class HistoryView extends GetView<HistoryController> {
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return SizedBox(
                           width: double.infinity,
-                          height: 200,
-                          child: const Center(
-                            child: Text(
-                              "History is empty",
-                              textAlign: TextAlign.center,
-                            ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.history_edu_rounded,
+                                size: 48,
+                                color: Colors.grey[400],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                "History is empty",
+
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }
