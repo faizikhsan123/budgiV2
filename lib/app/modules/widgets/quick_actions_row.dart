@@ -59,7 +59,7 @@ class _ActionItem extends StatelessWidget {
       child: Container(
         child: Column(
           children: [
-            SvgPicture.asset(assetPath, width: 40, height: 40),
+            //SvgPicture.asset(assetPath, width: 40, height: 40),
             SvgPicture.asset(assetPath, width: iconSize, height: iconSize),
             const SizedBox(height: 4),
             Text(
