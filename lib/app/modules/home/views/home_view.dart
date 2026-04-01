@@ -100,7 +100,7 @@ class HomeView extends GetView<HomeController> {
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
                                           color: AppColors.textDark,
-                                          letterSpacing: 1.25,
+                                          letterSpacing: 1.0,
                                         ),
                                       );
                                     },

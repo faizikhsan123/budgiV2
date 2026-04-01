@@ -43,7 +43,7 @@ class PageIndexController extends GetxController {
     {
       "name": "Health",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974433/mingcute--shield-line_es79kq.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1775021799/mingcute--shield-fill_1_hbbsu5.svg",
     },
     {
       "name": "Bill",
@@ -378,22 +378,24 @@ class PageIndexController extends GetxController {
                                                           ),
                                                         ),
                                                       ),
-                                                      Text(
-                                                        "${categories[index]['name']}",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style:
-                                                            GoogleFonts.plusJakartaSans(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                      FittedBox(
+                                                        child: Text(
+                                                          "${categories[index]['name']}",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              GoogleFonts.plusJakartaSans(
+                                                                color:
+                                                                    Colors.black,
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -652,7 +654,7 @@ class PageIndexController extends GetxController {
               content: content(
                 rupiah: rupiah,
                 number: number,
-                text: "Balance has been deducted",
+                text: "balance has been deducted",
               ),
             );
           },
@@ -809,7 +811,7 @@ class PageIndexController extends GetxController {
               content: content(
                 rupiah: rupiah,
                 number: number,
-                text: "Balance has been added",
+                text: "balance has been added",
               ),
             );
 
