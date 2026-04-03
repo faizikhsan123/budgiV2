@@ -18,6 +18,8 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
+import '../modules/transaksi/bindings/transaksi_binding.dart';
+import '../modules/transaksi/views/transaksi_view.dart';
 
 part 'app_routes.dart';
 
@@ -78,8 +80,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.COMPLETE_BALANCE,
-      page: () => const CompleteBalanceView(),
+      page: () =>  CompleteBalanceView(),
       binding: CompleteBalanceBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRANSAKSI,
+      page: () =>  TransaksiView(),
+      binding: TransaksiBinding(),
     ),
   ];
 }

@@ -27,12 +27,22 @@ class content extends StatelessWidget {
         const SizedBox(height: 10),
 
         Text(
-          "All set! ${rupiah.convertToRupiah(number)} $text",
+          "All set!",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+
+        Text(
+          " ${rupiah.convertToRupiah(number)} $text",
           textAlign: TextAlign.center,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
+            
             fontWeight: FontWeight.w400,
-            color: const Color.fromARGB(255, 52, 52, 52),
+            color: const Color.fromRGBO(52, 52, 52, 1),             
           ),
         ),
 
