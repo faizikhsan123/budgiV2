@@ -80,9 +80,9 @@ class RegisView extends GetView<RegisController> {
                               controller: controller.dateC,
                               selectionMode:
                                   DateRangePickerSelectionMode.single,
-                              minDate: DateTime(2000),
+                              minDate: DateTime(1990),
                               initialSelectedDate: null,
-                              maxDate: DateTime(2040),
+                              maxDate: DateTime(2016),
                               todayHighlightColor: Colors.transparent,
                               selectionColor: Color(0xFFBC9CC6),
                               showNavigationArrow: true,
@@ -182,6 +182,11 @@ class RegisView extends GetView<RegisController> {
                           isCollapsed: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 18),
                           hintText: "812-3456-7890",
+                          hintStyle: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          )
                         ),
                       ),
                     ),
@@ -239,7 +244,7 @@ class RegisView extends GetView<RegisController> {
                       },
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
 
                     Center(
                       child: Row(

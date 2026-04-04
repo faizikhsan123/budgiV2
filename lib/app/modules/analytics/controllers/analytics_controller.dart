@@ -163,7 +163,9 @@ class AnalyticsController extends GetxController {
 
   /// Warna per kategori untuk EXPENSE
   Color getExpenseCategoryColor(String category) {
+    print("category masuk: '${category.toLowerCase()}'"); // tambah ini
     switch (category.toLowerCase()) {
+      
       case "food":
         return const Color(0xFFFF9800); // orange
       case "transport":
@@ -176,7 +178,7 @@ class AnalyticsController extends GetxController {
         return const Color(0xFFFF5D78); // pink
       case "transfer":
         return const Color(0xFFFFEB3B); // kuning
-      case "entertaiment":
+      case "entertain":
         return const Color(0xFF9C27B0); // ungu
       case "other":
         return const Color(0xFFC2C2C2); // abu
@@ -184,6 +186,7 @@ class AnalyticsController extends GetxController {
         return const Color(0xFF8D8D8D);
     }
   }
+  
 
   /// Warna per kategori untuk INCOME (nuansa hijau)
   Color getIncomeCategoryColor(String category) {

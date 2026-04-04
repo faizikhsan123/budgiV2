@@ -24,7 +24,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 80),
-            
+
                   /// TITLE
                   Text(
                     "Complete Your Personal\n Information",
@@ -34,9 +34,9 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       fontSize: 32,
                     ),
                   ),
-            
+
                   const SizedBox(height: 8),
-            
+
                   Text(
                     "Please fill the form below to complete your personal information",
                     style: GoogleFonts.plusJakartaSans(
@@ -44,14 +44,14 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       fontSize: 14,
                     ),
                   ),
-            
+
                   const SizedBox(height: 40),
-            
+
                   /// BIRTH DATE LABEL
                   buildLabel('Birth Date'),
-            
+
                   const SizedBox(height: 5),
-            
+
                   /// BIRTH DATE FIELD
                   InkWell(
                     onTap: () => Get.dialog(
@@ -61,12 +61,12 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                           padding: const EdgeInsets.all(10),
                           child: SfDateRangePicker(
                             controller: controller.dateC,
-                            selectionMode:
-                                DateRangePickerSelectionMode.single,
-                            minDate: DateTime(2000),
-                                 selectionColor: Color(0xFFBC9CC6),
+                            selectionMode: DateRangePickerSelectionMode.single,
+                            minDate: DateTime(1990),
                             initialSelectedDate: null,
-                            maxDate: DateTime(2040),
+                            maxDate: DateTime(2016),
+                            selectionColor: Color(0xFFBC9CC6),
+
                             todayHighlightColor: Colors.transparent,
                             showNavigationArrow: true,
                             showActionButtons: true,
@@ -100,13 +100,11 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                             Expanded(
                               child: Text(
                                 controller.nilaiTanggal.value.isEmpty
-                                    ? "Tanggal Lahir"
+                                    ? "Select your birth date"
                                     : controller.nilaiTanggal.value,
                                 style: TextStyle(
-                                  
                                   fontSize: 15,
                                   color: controller.nilaiTanggal.value.isEmpty
-                                  
                                       ? Colors.grey.shade500
                                       : Colors.black,
                                   fontWeight:
@@ -126,14 +124,14 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       ),
                     ),
                   ),
-            
+
                   const SizedBox(height: 15),
-            
+
                   /// PHONE LABEL
                   buildLabel('Phone Number'),
-            
+
                   const SizedBox(height: 5),
-            
+
                   /// PHONE FIELD
                   Container(
                     height: 55,
@@ -158,7 +156,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                       ),
                       initialValue: PhoneNumber(isoCode: 'ID'),
                       textFieldController: TextEditingController(),
-                      
+
                       formatInput: true,
                       keyboardType: TextInputType.number,
                       inputDecoration: const InputDecoration(
@@ -166,12 +164,17 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                         isCollapsed: true,
                         contentPadding: EdgeInsets.symmetric(vertical: 18),
                         hintText: "812-3456-7890",
+                        hintStyle: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
-            
+
                   SizedBox(height: 30),
-            
+
                   /// CONTINUE BUTTON
                   buildButtonPink(
                     text: 'Continue',

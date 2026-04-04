@@ -34,7 +34,7 @@ class EditProfileView extends GetView<EditProfileController> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                 colors: [Color(0xFFEADCF0), Colors.white],
+                colors: [Color(0xFFEADCF0), Colors.white],
               ),
             ),
             child: SafeArea(
@@ -50,10 +50,7 @@ class EditProfileView extends GetView<EditProfileController> {
                     ),
                     child: IconButton(
                       onPressed: () => Get.back(),
-                      icon: const Icon(
-                        Icons.arrow_back_ios_outlined,
-                        size: 24,
-                      ),
+                      icon: const Icon(Icons.arrow_back_ios_outlined, size: 24),
                     ),
                   ),
 
@@ -81,12 +78,10 @@ class EditProfileView extends GetView<EditProfileController> {
                                 ],
                               ),
                               child: ClipOval(
-                                child: dataArgument['photo_url'] == null ||
+                                child:
+                                    dataArgument['photo_url'] == null ||
                                         dataArgument['photo_url'] == ''
-                                    ? Image.network(
-                                        imageUrl,
-                                        fit: BoxFit.cover,
-                                      )
+                                    ? Image.network(imageUrl, fit: BoxFit.cover)
                                     : Image.network(
                                         dataArgument['photo_url'],
                                         fit: BoxFit.cover,
@@ -102,8 +97,8 @@ class EditProfileView extends GetView<EditProfileController> {
                                 onTap: () {
                                   Get.bottomSheet(
                                     Container(
-                                      height: dataArgument['photo_url'] ==
-                                                  null ||
+                                      height:
+                                          dataArgument['photo_url'] == null ||
                                               dataArgument['photo_url'] == ''
                                           ? 120
                                           : 175,
@@ -126,15 +121,17 @@ class EditProfileView extends GetView<EditProfileController> {
                                                 const SizedBox(width: 30),
                                                 Text(
                                                   "Profile Photo",
-                                                  style: GoogleFonts
-                                                      .plusJakartaSans(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  style:
+                                                      GoogleFonts.plusJakartaSans(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
                                                 ),
                                                 IconButton(
                                                   icon: const Icon(
-                                                      Icons.cancel_outlined),
+                                                    Icons.cancel_outlined,
+                                                  ),
                                                   onPressed: () => Get.back(),
                                                 ),
                                               ],
@@ -142,8 +139,10 @@ class EditProfileView extends GetView<EditProfileController> {
                                             Row(
                                               children: [
                                                 IconButton(
-                                                  icon: const Icon(Icons.image,
-                                                      color: Colors.purple),
+                                                  icon: const Icon(
+                                                    Icons.image,
+                                                    color: Colors.purple,
+                                                  ),
                                                   onPressed: () async {
                                                     await controller
                                                         .selectImage();
@@ -158,13 +157,13 @@ class EditProfileView extends GetView<EditProfileController> {
                                                   },
                                                   child: Text(
                                                     "Gallery",
-                                                    style: GoogleFonts
-                                                        .plusJakartaSans(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black,
-                                                    ),
+                                                    style:
+                                                        GoogleFonts.plusJakartaSans(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black,
+                                                        ),
                                                   ),
                                                 ),
                                               ],
@@ -176,8 +175,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                                 children: [
                                                   IconButton(
                                                     icon: const Icon(
-                                                        Icons.delete_forever,
-                                                        color: Colors.red),
+                                                      Icons.delete_forever,
+                                                      color: Colors.red,
+                                                    ),
                                                     onPressed: () => controller
                                                         .deleteImage(),
                                                   ),
@@ -186,13 +186,13 @@ class EditProfileView extends GetView<EditProfileController> {
                                                         .deleteImage(),
                                                     child: Text(
                                                       "Delete Image",
-                                                      style: GoogleFonts
-                                                          .plusJakartaSans(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.plusJakartaSans(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Colors.black,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -302,7 +302,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                       selectionMode:
                                           DateRangePickerSelectionMode.single,
                                       showActionButtons: true,
+                                      minDate: DateTime(1990),
                                       initialSelectedDate: null,
+                                      maxDate: DateTime(2016),
                                       todayHighlightColor: Colors.transparent,
                                       showNavigationArrow: true,
                                       selectionColor: const Color(0xFFBC9CC6),
@@ -322,7 +324,8 @@ class EditProfileView extends GetView<EditProfileController> {
                                 () => Container(
                                   height: 55,
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
+                                    horizontal: 16,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(14),
@@ -356,8 +359,9 @@ class EditProfileView extends GetView<EditProfileController> {
 
                             Container(
                               height: 55,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(14),
@@ -374,8 +378,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                   print(number.phoneNumber);
                                 },
                                 selectorConfig: const SelectorConfig(
-                                  selectorType:
-                                      PhoneInputSelectorType.DROPDOWN,
+                                  selectorType: PhoneInputSelectorType.DROPDOWN,
                                   showFlags: true,
                                 ),
                                 initialValue: controller.phoneC,
@@ -385,8 +388,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                 inputDecoration: const InputDecoration(
                                   border: InputBorder.none,
                                   isCollapsed: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 18),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 18,
+                                  ),
                                 ),
                               ),
                             ),

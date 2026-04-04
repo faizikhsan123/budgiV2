@@ -66,6 +66,7 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
                       input_rupiah(
                         amountC: controller.balance,
                         hintText: "Current Balance",
+                        
                       ),
 
                       const SizedBox(height: 20),

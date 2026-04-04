@@ -31,8 +31,8 @@ class input_rupiah extends StatelessWidget {
         fillColor: const Color.fromARGB(255, 255, 255, 255),
 
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
+          horizontal: 10,
+          vertical: 18,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

@@ -16,6 +16,7 @@ class bottom_navbar extends StatelessWidget {
      
       height: 50,
       //widget bottom navbar
+      style: TabStyle.fixed,
       backgroundColor: const Color.fromARGB(255, 189, 157, 195),
       initialActiveIndex: pageC.CurrentIndex.value, //index active
       items: [

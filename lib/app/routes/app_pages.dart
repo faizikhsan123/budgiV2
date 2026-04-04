@@ -87,6 +87,7 @@ class AppPages {
       name: _Paths.TRANSAKSI,
       page: () =>  TransaksiView(),
       binding: TransaksiBinding(),
+      transition: Transition.fadeIn
     ),
   ];
 }
