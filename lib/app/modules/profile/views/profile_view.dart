@@ -168,7 +168,8 @@ class ProfileView extends GetView<ProfileController> {
                                             user['tanggal_lahir'],
                                             style: GoogleFonts.plusJakartaSans(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w500,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black
                                             ),
                                           ),
                                         ),
