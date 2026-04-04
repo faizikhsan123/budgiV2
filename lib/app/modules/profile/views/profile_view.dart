@@ -169,7 +169,7 @@ class ProfileView extends GetView<ProfileController> {
                                             style: GoogleFonts.plusJakartaSans(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w600,
-                                              color: Colors.black
+                                              color: Colors.black,
                                             ),
                                           ),
                                         ),
@@ -259,7 +259,12 @@ class ProfileView extends GetView<ProfileController> {
                                                     vertical: 13,
                                                   ),
                                               side: BorderSide(
-                                                color: const Color.fromARGB(255, 182, 182, 182)!,
+                                                color: const Color.fromARGB(
+                                                  255,
+                                                  182,
+                                                  182,
+                                                  182,
+                                                ),
                                               ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
@@ -389,7 +394,7 @@ class ProfileView extends GetView<ProfileController> {
                 ),
               ),
 
-              bottom_navbar(pageC: pageC),
+             bottom_navbar(pageC: pageC,),
             ],
           ),
         ),

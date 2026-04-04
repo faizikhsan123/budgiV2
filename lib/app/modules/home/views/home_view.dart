@@ -456,7 +456,7 @@ class HomeView extends GetView<HomeController> {
               ),
 
               // ── Bottom Navigation Bar ─────────────────────────────────
-              bottom_navbar(pageC: pageC),
+              bottom_navbar( pageC: pageC,),
             ],
           ),
         ),

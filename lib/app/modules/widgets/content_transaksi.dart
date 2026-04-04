@@ -1,4 +1,4 @@
-import 'package:budgi/app/routes/app_pages.dart';
+
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,9 +40,9 @@ class content extends StatelessWidget {
           textAlign: TextAlign.center,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
-            
+
             fontWeight: FontWeight.w400,
-            color: const Color.fromRGBO(52, 52, 52, 1),             
+            color: const Color.fromRGBO(52, 52, 52, 1),
           ),
         ),
 
@@ -51,22 +51,22 @@ class content extends StatelessWidget {
         SizedBox(
           width: 150,
           height: 45,
-          child: OutlinedButton(
+          child: ElevatedButton(
             onPressed: () {
-              Get.offAllNamed(Routes.HOME);
+              Get.back();
             },
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Color(0xFFBC9CC6)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFB695C0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(
-              "Return Home",
+              "Done",
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
