@@ -1,5 +1,4 @@
 import 'package:budgi/app/controllers/page_index_controller.dart';
-import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/ButtonPink_transaksi.dart';
 import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
@@ -17,7 +16,8 @@ class TransaksiView extends GetView<TransaksiController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: bottom_navbar(pageC: pageC),
+      bottomNavigationBar: bottom_navbar(pageC: pageC,),
+  
       body: SafeArea(
         child: Column(
           children: [
