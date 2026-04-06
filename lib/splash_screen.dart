@@ -11,9 +11,9 @@ class Splashscreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 200, //mengatur lebar widget sebesar 80% dari lebar layar
-              child: Image.asset(
-                'assets/img/logo.png',
+              width: 130, //mengatur lebar widget sebesar 80% dari lebar layar
+              child: Image.network(
+                'https://res.cloudinary.com/dzfi5acyl/image/upload/q_auto/f_auto/v1774848306/Stroke_Putih_y8ugnb.png',
                 filterQuality: FilterQuality.high,
               ),
             ),
