@@ -45,7 +45,7 @@ class EditProfileController extends GetxController {
           newImageUrl =
               await _uploadImageOnly(); // return URL, jangan update Firestore di sini
         }
-     
+
         await firestore.collection("users").doc(uid).update({
           'updated_at': Timestamp.now(),
           if (newImageUrl != null) 'photo_url': newImageUrl,
@@ -55,7 +55,7 @@ class EditProfileController extends GetxController {
       update(); //untuk memperbarui karena pakai get buildeedr
     } catch (e) {
       //kalo user klik cancel pada pemilihan gamabar
-      Get.snackbar('Failed', 'You cannot pick the image: $e');
+      Get.snackbar('Failed', 'You cannot pick the image');
       pickedIMage = null;
       update();
     }
@@ -148,8 +148,8 @@ class EditProfileController extends GetxController {
       );
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to update profile: $e',
+        'Failed to update profile ',
+        'Please, check your internet connection',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -176,8 +176,8 @@ class EditProfileController extends GetxController {
       return data['secure_url'];
     } catch (e) {
       Get.snackbar(
-        'Failed',
-        'Failed to upload image: $e',
+        'Failed to upload image',
+        'Please, check your internet connection',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

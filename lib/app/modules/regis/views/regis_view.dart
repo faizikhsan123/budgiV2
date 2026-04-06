@@ -82,7 +82,7 @@ class RegisView extends GetView<RegisController> {
                                   DateRangePickerSelectionMode.single,
                               minDate: DateTime(1990),
                               initialSelectedDate: null,
-                              maxDate: DateTime(2016),
+                              maxDate: DateTime(2040),
                               todayHighlightColor: Colors.transparent,
                               selectionColor: Color(0xFFBC9CC6),
                               showNavigationArrow: true,

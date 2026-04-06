@@ -19,24 +19,16 @@ class AnalyticsController extends GetxController {
   void onInit() {
     super.onInit();
     nilaiTanggal.value = 'All Time';
-    print(nilaiTanggal.value);
   }
 
   Future<void> resetForm() async {
-    Future.delayed(Duration(seconds: 1), () {
-      return nilaiTanggal.value = DateFormat(
-        'dd-M-yyyy',
-      ).format(DateTime.now());
+    Future.delayed(const Duration(seconds: 1), () {
+      nilaiTanggal.value = DateFormat('dd-M-yyyy').format(DateTime.now());
     });
   }
 
-  void liatExpense() {
-    transactionType.value = "expense";
-  }
-
-  void liatIncome() {
-    transactionType.value = "income";
-  }
+  void liatExpense() => transactionType.value = "expense";
+  void liatIncome()  => transactionType.value = "income";
 
   void pickDateRange(DateTime startDate, DateTime endDate) {
     start = startDate;
@@ -45,7 +37,6 @@ class AnalyticsController extends GetxController {
     Get.back();
   }
 
-  /// Ambil semua transaksi
   Stream<QuerySnapshot<Map<String, dynamic>>> datatransaksi() {
     final uid = auth.currentUser!.uid;
     if (start == null) {
@@ -60,51 +51,33 @@ class AnalyticsController extends GetxController {
           .collection("users")
           .doc(uid)
           .collection("transactions")
-          .where(
-            "filter_tanggal",
-            isGreaterThanOrEqualTo: start!.toIso8601String(),
-          )
-          .where(
-            "filter_tanggal",
-            isLessThan: end!.add(const Duration(days: 1)).toIso8601String(),
-          )
+          .where("filter_tanggal", isGreaterThanOrEqualTo: start!.toIso8601String())
+          .where("filter_tanggal",
+              isLessThan: end!.add(const Duration(days: 1)).toIso8601String())
           .orderBy("filter_tanggal", descending: true)
           .snapshots();
     }
   }
 
-  /// Helper untuk menghitung total income, expense dan maksimum untuk chart
   Future<Map<String, double>> getChartMetrics() async {
     final uid = auth.currentUser!.uid;
     double totalIncome = 0;
     double totalExpense = 0;
 
     final txSnap = await datatransaksi().first;
-    final docs = txSnap.docs;
-
-    for (final doc in docs) {
+    for (final doc in txSnap.docs) {
       final incomeSnap = await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(doc.id)
-          .collection("items")
-          .where("type", isEqualTo: "income")
-          .get();
-
+          .collection("users").doc(uid).collection("transactions")
+          .doc(doc.id).collection("items")
+          .where("type", isEqualTo: "income").get();
       for (final item in incomeSnap.docs) {
         totalIncome += (item['amount'] as num).toDouble();
       }
 
       final expenseSnap = await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(doc.id)
-          .collection("items")
-          .where("type", isEqualTo: "expense")
-          .get();
-
+          .collection("users").doc(uid).collection("transactions")
+          .doc(doc.id).collection("items")
+          .where("type", isEqualTo: "expense").get();
       for (final item in expenseSnap.docs) {
         totalExpense += (item['amount'] as num).toDouble();
       }
@@ -117,135 +90,107 @@ class AnalyticsController extends GetxController {
     };
   }
 
-  /// Helper untuk menghitung total income dan expense
-  Future<Map<String, double>> calculateTotals() async {
+  Future<Map<String, double>> calculateTotals() async => getChartMetrics();
+
+  /// Persentase tiap kategori EXPENSE dari total expense
+  Future<Map<String, double>> getCategoryPercentages() async {
     final uid = auth.currentUser!.uid;
-    double totalIncome = 0;
-    double totalExpense = 0;
+    final Map<String, double> totals = {};
+    double grand = 0;
 
     final txSnap = await datatransaksi().first;
-    final docs = txSnap.docs;
-
-    for (final doc in docs) {
-      final incomeSnap = await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(doc.id)
-          .collection("items")
-          .where("type", isEqualTo: "income")
-          .get();
-
-      for (final item in incomeSnap.docs) {
-        totalIncome += (item['amount'] as num).toDouble();
-      }
-
-      final expenseSnap = await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(doc.id)
-          .collection("items")
-          .where("type", isEqualTo: "expense")
-          .get();
-
-      for (final item in expenseSnap.docs) {
-        totalExpense += (item['amount'] as num).toDouble();
+    for (final doc in txSnap.docs) {
+      final snap = await firestore
+          .collection("users").doc(uid).collection("transactions")
+          .doc(doc.id).collection("items")
+          .where("type", isEqualTo: "expense").get();
+      for (final item in snap.docs) {
+        final cat = item['category'] as String;
+        final amt = (item['amount'] as num).toDouble();
+        totals[cat] = (totals[cat] ?? 0) + amt;
+        grand += amt;
       }
     }
 
-    return {
-      'totalIncome': totalIncome,
-      'totalExpense': totalExpense,
-      'balance': totalIncome - totalExpense,
-    };
+    if (grand == 0) return {};
+    return totals.map((k, v) => MapEntry(k, (v / grand) * 100));
   }
 
-  /// Warna per kategori untuk EXPENSE
+  /// Persentase tiap kategori INCOME dari total income
+  Future<Map<String, double>> getIncomeCategoryPercentages() async {
+    final uid = auth.currentUser!.uid;
+    final Map<String, double> totals = {};
+    double grand = 0;
+
+    final txSnap = await datatransaksi().first;
+    for (final doc in txSnap.docs) {
+      final snap = await firestore
+          .collection("users").doc(uid).collection("transactions")
+          .doc(doc.id).collection("items")
+          .where("type", isEqualTo: "income").get();
+      for (final item in snap.docs) {
+        final cat = item['category'] as String;
+        final amt = (item['amount'] as num).toDouble();
+        totals[cat] = (totals[cat] ?? 0) + amt;
+        grand += amt;
+      }
+    }
+
+    if (grand == 0) return {};
+    return totals.map((k, v) => MapEntry(k, (v / grand) * 100));
+  }
+
   Color getExpenseCategoryColor(String category) {
-    print("category masuk: '${category.toLowerCase()}'"); // tambah ini
     switch (category.toLowerCase()) {
-      
-      case "food":
-        return const Color(0xFFFF9800); // orange
-      case "transport":
-        return const Color(0xFF2196F3); // biru
-      case "health":
-        return const Color(0xFF4CAF50); // hijau
-      case "bill":
-        return const Color(0xFFE91E63); // merah
-      case "shopping":
-        return const Color(0xFFFF5D78); // pink
-      case "transfer":
-        return const Color(0xFFFFEB3B); // kuning
-      case "entertain":
-        return const Color(0xFF9C27B0); // ungu
-      case "other":
-        return const Color(0xFFC2C2C2); // abu
-      default:
-        return const Color(0xFF8D8D8D);
+      case "food":      return const Color(0xFFFF9800);
+      case "transport": return const Color(0xFF2196F3);
+      case "health":    return const Color(0xFF4CAF50);
+      case "bill":      return const Color(0xFFE91E63);
+      case "shopping":  return const Color(0xFFFF5D78);
+      case "transfer":  return const Color.fromARGB(255, 240, 224, 85);
+      case "entertain": return const Color(0xFF9C27B0);
+      case "other":     return const Color(0xFFC2C2C2);
+      default:          return const Color(0xFF8D8D8D);
     }
   }
-  
 
-  /// Warna per kategori untuk INCOME (nuansa hijau)
   Color getIncomeCategoryColor(String category) {
     switch (category.toLowerCase()) {
-      case "salary":
-        return const Color(0xFF4CAF50); // hijau utama
-      case "freelance":
-        return const Color(0xFF81C784); // hijau muda
-      case "investment":
-        return const Color(0xFF00897B); // teal
-      case "bonus":
-        return const Color(0xFF66BB6A); // hijau terang
-      case "transfer":
-        return const Color(0xFFA5D6A7); // hijau pastel
-      case "gift":
-        return const Color(0xFF26A69A); // teal muda
-      case "other":
-        return const Color(0xFFC8E6C9); // hijau sangat muda
-      default:
-        return const Color(0xFF388E3C); // hijau gelap default
+      case "salary":     return const Color(0xFF4CAF50);
+      case "freelance":  return const Color(0xFF81C784);
+      case "investment": return const Color(0xFF00897B);
+      case "bonus":      return const Color(0xFF66BB6A);
+      case "transfer":   return const Color(0xFFBC9CC6);
+      case "gift":       return const Color(0xFF26A69A);
+      case "other":      return const Color(0xFFC8E6C9);
+      default:           return const Color(0xFF388E3C);
     }
   }
 
-  /// Stream agregasi chart per kategori (expense atau income)
-  /// ✅ FIXED: sekarang handle keduanya expense dan income
   Stream<List<CategoryData>> streamChartData() async* {
     final uid = auth.currentUser!.uid;
 
     await for (final txSnap in datatransaksi()) {
       final docs = txSnap.docs;
-      if (docs.isEmpty) {
-        yield [];
-        continue;
-      }
+      if (docs.isEmpty) { yield []; continue; }
 
       final Map<String, double> categoryTotals = {};
-      final currentType = transactionType.value; // "income" atau "expense"
+      final currentType = transactionType.value;
 
       for (final doc in docs) {
         final itemsSnap = await firestore
-            .collection("users")
-            .doc(uid)
-            .collection("transactions")
-            .doc(doc.id)
-            .collection("items")
-            .where("type", isEqualTo: currentType)
-            .get();
+            .collection("users").doc(uid).collection("transactions")
+            .doc(doc.id).collection("items")
+            .where("type", isEqualTo: currentType).get();
 
         for (final item in itemsSnap.docs) {
           final category = item['category'] as String;
-          final amount = (item['amount'] as num).toDouble();
+          final amount   = (item['amount'] as num).toDouble();
           categoryTotals[category] = (categoryTotals[category] ?? 0) + amount;
         }
       }
 
-      if (categoryTotals.isEmpty) {
-        yield [];
-        continue;
-      }
+      if (categoryTotals.isEmpty) { yield []; continue; }
 
       final sorted = categoryTotals.entries.toList()
         ..sort((a, b) => b.value.compareTo(a.value));
@@ -259,29 +204,21 @@ class AnalyticsController extends GetxController {
     }
   }
 
-  /// STREAM EXPENSE ITEMS
   Stream<QuerySnapshot<Map<String, dynamic>>> streamExpenseItem(String docId) {
     final uid = auth.currentUser!.uid;
     return firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .doc(docId)
-        .collection("items")
+        .collection("users").doc(uid).collection("transactions")
+        .doc(docId).collection("items")
         .where("type", isEqualTo: "expense")
         .orderBy("created_at", descending: true)
         .snapshots();
   }
 
-  /// STREAM INCOME ITEMS
   Stream<QuerySnapshot<Map<String, dynamic>>> streamIncomeItem(String docId) {
     final uid = auth.currentUser!.uid;
     return firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .doc(docId)
-        .collection("items")
+        .collection("users").doc(uid).collection("transactions")
+        .doc(docId).collection("items")
         .where("type", isEqualTo: transactionType.value)
         .orderBy("created_at", descending: true)
         .snapshots();

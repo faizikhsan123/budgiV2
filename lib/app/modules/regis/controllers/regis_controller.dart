@@ -128,7 +128,7 @@ class RegisController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Failed",
-        e.toString(),
+       "Please check your internet connection",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

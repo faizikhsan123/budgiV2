@@ -220,7 +220,7 @@ class AuthController extends GetxController {
 
       await _handleRedirect(uid);
     } catch (e) {
-      Get.snackbar('Failed', 'Login failed $e');
+      Get.snackbar('Failed', 'Login failed');
     } finally {
       isloading.value = false;
     }

@@ -64,7 +64,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                             selectionMode: DateRangePickerSelectionMode.single,
                             minDate: DateTime(1990),
                             initialSelectedDate: null,
-                            maxDate: DateTime(2016),
+                            maxDate: DateTime(2040),
                             selectionColor: Color(0xFFBC9CC6),
 
                             todayHighlightColor: Colors.transparent,
