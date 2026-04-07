@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1045518840876',
     projectId: 'budgi-379f7',
     storageBucket: 'budgi-379f7.firebasestorage.app',
+    androidClientId: '1045518840876-ckvpt41vniar4efma2fqogeq6po5ne77.apps.googleusercontent.com',
+    iosClientId: '1045518840876-e0sckchgt2edegtkjf26bg401h63ca8j.apps.googleusercontent.com',
     iosBundleId: 'com.example.budgi',
   );
+
 }

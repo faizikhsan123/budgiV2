@@ -151,56 +151,56 @@ class AuthController extends GetxController {
   /// ===============================
   /// 🔥 LOGIN FACEBOOK
   /// ===============================
-  Future<void> loginFacebook() async {
-    try {
-      final result = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile'],
-      );
+  // Future<void> loginFacebook() async {
+  //   try {
+  //     final result = await FacebookAuth.instance.login(
+  //       permissions: ['email', 'public_profile'],
+  //     );
 
-      if (result.status != LoginStatus.success) return;
+  //     if (result.status != LoginStatus.success) return;
 
-      final userData = await FacebookAuth.instance.getUserData();
+  //     final userData = await FacebookAuth.instance.getUserData();
 
-      final email = userData['email'];
-      if (email == null) {
-        Get.snackbar('Failed', 'Facebook email is empty');
-        await FacebookAuth.instance.logOut();
-        return;
-      }
+  //     final email = userData['email'];
+  //     if (email == null) {
+  //       Get.snackbar('Failed', 'Facebook email is empty');
+  //       await FacebookAuth.instance.logOut();
+  //       return;
+  //     }
 
-      final existingProvider = await _getExistingProvider(email);
+  //     final existingProvider = await _getExistingProvider(email);
 
-      if (existingProvider != null && existingProvider != "facebook") {
-        Get.snackbar('❌ Failed', 'Gunakan login $existingProvider');
-        await FacebookAuth.instance.logOut();
-        return;
-      }
+  //     if (existingProvider != null && existingProvider != "facebook") {
+  //       Get.snackbar('❌ Failed', 'Gunakan login $existingProvider');
+  //       await FacebookAuth.instance.logOut();
+  //       return;
+  //     }
 
-      final credential = FacebookAuthProvider.credential(
-        result.accessToken!.tokenString,
-      );
+  //     final credential = FacebookAuthProvider.credential(
+  //       result.accessToken!.tokenString,
+  //     );
 
-      userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
+  //     userCredential = await FirebaseAuth.instance.signInWithCredential(
+  //       credential,
+  //     );
 
-      final uid = userCredential!.user!.uid;
+  //     final uid = userCredential!.user!.uid;
 
-      await _saveUserIfNotExists(
-        uid: uid,
-        provider: "facebook",
-        data: {
-          "name": userData['name'],
-          "email": email,
-          "photo_url": userData['picture']['data']['url'],
-        },
-      );
+  //     await _saveUserIfNotExists(
+  //       uid: uid,
+  //       provider: "facebook",
+  //       data: {
+  //         "name": userData['name'],
+  //         "email": email,
+  //         "photo_url": userData['picture']['data']['url'],
+  //       },
+  //     );
 
-      await _handleRedirect(uid);
-    } catch (e) {
-      print("Failed FACEBOOK: $e");
-    }
-  }
+  //     await _handleRedirect(uid);
+  //   } catch (e) {
+  //     print("Failed FACEBOOK: $e");
+  //   }
+  // }
 
   /// ===============================
   /// 🔥 LOGIN EMAIL

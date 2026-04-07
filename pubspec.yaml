@@ -61,7 +61,6 @@ flutter_icons:
 flutter: 
   assets: 
     - assets/icons/
-    - assets/img/
     - assets/lottie/
     - assets/logo/
   uses-material-design: true
