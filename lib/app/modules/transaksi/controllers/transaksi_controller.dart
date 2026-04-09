@@ -236,6 +236,7 @@ class TransaksiController extends GetxController {
 
             amount1C.clear();
             selectedCategoryIndex.value = -1;
+            notes1C.clear();
 
             Get.back();
 
@@ -382,6 +383,7 @@ class TransaksiController extends GetxController {
             });
 
             amount2C.clear();
+            notes2C.clear();
 
             Get.back();
 

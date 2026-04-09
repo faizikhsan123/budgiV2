@@ -70,21 +70,6 @@ class RegisController extends GetxController {
       return;
     }
 
-    final QuerySnapshot snapshot = await firestore
-        .collection("users")
-        .where("email", isEqualTo: emailC.text.trim())
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      Get.snackbar(
-        "Failed",
-        "Email already exists",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
     await _regis(emailC.text.trim(), passC.text.trim());
   }
 
@@ -128,7 +113,7 @@ class RegisController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Failed",
-       "Please check your internet connection",
+        "Please check your internet connection",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
