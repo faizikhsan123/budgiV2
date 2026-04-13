@@ -398,15 +398,22 @@ class HomeView extends GetView<HomeController> {
                                                             ),
                                                       ),
 
-                                                      subtitle: Text(
-                                                        item['notes'],
-                                                        style:
-                                                            GoogleFonts.plusJakartaSans(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .grey[900],
+                                                      subtitle:
+                                                          (item['notes'] ==
+                                                                  null ||
+                                                              item['notes']
+                                                                  .toString()
+                                                                  .trim()
+                                                                  .isEmpty)
+                                                          ? null
+                                                          : Text(
+                                                              item['notes'],
+                                                              style: GoogleFonts.plusJakartaSans(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .grey[900],
+                                                              ),
                                                             ),
-                                                      ),
 
                                                       trailing: Text(
                                                         isIncome
@@ -456,7 +463,7 @@ class HomeView extends GetView<HomeController> {
               ),
 
               // ── Bottom Navigation Bar ─────────────────────────────────
-              bottom_navbar( pageC: pageC,),
+              bottom_navbar(pageC: pageC),
             ],
           ),
         ),
