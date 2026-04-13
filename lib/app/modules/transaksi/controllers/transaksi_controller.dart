@@ -398,7 +398,7 @@ class TransaksiController extends GetxController {
               titleStyle: GoogleFonts.plusJakartaSans(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: Colors.black,  
               ),
               content: content(
                 rupiah: rupiah,
