@@ -16,8 +16,8 @@ class TransaksiView extends GetView<TransaksiController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: bottom_navbar(pageC: pageC,),
-  
+      bottomNavigationBar: bottom_navbar(pageC: pageC),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -147,10 +147,7 @@ class TransaksiView extends GetView<TransaksiController> {
                               const SizedBox(width: 10),
                               const Text("Date"),
                               const Spacer(),
-                              Text(
-                               controller.nilaiTanggal.value,
-                                
-                              ),
+                              Text(controller.nilaiTanggal.value),
                               const SizedBox(width: 10),
                               const Icon(Icons.arrow_forward_ios, size: 16),
                             ],
@@ -336,9 +333,55 @@ class TransaksiView extends GetView<TransaksiController> {
                           : const SizedBox(),
                     ),
 
+                  
+
+                    //other
+                    Obx(() {
+                      // Guard: jika belum pilih kategori, jangan akses array
+                      if (controller.selectedCategoryIndex.value == -1) {
+                        return const SizedBox(height: 0);
+                      }
+
+                      return controller.categories[controller
+                                      .selectedCategoryIndex
+                                      .value]['name'] ==
+                                  "Other" &&
+                              controller.transactionType.value == "expense"
+                          ? Container(
+                              margin: const EdgeInsets.only(top: 20),
+                            
+                            child: TextField(
+                                controller: controller.otherC,
+                                keyboardType: TextInputType.name,
+                                decoration: InputDecoration(
+                                  hintText: "Category Name",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromARGB(255, 215, 204, 219),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xffBC9CC6),
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          )
+                          : const SizedBox(height: 0);
+                    }),
+
+                    
                     Obx(
                       () => controller.transactionType.value == "expense"
-                          ? const SizedBox(height: 20)
+                          ? const SizedBox(height: 12)
                           : const SizedBox(height: 0),
                     ),
 
@@ -366,6 +409,7 @@ class TransaksiView extends GetView<TransaksiController> {
                             ? controller.notes1C
                             : controller.notes2C,
                         maxLines: 3,
+
                         keyboardType: TextInputType.name,
 
                         decoration: InputDecoration(
