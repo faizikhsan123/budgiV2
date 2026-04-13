@@ -1,3 +1,4 @@
+import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +7,8 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  final pageC = Get.put(PageIndexController());
 
   void logout() async {
     await auth.signOut();
@@ -44,5 +47,11 @@ class HomeController extends GetxController {
         .collection("items")
         .orderBy("created_at", descending: true)
         .snapshots();
+  }
+  @override
+  void onInit() {
+       pageC.pageIndex.value = 0; // ✅ Force reset ke Home saat halaman Home init
+    // TODO: implement onInit
+    super.onInit();
   }
 }
