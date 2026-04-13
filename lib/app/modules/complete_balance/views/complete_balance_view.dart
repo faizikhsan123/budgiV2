@@ -65,7 +65,7 @@ class CompleteBalanceView extends GetView<CompleteBalanceController> {
 
                       input_rupiah(
                         amountC: controller.balance,
-                        hintText: "Current Balance",
+                         hintText: "Rp 0.00",
                         
                       ),
 
