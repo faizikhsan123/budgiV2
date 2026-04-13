@@ -25,8 +25,8 @@ class contentBefore extends StatelessWidget {
           textAlign: TextAlign.center,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: const Color.fromARGB(255, 20, 20, 20),
+            fontWeight: FontWeight.w400,
+            color: const Color.fromARGB(255, 3, 3, 3),
           ),
         ),
         SizedBox(height: 10),

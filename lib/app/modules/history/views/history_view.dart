@@ -248,13 +248,23 @@ class HistoryView extends GetView<HistoryController> {
                                                       fontSize: 14,
                                                     ),
                                               ),
-                                              subtitle: Text(
-                                                item['notes'],
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontSize: 12,
+                                              subtitle:
+                                                  (item['notes'] == null ||
+                                                      item['notes']
+                                                          .toString()
+                                                          .trim()
+                                                          .isEmpty)
+                                                  ? null
+                                                  : Text(
+                                                      item['notes'],
+                                                      style:
+                                                          GoogleFonts.plusJakartaSans(
+                                                            fontSize: 12,
+                                                            color: Colors
+                                                                .grey[900],
+                                                          ),
                                                     ),
-                                              ),
+
                                               trailing: Text(
                                                 isIncome
                                                     ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
