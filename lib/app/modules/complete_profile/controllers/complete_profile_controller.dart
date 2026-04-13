@@ -16,14 +16,14 @@ class CompleteProfileController extends GetxController {
   late DateRangePickerController dateC;
 
   void LengkapiProfile() {
-    if (phoneC.phoneNumber!.length < 13) {
+   
+     if(phoneC.phoneNumber!.length < 12 || phoneC.phoneNumber!.length > 15) {
       Get.snackbar(
         "Failed",
-        "Invalid phone number",
+        "Phone number must be between 10 and 13 character",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-
       return;
     }
 
