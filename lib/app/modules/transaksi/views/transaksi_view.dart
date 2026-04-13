@@ -164,7 +164,7 @@ class TransaksiView extends GetView<TransaksiController> {
                     /// 🔹 INPUT RUPIAH
                     Obx(
                       () => input_rupiah(
-                        hintText: "Amount",
+                        hintText: "Rp 0.00",
 
                         // hintText: "",
                         amountC: controller.transactionType.value == "expense"
