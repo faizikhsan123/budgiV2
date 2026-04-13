@@ -132,6 +132,26 @@ class EditProfileController extends GetxController {
       isloading.value = true;
       final uid = auth.currentUser!.uid;
 
+      if (nameC.text.length < 3) {
+        Get.snackbar(
+          "Failed",
+          "Name must be at least 3 characters",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      if (phoneTextC.text.length < 12 || phoneTextC.text.length > 15) {
+        Get.snackbar(
+          "Failed",
+          "invalid phone number",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
       await firestore.collection("users").doc(uid).update({
         'name': nameC.text,
         'phone': phoneC.phoneNumber,

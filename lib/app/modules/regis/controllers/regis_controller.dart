@@ -40,6 +40,26 @@ class RegisController extends GetxController {
       return;
     }
 
+    if (nameC.text.length < 3) {
+      Get.snackbar(
+        "Failed",
+        "Name must be at least 3 characters",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if(phoneC.phoneNumber!.length < 12 || phoneC.phoneNumber!.length > 15) {
+      Get.snackbar(
+        "Failed",
+        "Phone number must be between 10 and 13 character",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
     if (!GetUtils.isEmail(emailC.text.trim())) {
       Get.snackbar(
         "Failed",
