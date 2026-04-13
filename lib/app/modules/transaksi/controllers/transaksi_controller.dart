@@ -1,4 +1,5 @@
 import 'package:budgi/app/modules/widgets/cancel_transaksi.dart';
+import 'package:budgi/app/modules/widgets/content_before_transaksi.dart';
 import 'package:budgi/app/modules/widgets/content_transaksi.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,7 @@ class TransaksiController extends GetxController {
   RxInt selectedCategoryIndex = (-1).obs;
   RxString nilaiTanggal = "".obs;
 
+  final otherC = TextEditingController();
   final amount1C = TextEditingController();
   final amount2C = TextEditingController();
   final notes1C = TextEditingController();
@@ -85,6 +87,8 @@ class TransaksiController extends GetxController {
     amount2C.clear();
     notes1C.clear();
     notes2C.clear();
+    otherC.clear();
+
     nilaiTanggal.value = _getTodayFormatted();
   }
 
@@ -162,12 +166,11 @@ class TransaksiController extends GetxController {
     var rupiah = Rupiah();
 
     Get.defaultDialog(
-      title: "Add ${rupiah.convertToRupiah(number)} to expense?",
-      titlePadding: const EdgeInsets.only(top: 24, left: 20, right: 20),
-      middleText: "",
+      title: "Confirm Transaction",
+      content: contentBefore(rupiah: rupiah, number: number, text: "Expense"),
       radius: 12,
       backgroundColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       titleStyle: GoogleFonts.plusJakartaSans(
         fontSize: 20,
         fontWeight: FontWeight.w600,
@@ -185,6 +188,17 @@ class TransaksiController extends GetxController {
           onPressed: () async {
             // FIX: pastikan nilaiTanggal sudah format d-M-yyyy yang valid
             String docId = nilaiTanggal.value;
+
+            if (categories[selectedCategoryIndex.value]['name'] == 'Other' &&
+                otherC.text.isEmpty) {
+              Get.snackbar(
+                'Failed',
+                'Other category must have Category Name',
+                backgroundColor: Colors.red.shade50,
+                colorText: Colors.red.shade900,
+              );
+              return;
+            }
 
             var docTransaction = await firestore
                 .collection("users")
@@ -223,7 +237,11 @@ class TransaksiController extends GetxController {
                 .set({
                   'type': "expense",
                   "icon": categories[selectedCategoryIndex.value]['icon'],
-                  "category": categories[selectedCategoryIndex.value]['name'],
+                  "category":
+                      categories[selectedCategoryIndex.value]['name'] == 'Other'
+                      ? otherC.text
+                      : categories[selectedCategoryIndex.value]['name'],
+
                   "date": docId,
                   'amount': number,
                   'notes': noteText,
@@ -237,6 +255,7 @@ class TransaksiController extends GetxController {
             amount1C.clear();
             selectedCategoryIndex.value = -1;
             notes1C.clear();
+            otherC.clear();
 
             Get.back();
 
@@ -304,12 +323,11 @@ class TransaksiController extends GetxController {
     var rupiah = Rupiah();
 
     Get.defaultDialog(
-      title: "Add ${rupiah.convertToRupiah(number)} to income?",
-      titlePadding: const EdgeInsets.only(top: 24, left: 20, right: 20),
-      middleText: "",
+      title: "Confirm Transaction",
+      content: contentBefore(rupiah: rupiah, number: number, text: "Income"),
       radius: 12,
       backgroundColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       titleStyle: GoogleFonts.plusJakartaSans(
         fontSize: 20,
         fontWeight: FontWeight.w600,
@@ -398,7 +416,7 @@ class TransaksiController extends GetxController {
               titleStyle: GoogleFonts.plusJakartaSans(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,  
+                color: Colors.black,
               ),
               content: content(
                 rupiah: rupiah,
@@ -419,6 +437,4 @@ class TransaksiController extends GetxController {
       ),
     );
   }
-
-
 }
