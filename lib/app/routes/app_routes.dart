@@ -14,6 +14,10 @@ abstract class Routes {
   static const HISTORY = _Paths.HISTORY;
   static const SCAN = _Paths.SCAN;
   static const TRANSAKSI = _Paths.TRANSAKSI;
+  static const RESET = _Paths.RESET;
+  static const OTP = _Paths.OTP;
+
+  static const NEW_PASS = _Paths.NEW_PASS;
 }
 
 abstract class _Paths {
@@ -29,4 +33,7 @@ abstract class _Paths {
   static const HISTORY = '/history';
   static const SCAN = '/scan';
   static const TRANSAKSI = '/transaksi';
+  static const RESET = '/reset';
+  static const OTP = '/otp';
+  static const NEW_PASS = '/new-pass';
 }

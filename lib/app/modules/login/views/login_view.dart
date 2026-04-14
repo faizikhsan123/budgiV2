@@ -116,6 +116,27 @@ class LoginView extends GetView<LoginController> {
                             ),
                           ),
 
+                          Row(
+                            children: [
+                              const Spacer(),
+                              TextButton(
+                                onPressed: () {
+                                  Get.toNamed(Routes.RESET);
+                                  controller.emailC.clear();
+                                  controller.passC.clear();
+                                },
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: GoogleFonts.plusJakartaSans(
+                                     fontWeight: FontWeight.w700,
+                                     fontSize: 14,
+                                    color: const Color.fromARGB(255, 0, 128, 248),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
                           const SizedBox(height: 10),
 
                           const SizedBox(height: 10),
@@ -170,8 +191,8 @@ class LoginView extends GetView<LoginController> {
                             // authC: authC.loginFacebook(),
                             text: "Continue With Google",
                             // icon: Icons.g_mobiledata,
-                            onTap: ()  {
-                               authC.loginWithGoogle();
+                            onTap: () {
+                              authC.loginWithGoogle();
                               controller.emailC.clear();
                               controller.passC.clear();
                             },
@@ -194,7 +215,6 @@ class LoginView extends GetView<LoginController> {
                           //     controller.passC.clear();
                           //   },
                           // ),
-
                           const SizedBox(height: 30),
 
                           /// REGISTER
@@ -205,7 +225,7 @@ class LoginView extends GetView<LoginController> {
                                 const Text("Doesn't have an account? "),
                                 GestureDetector(
                                   onTap: () {
-                                     Get.toNamed(Routes.REGIS);
+                                    Get.toNamed(Routes.REGIS);
                                     controller.emailC.clear();
                                     controller.passC.clear();
                                   },

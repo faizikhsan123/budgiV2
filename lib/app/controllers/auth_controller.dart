@@ -150,4 +150,48 @@ class AuthController extends GetxController {
     await _googleSignIn.signOut();
     Get.offAllNamed(Routes.LOGIN);
   }
+
+
+//   String verificationId = "";
+
+// Future<void> sendForgotPasswordOtp(String phoneNumber) async {
+//   await FirebaseAuth.instance.verifyPhoneNumber(
+//     phoneNumber: phoneNumber,
+//     timeout: const Duration(seconds: 60),
+
+//     verificationCompleted: (PhoneAuthCredential credential) async {
+//       await auth.signInWithCredential(credential);
+//       Get.toNamed(Routes.NEW_PASS);
+//     },
+
+//     verificationFailed: (FirebaseAuthException e) {
+//       Get.snackbar("Failed", e.message ?? "OTP failed");
+//     },
+
+//     codeSent: (String verId, int? resendToken) {
+//       verificationId = verId;
+//       Get.toNamed(Routes.OTP);
+//     },
+
+//     codeAutoRetrievalTimeout: (String verId) {
+//       verificationId = verId;
+//     },
+//   );
+// }
+
+
+// Future<void> verifyForgotPasswordOtp(String code) async {
+//   try {
+//     PhoneAuthCredential credential = PhoneAuthProvider.credential(
+//       verificationId: verificationId,
+//       smsCode: code,
+//     );
+
+//     await auth.signInWithCredential(credential);
+
+//     Get.offAllNamed(Routes.NEW_PASS);
+//   } catch (e) {
+//     Get.snackbar("Failed", "OTP invalid");
+//   }
+// }
 }
