@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/OTP/bindings/otp_binding.dart';
+import '../modules/OTP/views/otp_view.dart';
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
@@ -14,10 +16,14 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/newPass/bindings/new_pass_binding.dart';
+import '../modules/newPass/views/new_pass_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
+import '../modules/reset/bindings/reset_binding.dart';
+import '../modules/reset/views/reset_view.dart';
 import '../modules/transaksi/bindings/transaksi_binding.dart';
 import '../modules/transaksi/views/transaksi_view.dart';
 
@@ -80,14 +86,29 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.COMPLETE_BALANCE,
-      page: () =>  CompleteBalanceView(),
+      page: () => CompleteBalanceView(),
       binding: CompleteBalanceBinding(),
     ),
     GetPage(
       name: _Paths.TRANSAKSI,
-      page: () =>  TransaksiView(),
+      page: () => TransaksiView(),
       binding: TransaksiBinding(),
-      transition: Transition.fadeIn
+      transition: Transition.fadeIn,
     ),
+    GetPage(
+      name: _Paths.RESET,
+      page: () => ResetView(),
+      binding: ResetBinding(),
+    ),
+    // GetPage(
+    //   name: _Paths.OTP,
+    //   page: () =>  OtpView(),
+    //   binding: OtpBinding(),
+    // ),
+    // GetPage(
+    //   name: _Paths.NEW_PASS,
+    //   page: () =>  NewPassView(),
+    //   binding: NewPassBinding(),
+    // ),
   ];
 }

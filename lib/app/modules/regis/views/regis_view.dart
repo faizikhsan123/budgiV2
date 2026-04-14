@@ -21,7 +21,10 @@ class RegisView extends GetView<RegisController> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color.fromARGB(255, 243, 242, 244), Color.fromARGB(255, 243, 242, 244)],
+                colors: [
+                  Color.fromARGB(255, 243, 242, 244),
+                  Color.fromARGB(255, 243, 242, 244),
+                ],
               ),
             ),
             child: SafeArea(
@@ -53,6 +56,7 @@ class RegisView extends GetView<RegisController> {
                     const SizedBox(height: 20),
 
                     buildLabel("Complete Name"),
+
                     buildTextField(
                       hint: "John Doe",
                       controller: controller.nameC,
@@ -60,9 +64,9 @@ class RegisView extends GetView<RegisController> {
                       keyboardType: TextInputType.name,
                     ),
 
-                    buildLabel("Email"),
+                    buildLabel("Email Address"),
                     buildTextField(
-                      hint: "JohnDoe123@gmail.com",
+                      hint: "Budgi21@gmail.com",
                       controller: controller.emailC,
                       filled: true,
                       keyboardType: TextInputType.emailAddress,
@@ -186,7 +190,7 @@ class RegisView extends GetView<RegisController> {
                             fontSize: 15,
                             color: Colors.grey,
                             fontWeight: FontWeight.w500,
-                          )
+                          ),
                         ),
                       ),
                     ),
