@@ -44,8 +44,8 @@ class ProfileView extends GetView<ProfileController> {
                     }
 
                     final user = snapshot.data!;
-                    String imageUrl =
-                        "https://ui-avatars.com/api/?name=${user['name']}&background=random&size=256";
+                     String imageUrl =
+                          "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}";
 
                     return SingleChildScrollView(
                       child: Column(

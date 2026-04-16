@@ -19,8 +19,8 @@ class EditProfileView extends GetView<EditProfileController> {
     final avatarSize = screenWidth * 0.22;
     final cameraSize = avatarSize * 0.38;
 
-    String imageUrl =
-        "https://ui-avatars.com/api/?name=${dataArgument['name']}&background=random&size=256";
+     String imageUrl =
+                          "https://api.dicebear.com/9.x/initials/png?seed=${dataArgument['name']}";
 
     return Scaffold(
       // ✅ FIX 1: Scaffold resizes saat keyboard muncul
