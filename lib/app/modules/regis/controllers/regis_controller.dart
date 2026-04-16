@@ -3,15 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class RegisController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   RxBool isloading = false.obs;
-  RxString nilaiTanggal = "".obs;
   RxBool ishidepass = true.obs;
   RxBool ishidepassreentry = true.obs;
 
@@ -19,18 +16,14 @@ class RegisController extends GetxController {
   late TextEditingController emailC;
   late TextEditingController passC;
   late TextEditingController passReC;
-  late TextEditingController phoneTextC;
 
-  late PhoneNumber phoneC;
-  late DateRangePickerController dateC;
 
   Future<void> jalankanRegis() async {
     if (nameC.text.trim().isEmpty ||
         emailC.text.trim().isEmpty ||
         passC.text.trim().isEmpty ||
-        passReC.text.trim().isEmpty ||
-        phoneC.phoneNumber == null ||
-        nilaiTanggal.value.isEmpty) {
+        passReC.text.trim().isEmpty 
+        ) {
       Get.snackbar(
         "Failed",
         "All fields are required",
@@ -50,15 +43,7 @@ class RegisController extends GetxController {
       return;
     }
 
-    if(phoneC.phoneNumber!.length < 12 || phoneC.phoneNumber!.length > 15) {
-      Get.snackbar(
-        "Failed",
-        "Phone number must be between 10 and 13 character",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
+   
 
     if (!GetUtils.isEmail(emailC.text.trim())) {
       Get.snackbar(
@@ -105,8 +90,6 @@ class RegisController extends GetxController {
       await firestore.collection("users").doc(uid).set({
         "name": nameC.text.trim(),
         "email": email,
-        "phone": phoneC.phoneNumber,
-        "tanggal_lahir": nilaiTanggal.value,
         "provider": "Form Pendaftaran",
         "photo_url": "",
         "created_at": Timestamp.now(),
@@ -117,14 +100,12 @@ class RegisController extends GetxController {
       emailC.clear();
       passC.clear();
       passReC.clear();
-      phoneTextC.clear();
 
-      nilaiTanggal.value = "";
-      phoneC = PhoneNumber(isoCode: 'ID');
+      await userCredential.user!.sendEmailVerification();
 
       await Get.snackbar(
-        "Success",
         "Registration successful",
+        "Please check your folder spam  email to verify your account",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
@@ -148,11 +129,6 @@ class RegisController extends GetxController {
     emailC = TextEditingController();
     passC = TextEditingController();
     passReC = TextEditingController();
-    phoneTextC = TextEditingController();
-
-    phoneC = PhoneNumber(isoCode: 'ID');
-    dateC = DateRangePickerController();
-
     super.onInit();
   }
 
@@ -162,8 +138,6 @@ class RegisController extends GetxController {
     emailC.dispose();
     passC.dispose();
     passReC.dispose();
-    phoneTextC.dispose();
-    dateC.dispose();
     super.onClose();
   }
 }

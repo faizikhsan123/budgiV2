@@ -51,7 +51,7 @@ class HomeView extends GetView<HomeController> {
                       var data = asyncSnapshot.data!;
                       var rupiah = Rupiah();
                       String imageUrl =
-                          "https://ui-avatars.com/api/?name=${data['name']}&background=random&size=256";
+                          "https://api.dicebear.com/9.x/initials/png?seed=${data['name']}";
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

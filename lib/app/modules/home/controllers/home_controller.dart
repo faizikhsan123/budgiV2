@@ -28,7 +28,7 @@ class HomeController extends GetxController {
         .collection("users")
         .doc(uid)
         .collection("transactions")
-        .orderBy("date", descending: true)
+        .orderBy("filter_tanggal", descending: true)
         .limit(5)
         .snapshots();
   }

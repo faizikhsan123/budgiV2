@@ -1,11 +1,8 @@
 import 'package:get/get.dart';
-
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
 import '../modules/complete_balance/views/complete_balance_view.dart';
-import '../modules/complete_profile/bindings/complete_profile_binding.dart';
-import '../modules/complete_profile/views/complete_profile_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
 import '../modules/history/bindings/history_binding.dart';
@@ -18,6 +15,8 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
+import '../modules/reset/bindings/reset_binding.dart';
+import '../modules/reset/views/reset_view.dart';
 import '../modules/transaksi/bindings/transaksi_binding.dart';
 import '../modules/transaksi/views/transaksi_view.dart';
 
@@ -59,11 +58,6 @@ class AppPages {
       binding: RegisBinding(),
     ),
     GetPage(
-      name: _Paths.COMPLETE_PROFILE,
-      page: () => CompleteProfileView(),
-      binding: CompleteProfileBinding(),
-    ),
-    GetPage(
       name: _Paths.EDIT_PROFILE,
       page: () => EditProfileView(),
       binding: EditProfileBinding(),
@@ -80,14 +74,20 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.COMPLETE_BALANCE,
-      page: () =>  CompleteBalanceView(),
+      page: () => CompleteBalanceView(),
       binding: CompleteBalanceBinding(),
     ),
     GetPage(
       name: _Paths.TRANSAKSI,
-      page: () =>  TransaksiView(),
+      page: () => TransaksiView(),
       binding: TransaksiBinding(),
-      transition: Transition.fadeIn
+      transition: Transition.fadeIn,
     ),
+    GetPage(
+      name: _Paths.RESET,
+      page: () => ResetView(),
+      binding: ResetBinding(),
+    ),
+    
   ];
 }

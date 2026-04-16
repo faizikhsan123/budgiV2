@@ -69,9 +69,7 @@ class LoginView extends GetView<LoginController> {
                               color: const Color(0xff1A1C1E),
                             ),
                           ),
-
                           const SizedBox(height: 10),
-
                           /// SUBTITLE
                           Text(
                             "Enter your email and password \nto sign in.",
@@ -114,6 +112,27 @@ class LoginView extends GetView<LoginController> {
                                 ),
                               ),
                             ),
+                          ),
+
+                          Row(
+                            children: [
+                              const Spacer(),
+                              TextButton(
+                                onPressed: () {
+                                  Get.toNamed(Routes.RESET);
+                                  controller.emailC.clear();
+                                  controller.passC.clear();
+                                },
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: GoogleFonts.plusJakartaSans(
+                                     fontWeight: FontWeight.w700,
+                                     fontSize: 14,
+                                    color: const Color.fromARGB(255, 0, 128, 248),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
 
                           const SizedBox(height: 10),
@@ -170,8 +189,8 @@ class LoginView extends GetView<LoginController> {
                             // authC: authC.loginFacebook(),
                             text: "Continue With Google",
                             // icon: Icons.g_mobiledata,
-                            onTap: ()  {
-                               authC.loginWithGoogle();
+                            onTap: () {
+                              authC.loginWithGoogle();
                               controller.emailC.clear();
                               controller.passC.clear();
                             },
@@ -179,21 +198,6 @@ class LoginView extends GetView<LoginController> {
                           ),
 
                           const SizedBox(height: 15),
-
-                          /// FACEBOOK
-                          // Socialbutton(
-                          //   fontsize: 15,
-                          //   item: 10,
-                          //   image:
-                          //       "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773417026/logos_facebook_ti0ibh.png",
-                          //   text: "Continue With Facebook",
-                          //   // icon: Icons.facebook,
-                          //   onTap: ()  {
-                          //      authC.loginFacebook();
-                          //     controller.emailC.clear();
-                          //     controller.passC.clear();
-                          //   },
-                          // ),
 
                           const SizedBox(height: 30),
 
@@ -205,7 +209,7 @@ class LoginView extends GetView<LoginController> {
                                 const Text("Doesn't have an account? "),
                                 GestureDetector(
                                   onTap: () {
-                                     Get.toNamed(Routes.REGIS);
+                                    Get.toNamed(Routes.REGIS);
                                     controller.emailC.clear();
                                     controller.passC.clear();
                                   },

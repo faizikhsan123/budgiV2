@@ -6,8 +6,6 @@ import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
@@ -21,7 +19,10 @@ class RegisView extends GetView<RegisController> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color.fromARGB(255, 243, 242, 244), Color.fromARGB(255, 243, 242, 244)],
+                colors: [
+                  Color.fromARGB(255, 243, 242, 244),
+                  Color.fromARGB(255, 243, 242, 244),
+                ],
               ),
             ),
             child: SafeArea(
@@ -53,6 +54,7 @@ class RegisView extends GetView<RegisController> {
                     const SizedBox(height: 20),
 
                     buildLabel("Complete Name"),
+
                     buildTextField(
                       hint: "John Doe",
                       controller: controller.nameC,
@@ -60,135 +62,12 @@ class RegisView extends GetView<RegisController> {
                       keyboardType: TextInputType.name,
                     ),
 
-                    buildLabel("Email"),
+                    buildLabel("Email Address"),
                     buildTextField(
-                      hint: "JohnDoe123@gmail.com",
+                      hint: "Budgi21@gmail.com",
                       controller: controller.emailC,
                       filled: true,
                       keyboardType: TextInputType.emailAddress,
-                    ),
-
-                    buildLabel("Birth of date"),
-                    InkWell(
-                      onTap: () => Get.dialog(
-                        Dialog(
-                          child: Container(
-                            height: 400,
-                            padding: const EdgeInsets.all(10),
-
-                            child: SfDateRangePicker(
-                              controller: controller.dateC,
-                              selectionMode:
-                                  DateRangePickerSelectionMode.single,
-                              minDate: DateTime(1990),
-                              initialSelectedDate: null,
-                              maxDate: DateTime(2040),
-                              todayHighlightColor: Colors.transparent,
-                              selectionColor: Color(0xFFBC9CC6),
-                              showNavigationArrow: true,
-                              showActionButtons: true,
-                              showTodayButton: false,
-                              onCancel: () => Get.back(),
-                              onSubmit: (obj) {
-                                DateTime date = obj as DateTime;
-
-                                controller.nilaiTanggal.value =
-                                    "${date.day}/${date.month}/${date.year}";
-
-                                print(
-                                  " data tagnggal : ${controller.nilaiTanggal.value}",
-                                );
-
-                                Get.back();
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: Obx(
-                        () => Container(
-                          height: 55,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  controller.nilaiTanggal.value.isEmpty
-                                      ? "Select Date"
-                                      : controller.nilaiTanggal.value,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: controller.nilaiTanggal.value.isEmpty
-                                        ? Colors.grey.shade500
-                                        : Colors.black,
-                                    fontWeight:
-                                        controller.nilaiTanggal.value.isEmpty
-                                        ? FontWeight.normal
-                                        : FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              const Icon(
-                                Icons.calendar_today_outlined,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    buildLabel("Phone Number"),
-                    Container(
-                      height: 55,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: InternationalPhoneNumberInput(
-                        onInputChanged: (PhoneNumber number) {
-                          controller.phoneC = number;
-                          print(number.phoneNumber);
-                        },
-
-                        selectorConfig: const SelectorConfig(
-                          selectorType: PhoneInputSelectorType.DROPDOWN,
-                          showFlags: true,
-                        ),
-                        initialValue: PhoneNumber(isoCode: 'ID'),
-                        textFieldController: controller.phoneTextC,
-                        formatInput: true,
-                        keyboardType: TextInputType.number,
-                        inputDecoration: const InputDecoration(
-                          border: InputBorder.none,
-                          isCollapsed: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 18),
-                          hintText: "812-3456-7890",
-                          hintStyle: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          )
-                        ),
-                      ),
                     ),
 
                     buildLabel("Set Password"),
@@ -238,9 +117,6 @@ class RegisView extends GetView<RegisController> {
                       text: "Register",
                       onTap: () async {
                         await controller.jalankanRegis();
-
-                        controller.passC.clear();
-                        controller.passReC.clear();
                       },
                     ),
 
@@ -260,7 +136,13 @@ class RegisView extends GetView<RegisController> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () => Get.toNamed(Routes.LOGIN),
+                            onPressed: () {
+                              Get.toNamed(Routes.LOGIN);
+                              controller.nameC.clear();
+                              controller.emailC.clear();
+                              controller.passC.clear();
+                              controller.passReC.clear();
+                            },
                             child: Text(
                               "Login",
                               style: GoogleFonts.plusJakartaSans(

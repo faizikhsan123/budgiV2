@@ -156,14 +156,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
         return;
       }
 
-      final phone = data["phone"];
-      final tanggalLahir = data["tanggal_lahir"];
+      
       final balance = data["balance"];
 
-      if (phone == null || tanggalLahir == null) {
-        Get.offAllNamed(Routes.COMPLETE_PROFILE);
-        return;
-      }
+      
 
       if (balance == null) {
         Get.offAllNamed(Routes.COMPLETE_BALANCE);

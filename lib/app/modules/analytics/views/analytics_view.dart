@@ -58,11 +58,18 @@ class AnalyticsView extends GetView<AnalyticsController> {
                           onSubmit: (obj) {
                             final range = obj as PickerDateRange;
                             if (range.endDate == null) {
-                              controller.pickDateRange(range.startDate!, range.startDate!);
-                              controller.nilaiTanggal.value =
-                                  DateFormat('EEEE, d MMMM yyyy').format(range.startDate!);
+                              controller.pickDateRange(
+                                range.startDate!,
+                                range.startDate!,
+                              );
+                              controller.nilaiTanggal.value = DateFormat(
+                                'EEEE, d MMMM yyyy',
+                              ).format(range.startDate!);
                             } else {
-                              controller.pickDateRange(range.startDate!, range.endDate!);
+                              controller.pickDateRange(
+                                range.startDate!,
+                                range.endDate!,
+                              );
                               controller.nilaiTanggal.value =
                                   "${DateFormat('EEEE, d MMMM yyyy').format(range.startDate!)} - "
                                   "${DateFormat('EEEE, d MMMM yyyy').format(range.endDate!)}";
@@ -75,12 +82,22 @@ class AnalyticsView extends GetView<AnalyticsController> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: const Color(0xFFBC9CC6), width: 2),
+                      border: Border.all(
+                        color: const Color(0xFFBC9CC6),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Icon(Icons.calendar_month_outlined, size: 20, color: Colors.black),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      child: Icon(
+                        Icons.calendar_month_outlined,
+                        size: 20,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -89,10 +106,11 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
             const SizedBox(height: 20),
 
+            // ── Scrollable Content ──────────────────────────────────────────
             Expanded(
               child: GetBuilder<AnalyticsController>(
                 builder: (controller) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: [
                       // ── Toggle Expense / Income ────────────────────────────
@@ -102,11 +120,15 @@ class AnalyticsView extends GetView<AnalyticsController> {
                             Expanded(
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: controller.transactionType.value == "expense"
+                                  backgroundColor:
+                                      controller.transactionType.value ==
+                                          "expense"
                                       ? const Color(0xFFBC9CC6)
                                       : Colors.white,
                                   side: const BorderSide(
-                                      color: Color.fromARGB(255, 197, 160, 208), width: 2),
+                                    color: Color.fromARGB(255, 197, 160, 208),
+                                    width: 2,
+                                  ),
                                 ),
                                 onPressed: controller.liatExpense,
                                 child: Text(
@@ -114,7 +136,9 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: controller.transactionType.value == "expense"
+                                    color:
+                                        controller.transactionType.value ==
+                                            "expense"
                                         ? Colors.white
                                         : const Color.fromARGB(255, 52, 51, 51),
                                   ),
@@ -125,11 +149,15 @@ class AnalyticsView extends GetView<AnalyticsController> {
                             Expanded(
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: controller.transactionType.value == "income"
+                                  backgroundColor:
+                                      controller.transactionType.value ==
+                                          "income"
                                       ? const Color(0xFFBC9CC6)
                                       : Colors.white,
                                   side: const BorderSide(
-                                      color: Color.fromARGB(255, 197, 160, 208), width: 2),
+                                    color: Color.fromARGB(255, 197, 160, 208),
+                                    width: 2,
+                                  ),
                                 ),
                                 onPressed: controller.liatIncome,
                                 child: Text(
@@ -137,7 +165,9 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: controller.transactionType.value == "income"
+                                    color:
+                                        controller.transactionType.value ==
+                                            "income"
                                         ? Colors.white
                                         : const Color.fromARGB(255, 52, 51, 51),
                                   ),
@@ -148,22 +178,28 @@ class AnalyticsView extends GetView<AnalyticsController> {
                         );
                       }),
 
-                      // ── Chart + Bubble persentase + List ──────────────────
-                      Obx(() {
-                        final currentType = controller.transactionType.value;
-                        return Expanded(
-                          child: FutureBuilder<Map<String, double>>(
+                      const SizedBox(height: 10),
+
+                      // ── Semua konten bisa di-scroll ────────────────────────
+                      Expanded(
+                        child: Obx(() {
+                          final currentType = controller.transactionType.value;
+                          return FutureBuilder<Map<String, double>>(
                             future: controller.getChartMetrics(),
                             builder: (context, metricsSnapshot) {
                               if (!metricsSnapshot.hasData) {
-                                return const Center(child: CircularProgressIndicator());
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
                               }
 
                               final metrics = metricsSnapshot.data!;
                               final totalIncome = metrics['totalIncome'] ?? 0;
                               final totalExpense = metrics['totalExpense'] ?? 0;
                               final isIncome = currentType == "income";
-                              final maxValue = isIncome ? totalIncome : totalExpense;
+                              final maxValue = isIncome
+                                  ? totalIncome
+                                  : totalExpense;
 
                               return StreamBuilder<List<CategoryData>>(
                                 key: ValueKey(currentType),
@@ -171,122 +207,181 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                 builder: (context, snapshot) {
                                   final chartData = snapshot.data ?? [];
 
-                                  return Column(
-                                    children: [
-                                      // ── Radial Chart ───────────────────────
-                                      SizedBox(
-                                        height: 260,
-                                        child: SfCircularChart(
-                                          annotations: <CircularChartAnnotation>[
-                                            CircularChartAnnotation(
-                                              widget: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Total Value",
-                                                    style: GoogleFonts.plusJakartaSans(
-                                                        fontSize: 13,
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Colors.black),
-                                                  ),
-                                                  Text(
-                                                    isIncome ? "Income" : "Expense",
-                                                    style: GoogleFonts.plusJakartaSans(
-                                                        fontSize: 11,
-                                                        fontWeight: FontWeight.w400,
-                                                        color: Colors.grey),
-                                                  ),
-                                                ],
+                                  // ✅ Seluruh halaman jadi scrollable
+                                  return SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    child: Column(
+                                      children: [
+                                        // ── Radial Chart ─────────────────────
+                                        SizedBox(
+                                          height: 260,
+                                          child: SfCircularChart(
+                                            annotations: <CircularChartAnnotation>[
+                                              CircularChartAnnotation(
+                                                widget: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Total Value",
+                                                      style:
+                                                          GoogleFonts.plusJakartaSans(
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: Colors.black,
+                                                          ),
+                                                    ),
+                                                    Text(
+                                                      isIncome
+                                                          ? "Income"
+                                                          : "Expense",
+                                                      style:
+                                                          GoogleFonts.plusJakartaSans(
+                                                            fontSize: 11,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: Colors.grey,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                          series: <CircularSeries>[
-                                            if (chartData.isEmpty)
-                                              RadialBarSeries<CategoryData, String>(
-                                                dataSource: [
-                                                  CategoryData('No Data', 1, Colors.grey.shade300),
-                                                ],
-                                                xValueMapper: (d, _) => d.category,
-                                                yValueMapper: (d, _) => d.value,
-                                                pointColorMapper: (d, _) => d.color,
-                                                radius: '100%',
-                                                innerRadius: '50%',
-                                                gap: '3%',
-                                                maximumValue: 1,
-                                                cornerStyle: CornerStyle.bothCurve,
-                                                trackColor: const Color(0xFFEEEEEE),
-                                                trackBorderWidth: 0,
+                                            ],
+                                            series: <CircularSeries>[
+                                              if (chartData.isEmpty)
+                                                RadialBarSeries<
+                                                  CategoryData,
+                                                  String
+                                                >(
+                                                  dataSource: [
+                                                    CategoryData(
+                                                      'No Data',
+                                                      1,
+                                                      Colors.grey.shade300,
+                                                    ),
+                                                  ],
+                                                  xValueMapper: (d, _) =>
+                                                      d.category,
+                                                  yValueMapper: (d, _) =>
+                                                      d.value,
+                                                  pointColorMapper: (d, _) =>
+                                                      d.color,
+                                                  radius: '100%',
+                                                  innerRadius: '50%',
+                                                  gap: '3%',
+                                                  maximumValue: 1,
+                                                  cornerStyle:
+                                                      CornerStyle.bothCurve,
+                                                  trackColor: const Color(
+                                                    0xFFEEEEEE,
+                                                  ),
+                                                  trackBorderWidth: 0,
+                                                )
+                                              else
+                                                RadialBarSeries<
+                                                  CategoryData,
+                                                  String
+                                                >(
+                                                  dataSource: chartData,
+                                                  xValueMapper: (d, _) =>
+                                                      d.category,
+                                                  yValueMapper: (d, _) =>
+                                                      d.value,
+                                                  pointColorMapper: (d, _) =>
+                                                      d.color,
+                                                  radius: '100%',
+                                                  innerRadius: '50%',
+                                                  gap: '3%',
+                                                  maximumValue: maxValue > 0
+                                                      ? maxValue
+                                                      : 1,
+                                                  cornerStyle:
+                                                      CornerStyle.bothCurve,
+                                                  trackColor: const Color(
+                                                    0xFFEEEEEE,
+                                                  ),
+                                                  trackBorderWidth: 0,
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        // ── Bubble persentase ─────────────────
+                                        if (chartData.isNotEmpty)
+                                          FutureBuilder<Map<String, double>>(
+                                            future: isIncome
+                                                ? controller
+                                                      .getIncomeCategoryPercentages()
+                                                : controller
+                                                      .getCategoryPercentages(),
+                                            builder: (context, pctSnap) {
+                                              if (!pctSnap.hasData ||
+                                                  pctSnap.data!.isEmpty) {
+                                                return const SizedBox.shrink();
+                                              }
+
+                                              final sorted =
+                                                  pctSnap.data!.entries.toList()
+                                                    ..sort(
+                                                      (a, b) => b.value
+                                                          .compareTo(a.value),
+                                                    );
+
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 4,
+                                                      vertical: 8,
+                                                    ),
+                                                child: Wrap(
+                                                  spacing: 8,
+                                                  runSpacing: 8,
+                                                  alignment:
+                                                      WrapAlignment.center,
+                                                  children: sorted.map((entry) {
+                                                    final color = isIncome
+                                                        ? controller
+                                                              .getIncomeCategoryColor(
+                                                                entry.key,
+                                                              )
+                                                        : controller
+                                                              .getExpenseCategoryColor(
+                                                                entry.key,
+                                                              );
+                                                    return _CategoryBubble(
+                                                      label: entry.key,
+                                                      percentage: entry.value,
+                                                      color: color,
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+
+                                        const SizedBox(height: 8),
+
+                                        // ── List / Summary ────────────────────
+                                        // ✅ Tidak pakai Expanded, gunakan shrinkWrap
+                                        currentType == "expense"
+                                            ? _ExpenseList(
+                                                controller: controller,
                                               )
-                                            else
-                                              RadialBarSeries<CategoryData, String>(
-                                                dataSource: chartData,
-                                                xValueMapper: (d, _) => d.category,
-                                                yValueMapper: (d, _) => d.value,
-                                                pointColorMapper: (d, _) => d.color,
-                                                radius: '100%',
-                                                innerRadius: '50%',
-                                                gap: '3%',
-                                                maximumValue: maxValue > 0 ? maxValue : 1,
-                                                cornerStyle: CornerStyle.bothCurve,
-                                                trackColor: const Color(0xFFEEEEEE),
-                                                trackBorderWidth: 0,
+                                            : _IncomeSummary(
+                                                controller: controller,
                                               ),
-                                          ],
-                                        ),
-                                      ),
 
-                                      // ── Bubble persentase di bawah chart ──
-                                      if (chartData.isNotEmpty)
-                                        FutureBuilder<Map<String, double>>(
-                                          future: isIncome
-                                              ? controller.getIncomeCategoryPercentages()
-                                              : controller.getCategoryPercentages(),
-                                          builder: (context, pctSnap) {
-                                            if (!pctSnap.hasData || pctSnap.data!.isEmpty) {
-                                              return const SizedBox.shrink();
-                                            }
-
-                                            final sorted = pctSnap.data!.entries.toList()
-                                              ..sort((a, b) => b.value.compareTo(a.value));
-
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 4, vertical: 8),
-                                              child: Wrap(
-                                                spacing: 8,
-                                                runSpacing: 8,
-                                                alignment: WrapAlignment.center,
-                                                children: sorted.map((entry) {
-                                                  final color = isIncome
-                                                      ? controller.getIncomeCategoryColor(entry.key)
-                                                      : controller.getExpenseCategoryColor(entry.key);
-                                                  return _CategoryBubble(
-                                                    label: entry.key,
-                                                    percentage: entry.value,
-                                                    color: color,
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            );
-                                          },
-                                        ),
-
-                                      const SizedBox(height: 8),
-
-                                      // ── List / Summary ─────────────────────
-                                      Expanded(
-                                        child: currentType == "expense"
-                                            ? _ExpenseList(controller: controller)
-                                            : _IncomeSummary(controller: controller),
-                                      ),
-                                    ],
+                                        const SizedBox(height: 20),
+                                      ],
+                                    ),
                                   );
                                 },
                               );
                             },
-                          ),
-                        );
-                      }),
+                          );
+                        }),
+                      ),
                     ],
                   ),
                 ),
@@ -300,7 +395,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
 }
 
 // ════════════════════════════════════════════════════════════
-//  EXPENSE LIST
+//  EXPENSE LIST — ✅ pakai shrinkWrap, bukan Expanded
 // ════════════════════════════════════════════════════════════
 class _ExpenseList extends StatelessWidget {
   final AnalyticsController controller;
@@ -321,18 +416,25 @@ class _ExpenseList extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.receipt_long_outlined, size: 48, color: Colors.grey[400]),
+                Icon(
+                  Icons.receipt_long_outlined,
+                  size: 48,
+                  color: Colors.grey[400],
+                ),
                 const SizedBox(height: 12),
-                Obx(() => Text(
-                      controller.nilaiTanggal.value.isEmpty
-                          ? "No expenses found"
-                          : "No expenses on\n${controller.nilaiTanggal.value}",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey[500]),
-                    )),
+                Obx(
+                  () => Text(
+                    controller.nilaiTanggal.value.isEmpty
+                        ? "No expenses found"
+                        : "No expenses on\n${controller.nilaiTanggal.value}",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ),
               ],
             ),
           );
@@ -340,7 +442,10 @@ class _ExpenseList extends StatelessWidget {
 
         final data = snapshot.data!.docs;
 
+        // ✅ shrinkWrap + NeverScrollableScrollPhysics agar ikut scroll parent
         return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: data.length,
           itemBuilder: (context, index) {
             final transactionData = data[index].data();
@@ -362,28 +467,36 @@ class _ExpenseList extends StatelessWidget {
                       DateFormat("d-M-yyyy").parse(transactionData['date']),
                     ),
                     style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w500, color: Colors.grey[900]),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[900],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   FutureBuilder<Map<String, double>>(
                     future: controller.getCategoryPercentages(),
                     builder: (context, pctSnapshot) {
-                    
-
                       return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                         stream: controller.streamExpenseItem(docId),
                         builder: (context, itemSnapshot) {
-                          if (itemSnapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(child: CircularProgressIndicator());
+                          if (itemSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
 
-                          if (!itemSnapshot.hasData || itemSnapshot.data!.docs.isEmpty) {
+                          if (!itemSnapshot.hasData ||
+                              itemSnapshot.data!.docs.isEmpty) {
                             return Center(
-                              child: Text("No expenses found Today",
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600])),
+                              child: Text(
+                                "No expenses found Today",
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
                             );
                           }
 
@@ -396,8 +509,6 @@ class _ExpenseList extends StatelessWidget {
                             itemCount: dataItem.docs.length,
                             itemBuilder: (context, i) {
                               final item = dataItem.docs[i];
-                              final category = item['category'] as String;
-                              
 
                               return Column(
                                 children: [
@@ -408,35 +519,48 @@ class _ExpenseList extends StatelessWidget {
                                       height: 42,
                                       child: Padding(
                                         padding: const EdgeInsets.all(8),
-                                        child: SvgPicture.network(item['icon'],
-                                            fit: BoxFit.contain),
+                                        child: SvgPicture.network(
+                                          item['icon'],
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
                                     ),
-                                    title: Text(category,
-                                        style: GoogleFonts.plusJakartaSans(
-                                            fontWeight: FontWeight.w600, fontSize: 14)),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(item['notes'],
-                                            style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 12, color: Colors.grey[600])),
-                                        const SizedBox(height: 6),
-                                      ],
+                                    title: Text(
+                                      item['category'],
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
                                     ),
+                                    subtitle:
+                                        (item['notes'] == null ||
+                                            item['notes']
+                                                .toString()
+                                                .trim()
+                                                .isEmpty)
+                                        ? null
+                                        : Text(
+                                            item['notes'],
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12,
+                                              color: Colors.grey[900],
+                                            ),
+                                          ),
                                     trailing: Text(
                                       "-${rupiah.convertToRupiah('${item['amount']}')}",
                                       style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.red),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.red,
+                                      ),
                                     ),
                                   ),
                                   if (i != dataItem.docs.length - 1)
                                     const Divider(
-                                        height: 16,
-                                        thickness: 1,
-                                        color: Color(0xFFBC9CC6)),
+                                      height: 16,
+                                      thickness: 1,
+                                      color: Color(0xFFBC9CC6),
+                                    ),
                                 ],
                               );
                             },
@@ -476,46 +600,74 @@ class _IncomeSummary extends StatelessWidget {
         final totalIncome = totals['totalIncome'] ?? 0;
         final rupiah = Rupiah();
 
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFBC9CC6), width: 0.8),
-              boxShadow: const [
-                BoxShadow(color: Color(0xFFBC9CC6), blurRadius: 3, offset: Offset(0, 1)),
-                BoxShadow(color: Color(0xFFBC9CC6), blurRadius: 3, offset: Offset(0, -1)),
-                BoxShadow(color: Color(0xFFBC9CC6), blurRadius: 3, offset: Offset(1, 0)),
-                BoxShadow(color: Color(0xFFBC9CC6), blurRadius: 3, offset: Offset(-1, 0)),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Obx(() => Text(
-                      controller.nilaiTanggal.value.isEmpty
-                          ? "All time"
-                          : controller.nilaiTanggal.value,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                          color: const Color.fromARGB(255, 69, 69, 69),
-                          fontWeight: FontWeight.bold),
-                    )),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Total Income',
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[900])),
-                    Text('+${rupiah.convertToRupiah('$totalIncome')}',
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13, fontWeight: FontWeight.w700, color: Colors.green)),
-                  ],
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFBC9CC6), width: 0.8),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFFBC9CC6),
+                blurRadius: 3,
+                offset: Offset(0, 1),
+              ),
+              BoxShadow(
+                color: Color(0xFFBC9CC6),
+                blurRadius: 3,
+                offset: Offset(0, -1),
+              ),
+              BoxShadow(
+                color: Color(0xFFBC9CC6),
+                blurRadius: 3,
+                offset: Offset(1, 0),
+              ),
+              BoxShadow(
+                color: Color(0xFFBC9CC6),
+                blurRadius: 3,
+                offset: Offset(-1, 0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Obx(
+                () => Text(
+                  controller.nilaiTanggal.value.isEmpty
+                      ? "All time"
+                      : controller.nilaiTanggal.value,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.plusJakartaSans(
+                    color: const Color.fromARGB(255, 69, 69, 69),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Income',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  Text(
+                    '+${rupiah.convertToRupiah('$totalIncome')}',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },
@@ -531,8 +683,11 @@ class _CategoryBubble extends StatelessWidget {
   final double percentage;
   final Color color;
 
-  const _CategoryBubble(
-      {required this.label, required this.percentage, required this.color});
+  const _CategoryBubble({
+    required this.label,
+    required this.percentage,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -555,15 +710,19 @@ class _CategoryBubble extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: color.withOpacity(0.85)),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: color.withOpacity(0.85),
+            ),
           ),
           const SizedBox(width: 5),
           Text(
             "${percentage.toStringAsFixed(1)}%",
             style: GoogleFonts.plusJakartaSans(
-                fontSize: 12, fontWeight: FontWeight.w700, color: color),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
           ),
         ],
       ),

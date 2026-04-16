@@ -12,9 +12,6 @@ class AuthController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  /// ===============================
-  /// 💾 SAVE USER (ANTI RESET)
-  /// ===============================
   Future<void> _saveUserIfNotExists({
     required String uid,
     required Map<String, dynamic> data,
@@ -37,9 +34,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /// ===============================
-  /// 🔁 HANDLE REDIRECT
-  /// ===============================
   Future<void> _handleRedirect(String uid) async {
     final doc = await firestore.collection("users").doc(uid).get();
     final data = doc.data();
@@ -49,14 +43,7 @@ class AuthController extends GetxController {
       return;
     }
 
-    final phone = data["phone"];
-    final tanggalLahir = data["tanggal_lahir"];
     final balance = data["balance"];
-
-    if (phone == null || tanggalLahir == null) {
-      Get.offAllNamed(Routes.COMPLETE_PROFILE);
-      return;
-    }
 
     if (balance == null) {
       Get.offAllNamed(Routes.COMPLETE_BALANCE);
@@ -66,9 +53,6 @@ class AuthController extends GetxController {
     Get.offAllNamed(Routes.HOME);
   }
 
-  /// ===============================
-  /// 🔥 LOGIN GOOGLE
-  /// ===============================
   Future<void> loginWithGoogle() async {
     try {
       isloading.value = true;
@@ -116,25 +100,32 @@ class AuthController extends GetxController {
     }
   }
 
-  /// ===============================
-  /// 🔥 LOGIN EMAIL
-  /// ===============================
   Future<void> loginForm(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar('Failed', 'all fields are required');
+      Get.snackbar('Failed', 'All fields are required');
       return;
     }
 
     isloading.value = true;
 
     try {
-      await auth.signInWithEmailAndPassword(
+      final userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final uid = auth.currentUser!.uid;
-      await _handleRedirect(uid);
+      final user = userCredential.user!;
+
+      await user.reload(); // refresh status verify
+      final freshUser = auth.currentUser!;
+
+      if (!freshUser.emailVerified) {
+        await auth.signOut(); // 🔥 penting
+        Get.snackbar('Failed', 'Please verify your email check your inbox / spam ');
+        return;
+      }
+
+      await _handleRedirect(freshUser.uid);
     } catch (e) {
       Get.snackbar('Failed', 'Login failed');
     } finally {
@@ -142,9 +133,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /// ===============================
-  /// 🚪 LOGOUT
-  /// ===============================
   Future<void> signOut() async {
     await auth.signOut();
     await _googleSignIn.signOut();
