@@ -201,20 +201,6 @@ class LoginView extends GetView<LoginController> {
 
                           const SizedBox(height: 15),
 
-                          /// FACEBOOK
-                          // Socialbutton(
-                          //   fontsize: 15,
-                          //   item: 10,
-                          //   image:
-                          //       "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773417026/logos_facebook_ti0ibh.png",
-                          //   text: "Continue With Facebook",
-                          //   // icon: Icons.facebook,
-                          //   onTap: ()  {
-                          //      authC.loginFacebook();
-                          //     controller.emailC.clear();
-                          //     controller.passC.clear();
-                          //   },
-                          // ),
                           const SizedBox(height: 30),
 
                           /// REGISTER

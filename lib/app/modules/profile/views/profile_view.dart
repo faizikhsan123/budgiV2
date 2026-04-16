@@ -72,10 +72,13 @@ class ProfileView extends GetView<ProfileController> {
                                   ],
                                 ),
                                 child: ClipOval(
-                                  child: user['photo_url'] == null ||
+                                  child:
+                                      user['photo_url'] == null ||
                                           user['photo_url'] == ''
-                                      ? Image.network(imageUrl,
-                                          fit: BoxFit.cover)
+                                      ? Image.network(
+                                          imageUrl,
+                                          fit: BoxFit.cover,
+                                        )
                                       : Image.network(
                                           user['photo_url'],
                                           fit: BoxFit.cover,
@@ -100,8 +103,12 @@ class ProfileView extends GetView<ProfileController> {
                                   topRight: Radius.circular(28),
                                 ),
                               ),
-                              padding:
-                                  const EdgeInsets.fromLTRB(24, 28, 24, 24),
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                28,
+                                24,
+                                24,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -116,16 +123,14 @@ class ProfileView extends GetView<ProfileController> {
                                         children: [
                                           Text(
                                             user['name'],
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                           Text(
                                             user['email'],
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 14,
                                               color: Colors.grey[700],
                                             ),
@@ -135,7 +140,13 @@ class ProfileView extends GetView<ProfileController> {
                                       GestureDetector(
                                         onTap: () => Get.toNamed(
                                           Routes.EDIT_PROFILE,
-                                          arguments: user.data(),
+                                          arguments: {
+                                            "name": user.data()?['name'] ?? '',
+                                            "email":
+                                                user.data()?['email'] ?? '',
+                                            "photo_url":
+                                                user.data()?['photo_url'] ?? '',
+                                          },
                                         ),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
@@ -144,13 +155,13 @@ class ProfileView extends GetView<ProfileController> {
                                           ),
                                           decoration: BoxDecoration(
                                             color: const Color(0xFFF3E5F5),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
                                           ),
                                           child: Text(
                                             "Edit Profile",
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
                                               color: Colors.purple,
@@ -178,52 +189,6 @@ class ProfileView extends GetView<ProfileController> {
                                     hint: user['email'],
                                   ),
 
-                                  buildLabel("Date of Birth"),
-                                  Container(
-                                    height: 55,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(14),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              Colors.black.withOpacity(0.03),
-                                          blurRadius: 6,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            user['tanggal_lahir'],
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        const Icon(
-                                          Icons.calendar_today_outlined,
-                                          size: 20,
-                                          color: Colors.grey,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  buildLabel("Phone Number"),
-                                  TextFiledIsi(
-                                    readonly: true,
-                                    filled: true,
-                                    hint: user['phone'],
-                                  ),
-
                                   const SizedBox(height: 30),
 
                                   /// 🔥 LOGOUT BUTTON
@@ -244,11 +209,11 @@ class ProfileView extends GetView<ProfileController> {
                                               height: 60,
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
-                                                color:
-                                                    const Color(0xFFFFEEEE),
+                                                color: const Color(0xFFFFEEEE),
                                                 border: Border.all(
-                                                  color:
-                                                      const Color(0xFFFFCCCC),
+                                                  color: const Color(
+                                                    0xFFFFCCCC,
+                                                  ),
                                                   width: 1.5,
                                                 ),
                                               ),
@@ -287,10 +252,15 @@ class ProfileView extends GetView<ProfileController> {
                                             style: OutlinedButton.styleFrom(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 13),
+                                                    vertical: 13,
+                                                  ),
                                               side: const BorderSide(
                                                 color: Color.fromARGB(
-                                                    255, 182, 182, 182),
+                                                  255,
+                                                  182,
+                                                  182,
+                                                  182,
+                                                ),
                                               ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
@@ -311,11 +281,13 @@ class ProfileView extends GetView<ProfileController> {
                                           child: ElevatedButton(
                                             onPressed: () => authC.signOut(),
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color(0xFFE53935),
+                                              backgroundColor: const Color(
+                                                0xFFE53935,
+                                              ),
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 13),
+                                                    vertical: 13,
+                                                  ),
                                               elevation: 0,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
@@ -336,11 +308,11 @@ class ProfileView extends GetView<ProfileController> {
                                     child: Container(
                                       width: double.infinity,
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
+                                        vertical: 10,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.red.shade50,
-                                        borderRadius:
-                                            BorderRadius.circular(14),
+                                        borderRadius: BorderRadius.circular(14),
                                         border: Border.all(
                                           color: Colors.red.shade200,
                                         ),
@@ -349,13 +321,14 @@ class ProfileView extends GetView<ProfileController> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          const Icon(Icons.logout,
-                                              color: Colors.red),
+                                          const Icon(
+                                            Icons.logout,
+                                            color: Colors.red,
+                                          ),
                                           const SizedBox(width: 8),
                                           Text(
                                             "Logout",
-                                            style:
-                                                GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontWeight: FontWeight.w600,
                                               color: Colors.red,
                                             ),
