@@ -7,28 +7,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:http/http.dart' as http;
 
 class EditProfileController extends GetxController {
-  RxString nilaiTanggal = "".obs;
+  
   RxBool isloading = false.obs;
 
   late TextEditingController nameC;
-
-  late DateRangePickerController dateC;
   late TextEditingController emailC;
   late ImagePicker imagePicker = ImagePicker();
 
   XFile? pickedIMage;
   String? imageurl;
-  TextEditingController phoneTextC = TextEditingController();
+ 
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  PhoneNumber phoneC = PhoneNumber(isoCode: 'ID');
+
 
   Future selectImage() async {
     try {
@@ -142,20 +138,10 @@ class EditProfileController extends GetxController {
         return;
       }
 
-      if (phoneTextC.text.length < 12 || phoneTextC.text.length > 15) {
-        Get.snackbar(
-          "Failed",
-          "invalid phone number",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
+     
 
       await firestore.collection("users").doc(uid).update({
         'name': nameC.text,
-        'phone': phoneC.phoneNumber,
-        'tanggal_lahir': nilaiTanggal.value,
         'updated_at': Timestamp.now(),
       });
 
@@ -209,20 +195,10 @@ class EditProfileController extends GetxController {
   void onInit() {
     nameC = TextEditingController();
     emailC = TextEditingController();
-    phoneC = PhoneNumber();
-    dateC = DateRangePickerController();
     final dataArgument = Get.arguments as Map<String, dynamic>;
 
     nameC.text = dataArgument['name'];
     emailC.text = dataArgument['email'];
-    nilaiTanggal.value = dataArgument['tanggal_lahir'];
-
-    String phone = dataArgument['phone'];
-
-    phoneC = PhoneNumber(phoneNumber: phone, isoCode: 'ID');
-
-    /// hilangkan kode negara
-    phoneTextC.text = phone.replaceFirst(RegExp(r'^\+\d{1,2}'), '');
 
     super.onInit();
     // TODO: implement onInit
@@ -235,7 +211,6 @@ class EditProfileController extends GetxController {
   void dispose() {
     nameC.dispose();
     emailC.dispose();
-    dateC.dispose();
     // TODO: implement dispose
     super.dispose();
   }

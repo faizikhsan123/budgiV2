@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_number_input_v2/intl_phone_number_input.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
-  final dataArgument = Get.arguments as Map<String, dynamic>;
+  final Map<String, dynamic> dataArgument =
+      (Get.arguments as Map<String, dynamic>?) ?? {};
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class EditProfileView extends GetView<EditProfileController> {
     final cameraSize = avatarSize * 0.38;
 
     String imageUrl =
-        "https://ui-avatars.com/api/?name=${dataArgument['name']}&background=random&size=256";
+        "https://ui-avatars.com/api/?name=${dataArgument!['name']}&background=random&size=256";
 
     return Scaffold(
       // ✅ FIX 1: Scaffold resizes saat keyboard muncul
@@ -78,11 +77,12 @@ class EditProfileView extends GetView<EditProfileController> {
                                 ],
                               ),
                               child: ClipOval(
-                                child: dataArgument['photo_url'] == null ||
-                                        dataArgument['photo_url'] == ''
+                                child:
+                                    dataArgument!['photo_url'] == null ||
+                                        dataArgument!['photo_url'] == ''
                                     ? Image.network(imageUrl, fit: BoxFit.cover)
                                     : Image.network(
-                                        dataArgument['photo_url'],
+                                        dataArgument!['photo_url'],
                                         fit: BoxFit.cover,
                                       ),
                               ),
@@ -94,9 +94,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                 onTap: () {
                                   Get.bottomSheet(
                                     Container(
-                                      height: dataArgument['photo_url'] ==
-                                                  null ||
-                                              dataArgument['photo_url'] == ''
+                                      height:
+                                          dataArgument!['photo_url'] == null ||
+                                              dataArgument!['photo_url'] == ''
                                           ? 120
                                           : 175,
                                       decoration: const BoxDecoration(
@@ -118,15 +118,17 @@ class EditProfileView extends GetView<EditProfileController> {
                                                 const SizedBox(width: 30),
                                                 Text(
                                                   "Profile Photo",
-                                                  style: GoogleFonts
-                                                      .plusJakartaSans(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  style:
+                                                      GoogleFonts.plusJakartaSans(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
                                                 ),
                                                 IconButton(
                                                   icon: const Icon(
-                                                      Icons.cancel_outlined),
+                                                    Icons.cancel_outlined,
+                                                  ),
                                                   onPressed: () => Get.back(),
                                                 ),
                                               ],
@@ -134,8 +136,10 @@ class EditProfileView extends GetView<EditProfileController> {
                                             Row(
                                               children: [
                                                 IconButton(
-                                                  icon: const Icon(Icons.image,
-                                                      color: Colors.purple),
+                                                  icon: const Icon(
+                                                    Icons.image,
+                                                    color: Colors.purple,
+                                                  ),
                                                   onPressed: () async {
                                                     await controller
                                                         .selectImage();
@@ -150,26 +154,27 @@ class EditProfileView extends GetView<EditProfileController> {
                                                   },
                                                   child: Text(
                                                     "Gallery",
-                                                    style: GoogleFonts
-                                                        .plusJakartaSans(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black,
-                                                    ),
+                                                    style:
+                                                        GoogleFonts.plusJakartaSans(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black,
+                                                        ),
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            if (dataArgument['photo_url'] !=
+                                            if (dataArgument!['photo_url'] !=
                                                     null &&
-                                                dataArgument['photo_url'] != '')
+                                                dataArgument!['photo_url'] != '')
                                               Row(
                                                 children: [
                                                   IconButton(
                                                     icon: const Icon(
-                                                        Icons.delete_forever,
-                                                        color: Colors.red),
+                                                      Icons.delete_forever,
+                                                      color: Colors.red,
+                                                    ),
                                                     onPressed: () => controller
                                                         .deleteImage(),
                                                   ),
@@ -178,13 +183,13 @@ class EditProfileView extends GetView<EditProfileController> {
                                                         .deleteImage(),
                                                     child: Text(
                                                       "Delete Image",
-                                                      style: GoogleFonts
-                                                          .plusJakartaSans(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.plusJakartaSans(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Colors.black,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -202,7 +207,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                     borderRadius: BorderRadius.circular(100),
                                     color: const Color(0xFFE8D9EC),
                                     border: Border.all(
-                                        color: Colors.white, width: 2),
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
                                   ),
                                   child: Icon(
                                     Icons.camera_alt,
@@ -216,7 +223,7 @@ class EditProfileView extends GetView<EditProfileController> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          dataArgument['name'],
+                          dataArgument!['name'] ?? '',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -225,7 +232,7 @@ class EditProfileView extends GetView<EditProfileController> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          dataArgument['email'],
+                          dataArgument!['email'] ?? '',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
@@ -286,109 +293,6 @@ class EditProfileView extends GetView<EditProfileController> {
                                 hint: 'Email',
                                 readonly: true,
                                 filled: true,
-                              ),
-
-                              buildLabel("Birth of date"),
-                              InkWell(
-                                onTap: () => Get.dialog(
-                                  Dialog(
-                                    child: Container(
-                                      height: 400,
-                                      padding: const EdgeInsets.all(10),
-                                      child: SfDateRangePicker(
-                                        controller: controller.dateC,
-                                        selectionMode:
-                                            DateRangePickerSelectionMode.single,
-                                        showActionButtons: true,
-                                        minDate: DateTime(1990),
-                                        initialSelectedDate: null,
-                                        maxDate: DateTime(2040),
-                                        todayHighlightColor: Colors.transparent,
-                                        showNavigationArrow: true,
-                                        selectionColor:
-                                            const Color(0xFFBC9CC6),
-                                        showTodayButton: false,
-                                        onCancel: () => Get.back(),
-                                        onSubmit: (obj) {
-                                          DateTime date = obj as DateTime;
-                                          controller.nilaiTanggal.value =
-                                              "${date.day}/${date.month}/${date.year}";
-                                          Get.back();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // ✅ FIX 6: Obx hanya wrap widget yang reactive saja
-                                child: Obx(
-                                  () => Container(
-                                    height: 55,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(14),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 10,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            controller
-                                                    .nilaiTanggal.value.isEmpty
-                                                ? "Select Date"
-                                                : controller.nilaiTanggal.value,
-                                          ),
-                                        ),
-                                        const Icon(
-                                            Icons.calendar_today_outlined,
-                                            size: 20),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              buildLabel("Phone Number"),
-                              Container(
-                                height: 55,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.15),
-                                      blurRadius: 10,
-                                    ),
-                                  ],
-                                ),
-                                child: InternationalPhoneNumberInput(
-                                  onInputChanged: (PhoneNumber number) {
-                                    controller.phoneC = number;
-                                  },
-                                  selectorConfig: const SelectorConfig(
-                                    selectorType:
-                                        PhoneInputSelectorType.DROPDOWN,
-                                    showFlags: true,
-                                  ),
-                                  initialValue: controller.phoneC,
-                                  textFieldController: controller.phoneTextC,
-                                  keyboardType: TextInputType.number,
-                                  formatInput: true,
-                                  inputDecoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    isCollapsed: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 18),
-                                  ),
-                                ),
                               ),
 
                               const SizedBox(height: 30),

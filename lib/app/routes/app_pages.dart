@@ -1,13 +1,8 @@
 import 'package:get/get.dart';
-
-import '../modules/OTP/bindings/otp_binding.dart';
-import '../modules/OTP/views/otp_view.dart';
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
 import '../modules/complete_balance/views/complete_balance_view.dart';
-import '../modules/complete_profile/bindings/complete_profile_binding.dart';
-import '../modules/complete_profile/views/complete_profile_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
 import '../modules/history/bindings/history_binding.dart';
@@ -16,8 +11,6 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
-import '../modules/newPass/bindings/new_pass_binding.dart';
-import '../modules/newPass/views/new_pass_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/regis/bindings/regis_binding.dart';
@@ -65,11 +58,6 @@ class AppPages {
       binding: RegisBinding(),
     ),
     GetPage(
-      name: _Paths.COMPLETE_PROFILE,
-      page: () => CompleteProfileView(),
-      binding: CompleteProfileBinding(),
-    ),
-    GetPage(
       name: _Paths.EDIT_PROFILE,
       page: () => EditProfileView(),
       binding: EditProfileBinding(),
@@ -100,15 +88,6 @@ class AppPages {
       page: () => ResetView(),
       binding: ResetBinding(),
     ),
-    // GetPage(
-    //   name: _Paths.OTP,
-    //   page: () =>  OtpView(),
-    //   binding: OtpBinding(),
-    // ),
-    // GetPage(
-    //   name: _Paths.NEW_PASS,
-    //   page: () =>  NewPassView(),
-    //   binding: NewPassBinding(),
-    // ),
+    
   ];
 }

@@ -12,9 +12,6 @@ class AuthController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  /// ===============================
-  /// 💾 SAVE USER (ANTI RESET)
-  /// ===============================
   Future<void> _saveUserIfNotExists({
     required String uid,
     required Map<String, dynamic> data,
@@ -37,9 +34,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /// ===============================
-  /// 🔁 HANDLE REDIRECT
-  /// ===============================
   Future<void> _handleRedirect(String uid) async {
     final doc = await firestore.collection("users").doc(uid).get();
     final data = doc.data();
@@ -49,14 +43,7 @@ class AuthController extends GetxController {
       return;
     }
 
-    final phone = data["phone"];
-    final tanggalLahir = data["tanggal_lahir"];
     final balance = data["balance"];
-
-    if (phone == null || tanggalLahir == null) {
-      Get.offAllNamed(Routes.COMPLETE_PROFILE);
-      return;
-    }
 
     if (balance == null) {
       Get.offAllNamed(Routes.COMPLETE_BALANCE);
@@ -66,9 +53,6 @@ class AuthController extends GetxController {
     Get.offAllNamed(Routes.HOME);
   }
 
-  /// ===============================
-  /// 🔥 LOGIN GOOGLE
-  /// ===============================
   Future<void> loginWithGoogle() async {
     try {
       isloading.value = true;
@@ -116,9 +100,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /// ===============================
-  /// 🔥 LOGIN EMAIL
-  /// ===============================
   Future<void> loginForm(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       Get.snackbar('Failed', 'all fields are required');
@@ -128,10 +109,7 @@ class AuthController extends GetxController {
     isloading.value = true;
 
     try {
-      await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      await auth.signInWithEmailAndPassword(email: email, password: password);
 
       final uid = auth.currentUser!.uid;
       await _handleRedirect(uid);
@@ -142,56 +120,9 @@ class AuthController extends GetxController {
     }
   }
 
-  /// ===============================
-  /// 🚪 LOGOUT
-  /// ===============================
   Future<void> signOut() async {
     await auth.signOut();
     await _googleSignIn.signOut();
     Get.offAllNamed(Routes.LOGIN);
   }
-
-
-//   String verificationId = "";
-
-// Future<void> sendForgotPasswordOtp(String phoneNumber) async {
-//   await FirebaseAuth.instance.verifyPhoneNumber(
-//     phoneNumber: phoneNumber,
-//     timeout: const Duration(seconds: 60),
-
-//     verificationCompleted: (PhoneAuthCredential credential) async {
-//       await auth.signInWithCredential(credential);
-//       Get.toNamed(Routes.NEW_PASS);
-//     },
-
-//     verificationFailed: (FirebaseAuthException e) {
-//       Get.snackbar("Failed", e.message ?? "OTP failed");
-//     },
-
-//     codeSent: (String verId, int? resendToken) {
-//       verificationId = verId;
-//       Get.toNamed(Routes.OTP);
-//     },
-
-//     codeAutoRetrievalTimeout: (String verId) {
-//       verificationId = verId;
-//     },
-//   );
-// }
-
-
-// Future<void> verifyForgotPasswordOtp(String code) async {
-//   try {
-//     PhoneAuthCredential credential = PhoneAuthProvider.credential(
-//       verificationId: verificationId,
-//       smsCode: code,
-//     );
-
-//     await auth.signInWithCredential(credential);
-
-//     Get.offAllNamed(Routes.NEW_PASS);
-//   } catch (e) {
-//     Get.snackbar("Failed", "OTP invalid");
-//   }
-// }
 }
