@@ -20,7 +20,7 @@ class EditProfileView extends GetView<EditProfileController> {
     final cameraSize = avatarSize * 0.38;
 
     String imageUrl =
-        "https://ui-avatars.com/api/?name=${dataArgument!['name']}&background=random&size=256";
+        "https://ui-avatars.com/api/?name=${dataArgument['name']}&background=random&size=256";
 
     return Scaffold(
       // ✅ FIX 1: Scaffold resizes saat keyboard muncul
@@ -78,11 +78,11 @@ class EditProfileView extends GetView<EditProfileController> {
                               ),
                               child: ClipOval(
                                 child:
-                                    dataArgument!['photo_url'] == null ||
-                                        dataArgument!['photo_url'] == ''
+                                    dataArgument['photo_url'] == null ||
+                                        dataArgument['photo_url'] == ''
                                     ? Image.network(imageUrl, fit: BoxFit.cover)
                                     : Image.network(
-                                        dataArgument!['photo_url'],
+                                        dataArgument['photo_url'],
                                         fit: BoxFit.cover,
                                       ),
                               ),
@@ -95,8 +95,8 @@ class EditProfileView extends GetView<EditProfileController> {
                                   Get.bottomSheet(
                                     Container(
                                       height:
-                                          dataArgument!['photo_url'] == null ||
-                                              dataArgument!['photo_url'] == ''
+                                          dataArgument['photo_url'] == null ||
+                                              dataArgument['photo_url'] == ''
                                           ? 120
                                           : 175,
                                       decoration: const BoxDecoration(
@@ -165,9 +165,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                                 ),
                                               ],
                                             ),
-                                            if (dataArgument!['photo_url'] !=
+                                            if (dataArgument['photo_url'] !=
                                                     null &&
-                                                dataArgument!['photo_url'] != '')
+                                                dataArgument['photo_url'] != '')
                                               Row(
                                                 children: [
                                                   IconButton(
@@ -223,7 +223,7 @@ class EditProfileView extends GetView<EditProfileController> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          dataArgument!['name'] ?? '',
+                          dataArgument['name'] ?? '',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -232,7 +232,7 @@ class EditProfileView extends GetView<EditProfileController> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          dataArgument!['email'] ?? '',
+                          dataArgument['email'] ?? '',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,

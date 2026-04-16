@@ -69,9 +69,7 @@ class LoginView extends GetView<LoginController> {
                               color: const Color(0xff1A1C1E),
                             ),
                           ),
-
                           const SizedBox(height: 10),
-
                           /// SUBTITLE
                           Text(
                             "Enter your email and password \nto sign in.",
