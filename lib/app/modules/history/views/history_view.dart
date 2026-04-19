@@ -1,3 +1,4 @@
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -153,9 +154,9 @@ class HistoryView extends GetView<HistoryController> {
                     }
 
                     // ← filter di client side
-                    final filtered = controller.filterDocs(snapshot.data!.docs);
+                    var dataItem = snapshot.data!.docs;
 
-                    if (filtered.isEmpty) {
+                    if (dataItem.isEmpty) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,9 +181,10 @@ class HistoryView extends GetView<HistoryController> {
                     var rupiah = Rupiah();
 
                     return ListView.builder(
-                      itemCount: filtered.length,
+                      itemCount: dataItem!.length,
                       itemBuilder: (context, index) {
-                        var item = filtered[index];
+                        var item = dataItem![index].data();
+                        // var item = filtered[index];
                         bool isIncome = item['type'] == "income";
 
                         return Container(
@@ -197,13 +199,27 @@ class HistoryView extends GetView<HistoryController> {
                           ),
                           child: ListTile(
                             contentPadding: EdgeInsets.zero,
+                            onTap: () {
+                              Get.toNamed(
+                                Routes.CRUD,
+                                arguments: {
+                                  ...item,
+                                  "id":
+                                      dataItem[index].id, // 🔥 INI YANG KURANG
+                                },
+                                // arguments: {
+                                //   'id': item.id ?? '',
+                                //   'category': item['category'],
+                                // },
+                              );
+                            },
                             leading: SvgPicture.network(
-                              item['icon'],
+                              item!['icon'] ?? '',
                               width: 30,
                               height: 30,
                             ),
                             title: Text(
-                              item['category'],
+                              item!['category'] ?? '',
                               style: GoogleFonts.plusJakartaSans(
                                 fontWeight: FontWeight.w600,
                               ),
@@ -211,9 +227,9 @@ class HistoryView extends GetView<HistoryController> {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (item['notes'] != null &&
-                                    item['notes'].toString().isNotEmpty)
-                                  Text(item['notes']),
+                                if (item!['notes'] != null &&
+                                    item!['notes'].toString().isNotEmpty)
+                                  Text(item!['notes'] ?? ''),
                                 Text(
                                   DateFormat('d MMM yyyy').format(
                                     DateFormat("d-M-yyyy").parse(item['date']),

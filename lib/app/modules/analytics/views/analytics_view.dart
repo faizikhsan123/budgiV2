@@ -332,11 +332,13 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                         _emptyState(controller)
                                       else
                                         ListView.builder(
+                                          
                                           shrinkWrap: true,
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           itemCount: dates.length,
                                           itemBuilder: (context, index) {
+                                            
                                             final date = dates[index];
                                             final items = grouped[date]!;
                                             return _DateGroup(
@@ -443,6 +445,7 @@ class _DateGroup extends StatelessWidget {
             itemBuilder: (context, i) {
               final item = items[i];
               return ListTile(
+                
                 contentPadding: EdgeInsets.zero,
                 leading: SizedBox(
                   width: 42,
