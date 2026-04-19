@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 
 class AnalyticsController extends GetxController {
   RxString transactionType = "expense".obs;
@@ -55,7 +55,7 @@ class AnalyticsController extends GetxController {
               isLessThan: effectiveEnd.toIso8601String())
           .orderBy("filter_tanggal", descending: true);
     } else {
-      query = query.orderBy("created_at", descending: true);
+      query = query.orderBy("created_at", descending: false);
     }
 
     return query.snapshots();

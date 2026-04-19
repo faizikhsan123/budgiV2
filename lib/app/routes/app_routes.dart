@@ -18,6 +18,7 @@ abstract class Routes {
   static const OTP = _Paths.OTP;
 
   static const NEW_PASS = _Paths.NEW_PASS;
+  static const CRUD = _Paths.CRUD;
 }
 
 abstract class _Paths {
@@ -36,4 +37,5 @@ abstract class _Paths {
   static const RESET = '/reset';
   static const OTP = '/otp';
   static const NEW_PASS = '/new-pass';
+  static const CRUD = '/crud';
 }

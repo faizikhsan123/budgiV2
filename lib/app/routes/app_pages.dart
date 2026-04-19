@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+
+import '../modules/CRUD/bindings/crud_binding.dart';
+import '../modules/CRUD/views/crud_view.dart';
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
@@ -88,6 +91,10 @@ class AppPages {
       page: () => ResetView(),
       binding: ResetBinding(),
     ),
-    
+    GetPage(
+      name: _Paths.CRUD,
+      page: () =>  CrudView(),
+      binding: CrudBinding(),
+    ),
   ];
 }
