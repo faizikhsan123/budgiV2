@@ -17,41 +17,40 @@ class HomeController extends GetxController {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> streamProfile() {
     final uid = auth.currentUser!.uid;
-
     return firestore.collection("users").doc(uid).snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamTransaction() {
+  /// Ambil 20 transaksi terbaru dari all_transactions
+  /// Group by tanggal dilakukan di View
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamRecentTransactions() {
     final uid = auth.currentUser!.uid;
-
     return firestore
         .collection("users")
         .doc(uid)
-        .collection("transactions")
-        .orderBy("filter_tanggal", descending: true)
+        .collection("all_transactions")
+        .orderBy("created_at", descending: true)
         .limit(5)
         .snapshots();
   }
 
-  // STREAM ITEMS BERDASARKAN TANGGAL
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamTransactionItem(
-    String docId,
-  ) {
-    final uid = auth.currentUser!.uid;
-
-    return firestore
-        .collection("users")
-        .doc(uid)
-        .collection("transactions")
-        .doc(docId)
-        .collection("items")
-        .orderBy("created_at", descending: true)
-        .snapshots();
+  /// Group docs by tanggal → Map<"19-4-2026", [item, item, ...]>
+  Map<String, List<Map<String, dynamic>>> groupByDate(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
+    final Map<String, List<Map<String, dynamic>>> grouped = {};
+    for (var doc in docs) {
+      final data = doc.data();
+      final String date = data['date'] ?? '';
+      if (!grouped.containsKey(date)) {
+        grouped[date] = [];
+      }
+      grouped[date]!.add(data);
+    }
+    return grouped;
   }
+
   @override
   void onInit() {
-       pageC.pageIndex.value = 0; // ✅ Force reset ke Home saat halaman Home init
-    // TODO: implement onInit
+    pageC.pageIndex.value = 0;
     super.onInit();
   }
 }

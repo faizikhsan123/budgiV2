@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:budgi/app/modules/analytics/views/analytics_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AnalyticsController extends GetxController {
@@ -11,9 +10,10 @@ class AnalyticsController extends GetxController {
   RxString nilaiTanggal = "".obs;
 
   FirebaseAuth auth = FirebaseAuth.instance;
-  DateTime? start;
-  DateTime? end = DateTime.now();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  DateTime? start;
+  DateTime? end;
 
   @override
   void onInit() {
@@ -22,67 +22,68 @@ class AnalyticsController extends GetxController {
   }
 
   Future<void> resetForm() async {
-    Future.delayed(const Duration(seconds: 1), () {
-      nilaiTanggal.value = DateFormat('dd-M-yyyy').format(DateTime.now());
-    });
+    start = null;
+    end = null;
+    nilaiTanggal.value = 'All Time';
+    update();
   }
 
   void liatExpense() => transactionType.value = "expense";
-  void liatIncome()  => transactionType.value = "income";
+  void liatIncome() => transactionType.value = "income";
 
   void pickDateRange(DateTime startDate, DateTime endDate) {
-    start = startDate;
-    end = endDate;
+    start = DateTime(startDate.year, startDate.month, startDate.day);
+    end = DateTime(endDate.year, endDate.month, endDate.day);
     update();
     Get.back();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> datatransaksi() {
+  /// Stream semua transaksi dari all_transactions (flat, tidak nested)
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamAllTransactions() {
     final uid = auth.currentUser!.uid;
-    if (start == null) {
-      return firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .orderBy("filter_tanggal", descending: true)
-          .snapshots();
-    } else {
-      return firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .where("filter_tanggal", isGreaterThanOrEqualTo: start!.toIso8601String())
+    Query<Map<String, dynamic>> query = firestore
+        .collection("users")
+        .doc(uid)
+        .collection("all_transactions");
+
+    if (start != null && end != null) {
+      final effectiveEnd = end!.add(const Duration(days: 1));
+      query = query
           .where("filter_tanggal",
-              isLessThan: end!.add(const Duration(days: 1)).toIso8601String())
-          .orderBy("filter_tanggal", descending: true)
-          .snapshots();
+              isGreaterThanOrEqualTo: start!.toIso8601String())
+          .where("filter_tanggal",
+              isLessThan: effectiveEnd.toIso8601String())
+          .orderBy("filter_tanggal", descending: true);
+    } else {
+      query = query.orderBy("created_at", descending: true);
     }
+
+    return query.snapshots();
   }
 
-  Future<Map<String, double>> getChartMetrics() async {
-    final uid = auth.currentUser!.uid;
+  /// Filter docs by type di client side
+  List<Map<String, dynamic>> filterByType(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, String type) {
+    return docs
+        .where((d) => d.data()['type'] == type)
+        .map((d) => d.data())
+        .toList();
+  }
+
+  /// Hitung total income & expense dari docs
+  Map<String, double> computeMetrics(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
     double totalIncome = 0;
     double totalExpense = 0;
-
-    final txSnap = await datatransaksi().first;
-    for (final doc in txSnap.docs) {
-      final incomeSnap = await firestore
-          .collection("users").doc(uid).collection("transactions")
-          .doc(doc.id).collection("items")
-          .where("type", isEqualTo: "income").get();
-      for (final item in incomeSnap.docs) {
-        totalIncome += (item['amount'] as num).toDouble();
-      }
-
-      final expenseSnap = await firestore
-          .collection("users").doc(uid).collection("transactions")
-          .doc(doc.id).collection("items")
-          .where("type", isEqualTo: "expense").get();
-      for (final item in expenseSnap.docs) {
-        totalExpense += (item['amount'] as num).toDouble();
+    for (final doc in docs) {
+      final data = doc.data();
+      final amount = (data['amount'] as num).toDouble();
+      if (data['type'] == 'income') {
+        totalIncome += amount;
+      } else {
+        totalExpense += amount;
       }
     }
-
     return {
       'totalIncome': totalIncome,
       'totalExpense': totalExpense,
@@ -90,54 +91,41 @@ class AnalyticsController extends GetxController {
     };
   }
 
-  Future<Map<String, double>> calculateTotals() async => getChartMetrics();
-
-  /// Persentase tiap kategori EXPENSE dari total expense
-  Future<Map<String, double>> getCategoryPercentages() async {
-    final uid = auth.currentUser!.uid;
+  /// Hitung persentase per kategori dari docs yang sudah difilter by type
+  Map<String, double> computeCategoryPercentages(
+      List<Map<String, dynamic>> items) {
     final Map<String, double> totals = {};
     double grand = 0;
-
-    final txSnap = await datatransaksi().first;
-    for (final doc in txSnap.docs) {
-      final snap = await firestore
-          .collection("users").doc(uid).collection("transactions")
-          .doc(doc.id).collection("items")
-          .where("type", isEqualTo: "expense").get();
-      for (final item in snap.docs) {
-        final cat = item['category'] as String;
-        final amt = (item['amount'] as num).toDouble();
-        totals[cat] = (totals[cat] ?? 0) + amt;
-        grand += amt;
-      }
+    for (final item in items) {
+      final cat = item['category'] as String;
+      final amt = (item['amount'] as num).toDouble();
+      totals[cat] = (totals[cat] ?? 0) + amt;
+      grand += amt;
     }
-
     if (grand == 0) return {};
     return totals.map((k, v) => MapEntry(k, (v / grand) * 100));
   }
 
-  /// Persentase tiap kategori INCOME dari total income
-  Future<Map<String, double>> getIncomeCategoryPercentages() async {
-    final uid = auth.currentUser!.uid;
+  /// Build chart data dari items
+  List<CategoryData> buildChartData(
+      List<Map<String, dynamic>> items, String type) {
     final Map<String, double> totals = {};
-    double grand = 0;
-
-    final txSnap = await datatransaksi().first;
-    for (final doc in txSnap.docs) {
-      final snap = await firestore
-          .collection("users").doc(uid).collection("transactions")
-          .doc(doc.id).collection("items")
-          .where("type", isEqualTo: "income").get();
-      for (final item in snap.docs) {
-        final cat = item['category'] as String;
-        final amt = (item['amount'] as num).toDouble();
-        totals[cat] = (totals[cat] ?? 0) + amt;
-        grand += amt;
-      }
+    for (final item in items) {
+      final cat = item['category'] as String;
+      final amt = (item['amount'] as num).toDouble();
+      totals[cat] = (totals[cat] ?? 0) + amt;
     }
+    if (totals.isEmpty) return [];
 
-    if (grand == 0) return {};
-    return totals.map((k, v) => MapEntry(k, (v / grand) * 100));
+    final sorted = totals.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return sorted.map((entry) {
+      final color = type == "income"
+          ? getIncomeCategoryColor(entry.key)
+          : getExpenseCategoryColor(entry.key);
+      return CategoryData(entry.key, entry.value, color);
+    }).toList();
   }
 
   Color getExpenseCategoryColor(String category) {
@@ -162,65 +150,9 @@ class AnalyticsController extends GetxController {
       case "bonus":      return const Color(0xFF66BB6A);
       case "transfer":   return const Color(0xFFBC9CC6);
       case "gift":       return const Color(0xFF26A69A);
+      case "income":     return const Color(0xFF388E3C);
       case "other":      return const Color(0xFFC8E6C9);
       default:           return const Color(0xFF388E3C);
     }
-  }
-
-  Stream<List<CategoryData>> streamChartData() async* {
-    final uid = auth.currentUser!.uid;
-
-    await for (final txSnap in datatransaksi()) {
-      final docs = txSnap.docs;
-      if (docs.isEmpty) { yield []; continue; }
-
-      final Map<String, double> categoryTotals = {};
-      final currentType = transactionType.value;
-
-      for (final doc in docs) {
-        final itemsSnap = await firestore
-            .collection("users").doc(uid).collection("transactions")
-            .doc(doc.id).collection("items")
-            .where("type", isEqualTo: currentType).get();
-
-        for (final item in itemsSnap.docs) {
-          final category = item['category'] as String;
-          final amount   = (item['amount'] as num).toDouble();
-          categoryTotals[category] = (categoryTotals[category] ?? 0) + amount;
-        }
-      }
-
-      if (categoryTotals.isEmpty) { yield []; continue; }
-
-      final sorted = categoryTotals.entries.toList()
-        ..sort((a, b) => b.value.compareTo(a.value));
-
-      yield sorted.map((entry) {
-        final color = currentType == "income"
-            ? getIncomeCategoryColor(entry.key)
-            : getExpenseCategoryColor(entry.key);
-        return CategoryData(entry.key, entry.value, color);
-      }).toList();
-    }
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamExpenseItem(String docId) {
-    final uid = auth.currentUser!.uid;
-    return firestore
-        .collection("users").doc(uid).collection("transactions")
-        .doc(docId).collection("items")
-        .where("type", isEqualTo: "expense")
-        .orderBy("created_at", descending: true)
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamIncomeItem(String docId) {
-    final uid = auth.currentUser!.uid;
-    return firestore
-        .collection("users").doc(uid).collection("transactions")
-        .doc(docId).collection("items")
-        .where("type", isEqualTo: transactionType.value)
-        .orderBy("created_at", descending: true)
-        .snapshots();
   }
 }
