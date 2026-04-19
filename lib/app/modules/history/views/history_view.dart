@@ -111,216 +111,133 @@ class HistoryView extends GetView<HistoryController> {
 
             TextField(
               controller: controller.searchC,
-                 onChanged: (value) => controller.search(value,), //menangkap data yang diketik pada textfield
-                cursorColor: Colors.amber,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amberAccent, width: 2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber, width: 2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  hintText: 'Search by category or notes',
-                  suffixIcon: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {},
-                    child: Icon(Icons.search, color: Colors.amber),
-                  ),
-                  fillColor: Colors.white,
-                  filled: true,
+              onChanged: (value) => controller.search(
+                value,
+              ), //menangkap data yang diketik pada textfield
+              cursorColor: Colors.amber,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.amberAccent, width: 2),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.amber, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                hintText: 'Search by category or notes',
+                suffixIcon: InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () {},
+                  child: Icon(Icons.search, color: Colors.amber),
+                ),
+                fillColor: Colors.white,
+                filled: true,
               ),
+            ),
 
             Expanded(
-              child: GetBuilder<HistoryController>(
-                builder: (controller) {
-                  return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: controller.allTransactions(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+              child: Obx(() {
+                final _ = controller.keyword.value;
+                final __ = controller.start.value;
+                final ___ = controller.end.value;
 
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.history_edu_rounded,
-                                size: 48,
-                                color: Colors.grey[400],
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                "History is empty",
+                return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: controller.transactionsStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
+                    if (!snapshot.hasData) {
+                      return const Center(child: Text("No transactions found"));
+                    }
 
-                      var dataPerhari = snapshot.data!;
+                    // ← filter di client side
+                    final filtered = controller.filterDocs(snapshot.data!.docs);
 
-                      return ListView.builder(
-                        itemCount: dataPerhari.docs.length,
-                        itemBuilder: (context, index) {
-                          var doc = dataPerhari.docs[index];
-                          String docId = doc.id;
-
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 20),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(
-                                color: const Color(0xFFBC9CC6),
-                                width: 2,
+                    if (filtered.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.receipt_long_outlined,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              "No transactions found",
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.grey,
                               ),
                             ),
-                            child: Column(
+                          ],
+                        ),
+                      );
+                    }
+
+                    var rupiah = Rupiah();
+
+                    return ListView.builder(
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        var item = filtered[index];
+                        bool isIncome = item['type'] == "income";
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color(0xFFBC9CC6),
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: SvgPicture.network(
+                              item['icon'],
+                              width: 30,
+                              height: 30,
+                            ),
+                            title: Text(
+                              item['category'],
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if (item['notes'] != null &&
+                                    item['notes'].toString().isNotEmpty)
+                                  Text(item['notes']),
                                 Text(
-                                  DateFormat('EEEE, d MMMM yyyy').format(
-                                    DateFormat("d-M-yyyy").parse(doc['date']),
+                                  DateFormat('d MMM yyyy').format(
+                                    DateFormat("d-M-yyyy").parse(item['date']),
                                   ),
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 10),
-
-                                StreamBuilder<
-                                  QuerySnapshot<Map<String, dynamic>>
-                                >(
-                                  stream: controller.DetailAllTransactions(
-                                    docId,
-                                  ),
-                                  builder: (context, itemSnapshot) {
-                                    if (itemSnapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    }
-
-                                    if (!itemSnapshot.hasData ||
-                                        itemSnapshot.data!.docs.isEmpty) {
-                                      return const Text("History is empty");
-                                    }
-
-                                    var dataItem = itemSnapshot.data!;
-                                    var rupiah = Rupiah();
-
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: dataItem.docs.length,
-                                      itemBuilder: (context, i) {
-                                        var item = dataItem.docs[i];
-
-                                        bool isIncome =
-                                            item['category'] == 'income';
-
-                                        return Column(
-                                          children: [
-                                            ListTile(
-                                              contentPadding: EdgeInsets.zero,
-                                              leading: SizedBox(
-                                                width: 42,
-                                                height: 42,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                    8,
-                                                  ),
-                                                  child: SvgPicture.network(
-                                                    item['icon'],
-                                                    fit: BoxFit.contain,
-                                                    errorBuilder:
-                                                        (
-                                                          _,
-                                                          __,
-                                                          ___,
-                                                        ) => const Icon(
-                                                          Icons
-                                                              .image_not_supported,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                              title: Text(
-                                                item['category'],
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                              subtitle:
-                                                  (item['notes'] == null ||
-                                                      item['notes']
-                                                          .toString()
-                                                          .trim()
-                                                          .isEmpty)
-                                                  ? null
-                                                  : Text(
-                                                      item['notes'],
-                                                      style:
-                                                          GoogleFonts.plusJakartaSans(
-                                                            fontSize: 12,
-                                                            color: Colors
-                                                                .grey[900],
-                                                          ),
-                                                    ),
-
-                                              trailing: Text(
-                                                isIncome
-                                                    ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
-                                                    : "-${rupiah.convertToRupiah('${item['amount']}')}",
-                                                style:
-                                                    GoogleFonts.plusJakartaSans(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: isIncome
-                                                          ? Colors.green
-                                                          : Colors.red,
-                                                    ),
-                                              ),
-                                            ),
-                                            if (i != dataItem.docs.length - 1)
-                                              const Divider(),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
+                                  style: const TextStyle(fontSize: 11),
                                 ),
                               ],
                             ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
+                            trailing: Text(
+                              isIncome
+                                  ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
+                                  : "- ${rupiah.convertToRupiah('${item['amount']}')}",
+                              style: TextStyle(
+                                color: isIncome ? Colors.green : Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
