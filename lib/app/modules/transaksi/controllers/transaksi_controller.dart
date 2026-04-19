@@ -227,6 +227,10 @@ class TransaksiController extends GetxController {
                   });
             }
 
+            String formattedNote = noteText.isNotEmpty
+                ? noteText[0].toUpperCase() + noteText.substring(1)
+                : "";
+
             await firestore
                 .collection("users")
                 .doc(uid)
@@ -239,12 +243,12 @@ class TransaksiController extends GetxController {
                   "icon": categories[selectedCategoryIndex.value]['icon'],
                   "category":
                       categories[selectedCategoryIndex.value]['name'] == 'Other'
-                      ? otherC.text
+                      ? otherC.text.substring(0, 1).toUpperCase() +
+                            otherC.text.substring(1)
                       : categories[selectedCategoryIndex.value]['name'],
-
                   "date": docId,
                   'amount': number,
-                  'notes': noteText,
+                  'notes': formattedNote,
                   'created_at': waktu,
                 });
 
@@ -378,6 +382,10 @@ class TransaksiController extends GetxController {
             var snapshot = await firestore.collection("users").doc(uid).get();
             int balance = snapshot.data()?['balance'] ?? 0;
 
+               String formattedNote = noteText.isNotEmpty
+                ? noteText[0].toUpperCase() + noteText.substring(1)
+                : "";
+
             await firestore
                 .collection("users")
                 .doc(uid)
@@ -389,12 +397,16 @@ class TransaksiController extends GetxController {
                   'type': "income",
                   "icon":
                       "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774979395/mingcute--cash-line_nsv7vc.svg",
-                  "category": "income",
+                  "category": "Income",
                   "date": docId,
                   'amount': number,
-                  'notes': noteText,
+                  'notes': formattedNote,
                   'created_at': waktu,
                 });
+
+            print(
+              "noteText: ${noteText.substring(0, 1).toUpperCase() + noteText.substring(1)}",
+            );
 
             await firestore.collection("users").doc(uid).update({
               'balance': balance + number,
