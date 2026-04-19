@@ -102,17 +102,30 @@ class AuthController extends GetxController {
 
   Future<void> loginForm(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar('Failed', 'all fields are required');
+      Get.snackbar('Failed', 'All fields are required');
       return;
     }
 
     isloading.value = true;
 
     try {
-      await auth.signInWithEmailAndPassword(email: email, password: password);
+      final userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      final uid = auth.currentUser!.uid;
-      await _handleRedirect(uid);
+      final user = userCredential.user!;
+
+      await user.reload(); // refresh status verify
+      final freshUser = auth.currentUser!;
+
+      if (!freshUser.emailVerified) {
+        await auth.signOut(); // 🔥 penting
+        Get.snackbar('Failed', 'Please verify your email check your inbox / spam ');
+        return;
+      }
+
+      await _handleRedirect(freshUser.uid);
     } catch (e) {
       Get.snackbar('Failed', 'Login failed');
     } finally {

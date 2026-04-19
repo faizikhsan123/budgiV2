@@ -4,74 +4,90 @@ import 'package:get/get.dart';
 import '../controllers/reset_controller.dart';
 
 class ResetView extends GetView<ResetController> {
+  const ResetView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
+        title: const Text('Forgot Password'),
         centerTitle: true,
       ),
-      body: Container(
-        width: Get.width,
-        height: Get.height,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 243, 242, 244),
-              Color.fromARGB(255, 243, 242, 244),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                TextField(
-                  controller: controller.email,
-                  decoration: InputDecoration(
-                    fillColor: const Color.fromARGB(255, 255, 255, 255),
-                    filled: true,
-                    hintText: 'Email ',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.lock_reset_rounded,
+                    size: 70,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Reset Password',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(
-                        color: Color(0xffBC9CC6),
-                        width: 2,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Masukkan email akun kamu untuk menerima link reset password.',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: controller.emailC,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      hintText: 'contoh@email.com',
+                      labelText: 'Email',
+                      prefixIcon: const Icon(Icons.email_outlined),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    suffixIconConstraints: const BoxConstraints(
-                      minHeight: 55,
-                      minWidth: 55,
+                  ),
+                  const SizedBox(height: 24),
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : controller.sendResetEmail,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: controller.isLoading.value
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Kirim Link Reset',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffBC9CC6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    controller.resetPassword(controller.email.text);
-                  },
-                  child: Text("Reset Password"),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

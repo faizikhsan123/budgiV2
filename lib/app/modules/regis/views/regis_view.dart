@@ -70,10 +70,6 @@ class RegisView extends GetView<RegisController> {
                       keyboardType: TextInputType.emailAddress,
                     ),
 
-                    
-
-              
-
                     buildLabel("Set Password"),
                     Obx(
                       () => buildTextField(
@@ -121,9 +117,6 @@ class RegisView extends GetView<RegisController> {
                       text: "Register",
                       onTap: () async {
                         await controller.jalankanRegis();
-
-                        controller.passC.clear();
-                        controller.passReC.clear();
                       },
                     ),
 
@@ -143,7 +136,13 @@ class RegisView extends GetView<RegisController> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () => Get.toNamed(Routes.LOGIN),
+                            onPressed: () {
+                              Get.toNamed(Routes.LOGIN);
+                              controller.nameC.clear();
+                              controller.emailC.clear();
+                              controller.passC.clear();
+                              controller.passReC.clear();
+                            },
                             child: Text(
                               "Login",
                               style: GoogleFonts.plusJakartaSans(

@@ -109,6 +109,30 @@ class HistoryView extends GetView<HistoryController> {
               ],
             ),
 
+            TextField(
+              controller: controller.searchC,
+                 onChanged: (value) => controller.search(value,), //menangkap data yang diketik pada textfield
+                cursorColor: Colors.amber,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amberAccent, width: 2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber, width: 2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  hintText: 'Search by category or notes',
+                  suffixIcon: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () {},
+                    child: Icon(Icons.search, color: Colors.amber),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+              ),
+
             Expanded(
               child: GetBuilder<HistoryController>(
                 builder: (controller) {

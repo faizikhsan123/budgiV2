@@ -101,9 +101,11 @@ class RegisController extends GetxController {
       passC.clear();
       passReC.clear();
 
+      await userCredential.user!.sendEmailVerification();
+
       await Get.snackbar(
-        "Success",
         "Registration successful",
+        "Please check your folder spam  email to verify your account",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
