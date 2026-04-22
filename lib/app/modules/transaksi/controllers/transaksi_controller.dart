@@ -107,334 +107,269 @@ class TransaksiController extends GetxController {
   }
 
   void tambahExpense(String noteText) async {
-    String cleanText = amount1C.text
-        .replaceAll("Rp", "")
-        .replaceAll(".", "")
-        .trim();
+    try {
+      String cleanText = amount1C.text
+          .replaceAll("Rp", "")
+          .replaceAll(".", "")
+          .trim();
 
-    int? number = int.tryParse(cleanText);
+      int? number = int.tryParse(cleanText);
 
-    /// VALIDASI NOMINAL
-    if (number == null) {
-      Get.snackbar(
-        'Failed',
-        'Amount is required',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      if (number == null || number <= 0) {
+        Get.snackbar("Failed", "Invalid amount");
+        return;
+      }
 
-    if (number <= 0) {
-      Get.snackbar(
-        'Failed',
-        'Amount must be greater than 0',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      if (selectedCategoryIndex.value == -1) {
+        Get.snackbar("Failed", "Category is required");
+        return;
+      }
 
-    /// VALIDASI KATEGORI
-    if (selectedCategoryIndex.value == -1) {
-      Get.snackbar(
-        'Failed',
-        'Category is required',
-        backgroundColor: Colors.orange.shade50,
-        colorText: Colors.orange.shade900,
-      );
-      return;
-    }
+      if (auth.currentUser == null) {
+        Get.snackbar("Error", "User not logged in");
+        return;
+      }
 
-    String uid = auth.currentUser!.uid;
+      String uid = auth.currentUser!.uid;
 
-    /// AMBIL DATA USER
-    var snapshot = await firestore.collection("users").doc(uid).get();
-    int balance = snapshot.data()?['balance'] ?? 0;
+      var userDoc = await firestore.collection("users").doc(uid).get();
+      int balance = userDoc.data()?['balance'] ?? 0;
 
-    /// CEK SALDO
-    if (number > balance) {
-      Get.snackbar(
-        'Failed',
-        'Not enough balance',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      if (number > balance) {
+        Get.snackbar("Failed", "Not enough balance");
+        return;
+      }
 
-    var rupiah = Rupiah();
-
-    Get.defaultDialog(
-      title: "Confirm Transaction",
-      content: contentBefore(rupiah: rupiah, number: number, text: "Expense"),
-      radius: 12,
-      backgroundColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      titleStyle: GoogleFonts.plusJakartaSans(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: Colors.black,
-      ),
-      cancel: cancel_transaksi(),
-      confirm: Container(
-        width: 120,
-        height: 45,
-        decoration: BoxDecoration(
-          color: const Color(0xFFBC9CC6),
-          borderRadius: BorderRadius.circular(8),
+      Get.defaultDialog(
+        title: "Confirm Transaction",
+        content: contentBefore(
+          rupiah: Rupiah(),
+          number: number,
+          text: "Expense",
         ),
-        child: TextButton(
+        cancel: cancel_transaksi(),
+        confirm: TextButton(
           onPressed: () async {
-            // FIX: pastikan nilaiTanggal sudah format d-M-yyyy yang valid
-            String docId = nilaiTanggal.value;
+            try {
+              String docId = nilaiTanggal.value;
 
-            if (categories[selectedCategoryIndex.value]['name'] == 'Other' &&
-                otherC.text.isEmpty) {
-              Get.snackbar(
-                'Failed',
-                'Other category must have Category Name',
-                backgroundColor: Colors.red.shade50,
-                colorText: Colors.red.shade900,
-              );
-              return;
-            }
+              DateTime filterTanggal = DateFormat("d-M-yyyy").parse(docId);
 
-            var docTransaction = await firestore
-                .collection("users")
-                .doc(uid)
-                .collection("transactions")
-                .doc(docId)
-                .get();
+              String itemId = DateTime.now().millisecondsSinceEpoch.toString();
 
-            var data = docTransaction.data();
+              String createdAt = DateTime.now().toIso8601String();
 
-            String waktu = DateFormat.jms().format(DateTime.now());
+              String formattedNote = noteText.isNotEmpty
+                  ? noteText[0].toUpperCase() + noteText.substring(1)
+                  : "";
 
-            // FIX: parse dengan format yang sama persis saat set
-            DateTime filterTanggal = DateFormat("d-M-yyyy").parse(docId);
+              var categoryName =
+                  categories[selectedCategoryIndex.value]['name'] == "Other"
+                  ? (otherC.text.isNotEmpty
+                        ? otherC.text[0].toUpperCase() +
+                              otherC.text.substring(1)
+                        : "")
+                  : categories[selectedCategoryIndex.value]['name'];
 
-            if (data == null) {
+              /// 🔹 ensure parent doc
+              var parent = await firestore
+                  .collection("users")
+                  .doc(uid)
+                  .collection("transactions")
+                  .doc(docId)
+                  .get();
+
+              if (!parent.exists) {
+                await firestore
+                    .collection("users")
+                    .doc(uid)
+                    .collection("transactions")
+                    .doc(docId)
+                    .set({
+                      "date": docId,
+                      "filter_tanggal": filterTanggal.toIso8601String(),
+                    });
+              }
+
+              Map<String, dynamic> data = {
+                "type": "expense",
+                "category": categoryName,
+                "amount": number,
+                "notes": formattedNote,
+                "date": docId,
+                "filter_tanggal": filterTanggal.toIso8601String(),
+                "created_at": createdAt,
+                "search_category": categoryName!.toLowerCase(),
+                "search_notes": formattedNote.toLowerCase(),
+
+                // ← TAMBAH INI
+                "search_text":
+                    "${categoryName!.toLowerCase()} ${formattedNote.toLowerCase()}",
+                "icon": categories[selectedCategoryIndex.value]['icon'],
+              };
+
+              /// 🔹 1. SAVE KE ITEMS (STRUCTURE LAMA)
               await firestore
                   .collection("users")
                   .doc(uid)
                   .collection("transactions")
                   .doc(docId)
-                  .set({
-                    'date': docId,
-                    'created_at': waktu,
-                    'filter_tanggal': filterTanggal.toIso8601String(),
-                  });
+                  .collection("items")
+                  .doc(itemId)
+                  .set(data);
+
+              /// 🔥 2. SAVE KE ALL_TRANSACTIONS (UNTUK SEARCH)
+              await firestore
+                  .collection("users")
+                  .doc(uid)
+                  .collection("all_transactions")
+                  .doc(itemId)
+                  .set(data);
+
+              /// 🔹 update balance
+              await firestore.collection("users").doc(uid).update({
+                "balance": balance - number,
+              });
+
+              resetForm();
+              Get.back();
+
+              Get.snackbar("Success", "Expense added");
+            } catch (e) {
+              print("ERROR ADD EXPENSE: $e");
+              Get.snackbar("Error", e.toString());
             }
-
-            await firestore
-                .collection("users")
-                .doc(uid)
-                .collection("transactions")
-                .doc(docId)
-                .collection("items")
-                .doc(waktu)
-                .set({
-                  'type': "expense",
-                  "icon": categories[selectedCategoryIndex.value]['icon'],
-                  "category":
-                      categories[selectedCategoryIndex.value]['name'] == 'Other'
-                      ? otherC.text
-                      : categories[selectedCategoryIndex.value]['name'],
-
-                  "date": docId,
-                  'amount': number,
-                  'notes': noteText,
-                  'created_at': waktu,
-                });
-
-            await firestore.collection("users").doc(uid).update({
-              'balance': balance - number,
-            });
-
-            amount1C.clear();
-            selectedCategoryIndex.value = -1;
-            notes1C.clear();
-            otherC.clear();
-
-            Get.back();
-
-            Get.defaultDialog(
-              title: "Expense Added!",
-              radius: 12,
-              backgroundColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10,
-              ),
-              titleStyle: GoogleFonts.plusJakartaSans(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-              content: content(
-                rupiah: rupiah,
-                number: number,
-                text: "balance has been deducted",
-              ),
-            );
           },
-          child: Text(
-            "Add",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
+          child: const Text("Add"),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 
   void tambahTransaksiIncome(String noteText) async {
-    String cleanText = amount2C.text
-        .replaceAll("Rp", "")
-        .replaceAll(".", "")
-        .trim();
+    try {
+      String cleanText = amount2C.text
+          .replaceAll("Rp", "")
+          .replaceAll(".", "")
+          .trim();
 
-    int? number = int.tryParse(cleanText);
+      int? number = int.tryParse(cleanText);
 
-    if (number == null) {
-      Get.snackbar(
-        'Failed',
-        'Amount is required',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      if (number == null || number <= 0) {
+        Get.snackbar("Failed", "Invalid amount");
+        return;
+      }
 
-    if (number <= 0) {
-      Get.snackbar(
-        'Failed',
-        'Amount must be greater than 0',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade900,
-      );
-      return;
-    }
+      if (auth.currentUser == null) {
+        Get.snackbar("Error", "User not logged in");
+        return;
+      }
 
-    var rupiah = Rupiah();
+      String uid = auth.currentUser!.uid;
 
-    Get.defaultDialog(
-      title: "Confirm Transaction",
-      content: contentBefore(rupiah: rupiah, number: number, text: "Income"),
-      radius: 12,
-      backgroundColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      titleStyle: GoogleFonts.plusJakartaSans(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: Colors.black,
-      ),
-      cancel: cancel_transaksi(),
-      confirm: Container(
-        width: 120,
-        height: 45,
-        decoration: BoxDecoration(
-          color: const Color(0xFFBC9CC6),
-          borderRadius: BorderRadius.circular(8),
+      Get.defaultDialog(
+        title: "Confirm Transaction",
+        content: contentBefore(
+          rupiah: Rupiah(),
+          number: number,
+          text: "Income",
         ),
-        child: TextButton(
+        cancel: cancel_transaksi(),
+        confirm: TextButton(
           onPressed: () async {
-            String uid = auth.currentUser!.uid;
+            try {
+              String docId = nilaiTanggal.value;
 
-            // FIX: pastikan nilaiTanggal sudah format d-M-yyyy yang valid
-            String docId = nilaiTanggal.value;
+              DateTime filterTanggal = DateFormat("d-M-yyyy").parse(docId);
 
-            var docTransaction = await firestore
-                .collection("users")
-                .doc(uid)
-                .collection("transactions")
-                .doc(docId)
-                .get();
+              String itemId = DateTime.now().millisecondsSinceEpoch.toString();
 
-            var data = docTransaction.data();
+              String createdAt = DateTime.now().toIso8601String();
 
-            String waktu = DateFormat.jms().format(DateTime.now());
+              String formattedNote = noteText.isNotEmpty
+                  ? noteText[0].toUpperCase() + noteText.substring(1)
+                  : "";
 
-            // FIX: parse dengan format yang sama persis saat set
-            DateTime filterTanggal = DateFormat("d-M-yyyy").parse(docId);
+              var userDoc = await firestore.collection("users").doc(uid).get();
 
-            if (data == null) {
+              int balance = userDoc.data()?['balance'] ?? 0;
+
+              /// ensure parent
+              var parent = await firestore
+                  .collection("users")
+                  .doc(uid)
+                  .collection("transactions")
+                  .doc(docId)
+                  .get();
+
+              if (!parent.exists) {
+                await firestore
+                    .collection("users")
+                    .doc(uid)
+                    .collection("transactions")
+                    .doc(docId)
+                    .set({
+                      "date": docId,
+                      "filter_tanggal": filterTanggal.toIso8601String(),
+                    });
+              }
+
+              Map<String, dynamic> data = {
+                "type": "income",
+                "category": "Income",
+                "amount": number,
+                "notes": formattedNote,
+                "date": docId,
+                "filter_tanggal": filterTanggal.toIso8601String(),
+                "created_at": createdAt,
+                "search_category": "income",
+                "search_notes": formattedNote.toLowerCase(),
+
+                // ← TAMBAH INI
+                "search_text": "income ${formattedNote.toLowerCase()}",
+                "icon":
+                    "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774979395/mingcute--cash-line_nsv7vc.svg",
+              };
+
+              /// items
               await firestore
                   .collection("users")
                   .doc(uid)
                   .collection("transactions")
                   .doc(docId)
-                  .set({
-                    'date': docId,
-                    'created_at': waktu,
-                    'filter_tanggal': filterTanggal.toIso8601String(),
-                  });
+                  .collection("items")
+                  .doc(itemId)
+                  .set(data);
+
+              /// all_transactions
+              await firestore
+                  .collection("users")
+                  .doc(uid)
+                  .collection("all_transactions")
+                  .doc(itemId)
+                  .set(data);
+
+              /// update balance
+              await firestore.collection("users").doc(uid).update({
+                "balance": balance + number,
+              });
+
+              resetForm();
+              Get.back();
+
+              Get.snackbar("Success", "Income added");
+            } catch (e) {
+              print("ERROR ADD INCOME: $e");
+              Get.snackbar("Error", e.toString());
             }
-
-            var snapshot = await firestore.collection("users").doc(uid).get();
-            int balance = snapshot.data()?['balance'] ?? 0;
-
-            await firestore
-                .collection("users")
-                .doc(uid)
-                .collection("transactions")
-                .doc(docId)
-                .collection("items")
-                .doc(waktu)
-                .set({
-                  'type': "income",
-                  "icon":
-                      "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774979395/mingcute--cash-line_nsv7vc.svg",
-                  "category": "income",
-                  "date": docId,
-                  'amount': number,
-                  'notes': noteText,
-                  'created_at': waktu,
-                });
-
-            await firestore.collection("users").doc(uid).update({
-              'balance': balance + number,
-            });
-
-            amount2C.clear();
-            notes2C.clear();
-
-            Get.back();
-
-            Get.defaultDialog(
-              title: "Income Added!",
-              radius: 12,
-              backgroundColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10,
-              ),
-              titleStyle: GoogleFonts.plusJakartaSans(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-              content: content(
-                rupiah: rupiah,
-                number: number,
-                text: "balance has been added",
-              ),
-            );
           },
-          child: Text(
-            "Add",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
+          child: const Text("Add"),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 }

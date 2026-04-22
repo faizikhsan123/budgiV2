@@ -1,6 +1,7 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
@@ -242,11 +243,33 @@ class HomeView extends GetView<HomeController> {
                                 return SizedBox(
                                   width: double.infinity,
                                   height: 200,
-                                  child: const Center(
-                                    child: Text(
-                                      "No transactions yet",
-                                      textAlign: TextAlign.center,
-                                    ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.receipt_long_outlined,
+                                        size: 48,
+                                        color: const Color(0xFFBC9CC6),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        "No Recent Activity",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        "Your transactions will appear here",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey[400],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               }
@@ -261,118 +284,108 @@ class HomeView extends GetView<HomeController> {
                                   var doc = dataPerhari.docs[index];
                                   String docId = doc.id;
 
-                                  return Container(
-                                    margin: const EdgeInsets.only(bottom: 20),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(18),
-                                      border: Border(
-                                        top: BorderSide(
-                                          color: const Color(0xFFBC9CC6),
-                                          width: 0.8,
-                                        ),
-                                        bottom: BorderSide(
-                                          color: const Color(0xFFBC9CC6),
-                                          width: 0.8,
-                                        ),
-                                        left: BorderSide(
-                                          color: const Color(0xFFBC9CC6),
-                                          width: 0.8,
-                                        ),
-                                        right: BorderSide(
-                                          color: const Color(0xFFBC9CC6),
-                                          width: 0.8,
-                                        ),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(0xFFBC9CC6),
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 1),
-                                        ),
-                                        BoxShadow(
-                                          color: const Color(0xFFBC9CC6),
-                                          blurRadius: 3,
-                                          offset: const Offset(0, -1),
-                                        ),
-                                        BoxShadow(
-                                          color: const Color(0xFFBC9CC6),
-                                          blurRadius: 3,
-                                          offset: const Offset(1, 0),
-                                        ),
-                                        BoxShadow(
-                                          color: const Color(0xFFBC9CC6),
-                                          blurRadius: 3,
-                                          offset: const Offset(-1, 0),
-                                        ),
-                                      ],
+                                  return StreamBuilder<
+                                    QuerySnapshot<Map<String, dynamic>>
+                                  >(
+                                    stream: controller.streamTransactionItem(
+                                      docId,
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        /// DATE
-                                        Text(
-                                          DateFormat(
-                                            'EEEE, d MMMM yyyy',
-                                          ).format(
-                                            DateFormat(
-                                              "d-M-yyyy",
-                                            ).parse(doc['date']),
-                                          ),
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey[900],
-                                          ),
+                                    builder: (context, itemSnapshot) {
+                                      // Kalau items kosong, sembunyikan seluruh card
+                                      if (!itemSnapshot.hasData ||
+                                          itemSnapshot.data!.docs.isEmpty) {
+                                        return const SizedBox.shrink(); // card hilang total
+                                      }
+
+                                      var dataItem = itemSnapshot.data!;
+
+                                      return Container(
+                                        margin: const EdgeInsets.only(
+                                          bottom: 20,
                                         ),
-
-                                        const SizedBox(height: 10),
-                                        StreamBuilder<
-                                          QuerySnapshot<Map<String, dynamic>>
-                                        >(
-                                          stream: controller
-                                              .streamTransactionItem(docId),
-                                          builder: (context, itemSnapshot) {
-                                            if (itemSnapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            }
-
-                                            if (!itemSnapshot.hasData) {
-                                              return const Text(
-                                                "Transaction is empty",
-                                              );
-                                            }
-
-                                            var dataItem = itemSnapshot.data!;
-
-                                            return ListView.builder(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                          border: Border.all(
+                                            color: const Color(0xFFBC9CC6),
+                                            width: 0.8,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFFBC9CC6),
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 1),
+                                            ),
+                                            BoxShadow(
+                                              color: const Color(0xFFBC9CC6),
+                                              blurRadius: 3,
+                                              offset: const Offset(0, -1),
+                                            ),
+                                            BoxShadow(
+                                              color: const Color(0xFFBC9CC6),
+                                              blurRadius: 3,
+                                              offset: const Offset(1, 0),
+                                            ),
+                                            BoxShadow(
+                                              color: const Color(0xFFBC9CC6),
+                                              blurRadius: 3,
+                                              offset: const Offset(-1, 0),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              DateFormat(
+                                                'EEEE, d MMMM yyyy',
+                                              ).format(
+                                                DateFormat(
+                                                  "d-M-yyyy",
+                                                ).parse(doc['date']),
+                                              ),
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey[900],
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            ListView.builder(
                                               shrinkWrap: true,
-
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
                                               itemCount: dataItem.docs.length,
                                               itemBuilder: (context, i) {
                                                 var item = dataItem.docs[i];
-
                                                 bool isIncome =
-                                                    item['category'] ==
+                                                    item['category']
+                                                        .toString()
+                                                        .toLowerCase() ==
                                                     'income';
 
                                                 return Column(
                                                   children: [
                                                     ListTile(
+                                                      onTap: () {
+                                                        Get.toNamed(
+                                                          Routes.CRUD,
+                                                          arguments: {
+                                                            ...item.data(),
+                                                            'id': item.id,
+                                                          },
+                                                        );
+                                                      },
                                                       contentPadding:
                                                           EdgeInsets.zero,
                                                       leading: Container(
                                                         width: 42,
                                                         height: 42,
-
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets.all(
@@ -386,7 +399,6 @@ class HomeView extends GetView<HomeController> {
                                                               ),
                                                         ),
                                                       ),
-
                                                       title: Text(
                                                         item['category'],
                                                         style:
@@ -397,7 +409,6 @@ class HomeView extends GetView<HomeController> {
                                                               fontSize: 14,
                                                             ),
                                                       ),
-
                                                       subtitle:
                                                           (item['notes'] ==
                                                                   null ||
@@ -414,7 +425,6 @@ class HomeView extends GetView<HomeController> {
                                                                     .grey[900],
                                                               ),
                                                             ),
-
                                                       trailing: Text(
                                                         isIncome
                                                             ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
@@ -431,25 +441,18 @@ class HomeView extends GetView<HomeController> {
                                                             ),
                                                       ),
                                                     ),
-
                                                     if (i !=
                                                         dataItem.docs.length -
                                                             1)
-                                                      Divider(
-                                                        height: 16,
-                                                        thickness: 1,
-                                                        color: Color(
-                                                          0xFFBC9CC6,
-                                                        ),
-                                                      ),
+                                                      const Divider(height: 1),
                                                   ],
                                                 );
                                               },
-                                            );
-                                          },
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   );
                                 },
                               );

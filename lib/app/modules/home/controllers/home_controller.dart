@@ -45,12 +45,13 @@ class HomeController extends GetxController {
         .collection("transactions")
         .doc(docId)
         .collection("items")
-        .orderBy("created_at", descending: true)
+        .orderBy("filter_tanggal", descending: true)
         .snapshots();
   }
+
   @override
   void onInit() {
-       pageC.pageIndex.value = 0; // ✅ Force reset ke Home saat halaman Home init
+    pageC.pageIndex.value = 0; // ✅ Force reset ke Home saat halaman Home init
     // TODO: implement onInit
     super.onInit();
   }
