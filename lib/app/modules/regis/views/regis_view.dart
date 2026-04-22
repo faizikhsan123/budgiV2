@@ -1,7 +1,5 @@
-import 'package:budgi/app/modules/widgets/ButtonPink.dart';
-import 'package:budgi/app/modules/widgets/TextField.dart';
-import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
+import 'package:budgi/app/modules/widgets/noRounded.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,166 +7,287 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
+  const RegisView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // ── Background gradient biru ──────────────────────────────────
           Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
                 colors: [
-                  Color.fromARGB(255, 243, 242, 244),
-                  Color.fromARGB(255, 243, 242, 244),
+                  Color.fromARGB(255, 10, 57, 111),
+                  Color.fromARGB(255, 153, 196, 233),
                 ],
               ),
             ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
+          ),
 
-                    Text(
-                      "Sign up",
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 32,
-                        color: const Color.fromARGB(255, 0, 0, 0),
+          SafeArea(
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                // ── Back button ─────────────────────────────────────────
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: TextButton.icon(
+                    onPressed: () => Get.back(),
+                    icon: const Icon(
+                      Icons.chevron_left_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                    label: Text(
+                      'Back',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
+                  ),
+                ),
 
-                    const SizedBox(height: 6),
+                const SizedBox(height: 60),
 
-                    Text(
-                      "Create your account!",
-                      style: GoogleFonts.plusJakartaSans(
-                        color: const Color.fromARGB(255, 45, 43, 43),
+                // ── White card sheet ────────────────────────────────────
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(32),
                       ),
                     ),
-                    const SizedBox(height: 20),
-
-                    buildLabel("Complete Name"),
-
-                    buildTextField(
-                      hint: "John Doe",
-                      controller: controller.nameC,
-                      filled: true,
-                      keyboardType: TextInputType.name,
-                    ),
-
-                    buildLabel("Email Address"),
-                    buildTextField(
-                      hint: "Budgi21@gmail.com",
-                      controller: controller.emailC,
-                      filled: true,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-
-                    buildLabel("Set Password"),
-                    Obx(
-                      () => buildTextField(
-                        controller: controller.passC,
-                        hint: "********",
-                        filled: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            controller.ishidepass.toggle();
-                          },
-                          icon: controller.ishidepass.value == true
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
-                        ),
-
-                        obscureText: controller.ishidepass.value,
-                      ),
-                    ),
-
-                    buildLabel("Re-Enter Password"),
-
-                    Obx(
-                      () => buildTextField(
-                        controller: controller.passReC,
-                        hint: "********",
-                        filled: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            controller.ishidepassreentry.toggle();
-                          },
-                          icon: controller.ishidepassreentry.value == true
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
-                        ),
-
-                        obscureText: controller.ishidepassreentry.value,
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    buildButtonPink(
-                      text: "Register",
-                      onTap: () async {
-                        await controller.jalankanRegis();
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Center(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Already have an account?",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.toNamed(Routes.LOGIN);
-                              controller.nameC.clear();
-                              controller.emailC.clear();
-                              controller.passC.clear();
-                              controller.passReC.clear();
-                            },
+                          // Title
+                          Center(
                             child: Text(
-                              "Login",
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.blue,
+                              'Hello, budies!',
+                              style: GoogleFonts.poppins(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1A1D2E),
                               ),
                             ),
                           ),
+                          const SizedBox(height: 6),
+                          Center(
+                            child: Text(
+                              "please sign up if u don't have account",
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+
+                          // Full Name
+                          _buildLabel('Full Name'),
+                          _buildField(
+                            hint: 'John Doe',
+                            controller: controller.nameC,
+                            keyboardType: TextInputType.name,
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Email
+                          _buildLabel('Email'),
+                          _buildField(
+                            hint: 'budgi21@gmail.com',
+                            controller: controller.emailC,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Password
+                          _buildLabel('Password'),
+                          Obx(
+                            () => _buildField(
+                              hint: '••••••••',
+                              controller: controller.passC,
+                              obscureText: controller.ishidepass.value,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.ishidepass.value
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: Colors.grey[400],
+                                  size: 20,
+                                ),
+                                onPressed: controller.ishidepass.toggle,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Confirm Password
+                          _buildLabel('Confirm Password'),
+                          Obx(
+                            () => _buildField(
+                              hint: '••••••••',
+                              controller: controller.passReC,
+                              obscureText: controller.ishidepassreentry.value,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.ishidepassreentry.value
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: Colors.grey[400],
+                                  size: 20,
+                                ),
+                                onPressed: controller.ishidepassreentry.toggle,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Sign Up Button
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   height: 52,
+                          //   child: ElevatedButton(
+                          //     onPressed: () async {
+                          //       await controller.jalankanRegis();
+                          //     },
+
+                          //     style: ElevatedButton.styleFrom(
+                          //      foregroundColor: Colors.white,
+
+                          //       elevation: 0,
+                          //       shape: RoundedRectangleBorder(
+                          //         borderRadius: BorderRadius.circular(14),
+                          //       ),
+                          //     ),
+                          //     child: Text(
+                          //       'Sign up',
+                          //       style: GoogleFonts.poppins(
+                          //         fontSize: 15,
+                          //         fontWeight: FontWeight.w600,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          noRounded(
+                            text: 'Sign up',
+                            onTap: () async {
+                              await controller.jalankanRegis();
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Login link
+                          Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Already have account? ',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(Routes.LOGIN);
+                                    controller.nameC.clear();
+                                    controller.emailC.clear();
+                                    controller.passC.clear();
+                                    controller.passReC.clear();
+                                  },
+                                  child: Text(
+                                    'Sign in',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF1565C0),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),
-
-                    const SizedBox(height: 20),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
-          // LOADING OVERLAY
-          Obx(() {
-            if (!controller.isloading.value) return const SizedBox();
 
+          // ── Loading overlay ─────────────────────────────────────────────
+          Obx(() {
+            if (!controller.isloading.value) return const SizedBox.shrink();
             return loading_overlay();
           }),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        text,
+        style: GoogleFonts.poppins(
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF1A1D2E),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField({
+    required String hint,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E)),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[400]),
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: const Color(0xFFF5F6FA),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF3D5AF1), width: 1.5),
+        ),
       ),
     );
   }

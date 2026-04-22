@@ -207,10 +207,7 @@ class HistoryView extends GetView<HistoryController> {
                                   "id":
                                       dataItem[index].id, // 🔥 INI YANG KURANG
                                 },
-                                // arguments: {
-                                //   'id': item.id ?? '',
-                                //   'category': item['category'],
-                                // },
+                                
                               );
                             },
                             leading: SvgPicture.network(

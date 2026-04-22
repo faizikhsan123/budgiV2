@@ -6,72 +6,99 @@ import 'package:get/get.dart';
 import 'app_colors.dart';
 
 class QuickActionsRow extends StatelessWidget {
-
+  const QuickActionsRow({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final List<_CategoryData> categories = [
+      _CategoryData(
+        label: 'Analytics',
+        assetPath: 'assets/icons/analytics.svg',
+        color: const Color(0xFFFF6B35),
+        onTap: () => Get.toNamed(Routes.ANALYTICS),
+      ),
+      _CategoryData(
+        label: 'History',
+        assetPath: 'assets/icons/history.svg',
+        color: const Color(0xFF4CAF50),
+        onTap: () => Get.toNamed(Routes.HISTORY),
+      ),
+      _CategoryData(
+        label: 'Coming Soon',
+        assetPath: 'assets/icons/scan.svg',
+        color: const Color(0xFF2196F3),
+        onTap: () {},
+      ),
+    ];
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _ActionItem(
-          label: 'Analytics',
-          assetPath: 'assets/icons/analytics.svg',
-          onTap: () => Get.toNamed(Routes.ANALYTICS),
-        ),
-        const SizedBox(width: 70),
-        _ActionItem(
-          label: 'History',
-          assetPath: 'assets/icons/history.svg',
-          onTap: () => Get.toNamed(Routes.HISTORY),
-        ),
-        const SizedBox(width: 70),
-        _ActionItem(
-          label: 'Coming Soon',
-          assetPath: 'assets/icons/scan.svg',
-          iconSize: 48,
-          onTap: () {
-          // Get.toNamed(Routes.SCAN);
-          print("otw");
-          },
-        ),
-      ],
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: categories
+          .map((cat) => _CategoryItem(data: cat))
+          .toList(),
     );
   }
 }
 
-class _ActionItem extends StatelessWidget {
+class _CategoryData {
   final String label;
   final String assetPath;
-  final void Function()? onTap;
-  final double iconSize;
+  final Color color;
+  final VoidCallback onTap;
 
-  const _ActionItem({
+  const _CategoryData({
     required this.label,
     required this.assetPath,
+    required this.color,
     required this.onTap,
-    this.iconSize = 40,
   });
+}
+
+class _CategoryItem extends StatelessWidget {
+  final _CategoryData data;
+
+  const _CategoryItem({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        child: Column(
-          children: [
-            //SvgPicture.asset(assetPath, width: 40, height: 40),
-            SvgPicture.asset(assetPath, width: iconSize, height: iconSize),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textDark,
-              ),
+    return GestureDetector(
+      onTap: data.onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: data.color,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: data.color.withOpacity(0.35),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ],
-        ),
+            padding: const EdgeInsets.all(14),
+            child: SvgPicture.asset(
+              data.assetPath,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            data.label,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF1A1D2E),
+            ),
+          ),
+        ],
       ),
     );
   }

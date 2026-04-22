@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 Widget buildTextField({
@@ -20,12 +19,15 @@ Widget buildTextField({
     onChanged: onchange,
 
     decoration: InputDecoration(
-      fillColor: const Color.fromARGB(255, 255, 255, 255),
+      fillColor: const Color.fromARGB(255, 245, 244, 244),
       filled: filled ?? false,
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide.none,
+        borderSide: const BorderSide(
+          color: Color.fromARGB(255, 215, 204, 219),
+          width: 2,
+        ),
       ),
 
       hintText: hint,
@@ -33,7 +35,10 @@ Widget buildTextField({
 
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xffBC9CC6), width: 2),
+        borderSide: const BorderSide(
+          color: Color.fromARGB(255, 19, 91, 173),
+          width: 1,
+        ),
       ),
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

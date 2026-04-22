@@ -3,245 +3,281 @@ import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
-import 'package:budgi/app/modules/widgets/socialButton.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginView extends GetView<LoginController> {
-  final authC = Get.find<AuthController>();
-  RxBool isHide = true.obs;
+  const LoginView({super.key});
+
+  static const _blueGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color.fromARGB(255, 10, 57, 111),
+      Color.fromARGB(255, 153, 196, 233),
+    ],
+  );
+
+  void _clearFields() {
+    controller.emailC.clear();
+    controller.passC.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    final authC = Get.find<AuthController>();
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          _buildBackground(),
+          _buildContent(authC),
+          _buildLoading(authC),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Column(
       children: [
-        Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: Container(
-            width: Get.width,
-            height: Get.height,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFECE6F2), Color.fromARGB(255, 255, 255, 255)],
+        Expanded(
+          flex: 2,
+          child: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(gradient: _blueGradient),
+            child: SafeArea(child: Align(alignment: Alignment.topLeft)),
+          ),
+        ),
+        Expanded(flex: 5, child: Container(color: Colors.white)),
+      ],
+    );
+  }
+
+  Widget _buildContent(AuthController authC) {
+    return SafeArea(
+      child: Column(
+        children: [
+          const Expanded(flex: 1, child: SizedBox()),
+          Expanded(
+            flex: 5,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 0),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 40,
+                ),
+                child: Column(
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 24),
+                    _buildEmailField(),
+                    const SizedBox(height: 12),
+                    _buildPasswordField(),
+                    _buildForgotPassword(),
+                    const SizedBox(height: 16),
+                    _buildLoginButton(authC),
+                    const SizedBox(height: 20),
+                    _buildDivider(),
+                    const SizedBox(height: 16),
+                    _buildSocialLogin(authC),
+                    const SizedBox(height: 20),
+                    _buildSignup(),
+                  ],
+                ),
               ),
             ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 30,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 30),
+          ),
+        ],
+      ),
+    );
+  }
 
-                          /// LOGO
-                          SizedBox(
-                            width: 90,
-                            height: 90,
-                            child: Image.network(
-                              'https://res.cloudinary.com/dzfi5acyl/image/upload/v1774848306/Stroke_Putih_y8ugnb.png',
-                              filterQuality: FilterQuality.high,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Text(
+          'Welcome !',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Here you log in securely',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            color: const Color(0xFF6B6B6B),
+          ),
+        ),
+      ],
+    );
+  }
 
-                          const SizedBox(height: 30),
+  Widget _buildEmailField() {
+    return buildTextField(
+      hint: 'Enter email',
+      keyboardType: TextInputType.emailAddress,
+      controller: controller.emailC,
+      filled: true,
+    );
+  }
 
-                          /// TITLE
-                          Text(
-                            "Sign In To Your\nAccount",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xff1A1C1E),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          /// SUBTITLE
-                          Text(
-                            "Enter your email and password \nto sign in.",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xff1A1C1E),
-                            ),
-                          ),
+  Widget _buildPasswordField() {
+    return Obx(
+      () => buildTextField(
+        hint: 'Password',
+        obscureText: controller.isHide.value,
+        controller: controller.passC,
+        filled: true,
+        suffixIcon: IconButton(
+          onPressed: controller.isHide.toggle,
+          icon: Icon(
+            controller.isHide.value
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            size: 20,
+          ),
+        ),
+      ),
+    );
+  }
 
-                          const SizedBox(height: 30),
+  Widget _buildForgotPassword() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () {
+          Get.toNamed(Routes.RESET);
+          _clearFields();
+        },
+        child: Text(
+          'Forgot password?',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF1565C0),
+          ),
+        ),
+      ),
+    );
+  }
 
-                          /// EMAIL
-                          buildTextField(
-                            hint: 'budgi@gmail.com',
-                            keyboardType: TextInputType.emailAddress,
-                            controller: controller.emailC,
-                            filled: true,
-                          ),
+  Widget _buildLoginButton(AuthController authC) {
+    return Column(
+      children: [
+        buildButtonPink(
+          text: 'Log in',
+          onTap: () {
+            authC.loginForm(controller.emailC.text, controller.passC.text);
+            _clearFields();
+          },
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
 
-                          const SizedBox(height: 15),
-
-                          /// PASSWORD
-                          Obx(
-                            () => buildTextField(
-                              hint: '*******',
-                              keyboardType: TextInputType.text,
-                              obscureText: controller.isHide.value,
-                              controller: controller.passC,
-                              filled: true,
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  controller.isHide.value =
-                                      !controller.isHide.value;
-                                },
-                                icon: Icon(
-                                  controller.isHide.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Row(
-                            children: [
-                              const Spacer(),
-                              TextButton(
-                                onPressed: () {
-                                  Get.toNamed(Routes.RESET);
-                                  controller.emailC.clear();
-                                  controller.passC.clear();
-                                },
-                                child: Text(
-                                  "Forgot Password?",
-                                  style: GoogleFonts.plusJakartaSans(
-                                     fontWeight: FontWeight.w700,
-                                     fontSize: 14,
-                                    color: const Color.fromARGB(255, 0, 128, 248),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          const SizedBox(height: 10),
-
-                          /// LOGIN BUTTON
-                          buildButtonPink(
-                            // authC: authC,
-                            // controller: controller,
-                            text: "Start Now",
-                            onTap: () {
-                              authC.loginForm(
-                                controller.emailC.text,
-                                controller.passC.text,
-                              );
-                              controller.emailC.clear();
-                              controller.passC.clear();
-                            },
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          /// DIVIDER
-                          Row(
-                            children: [
-                              Expanded(child: Divider(color: Colors.grey[300])),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(
-                                  "Or",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: const Color.fromARGB(
-                                      255,
-                                      103,
-                                      96,
-                                      96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(child: Divider(color: Colors.grey[300])),
-                            ],
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          /// GOOGLE
-                          Socialbutton(
-                            fontsize: 16,
-                            image:
-                                "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773417040/Google_Icon_fbdggy.png",
-
-                            // authC: authC.loginFacebook(),
-                            text: "Continue With Google",
-                            // icon: Icons.g_mobiledata,
-                            onTap: () {
-                              authC.loginWithGoogle();
-                              controller.emailC.clear();
-                              controller.passC.clear();
-                            },
-                            item: 10,
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          const SizedBox(height: 30),
-
-                          /// REGISTER
-                          Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("Doesn't have an account? "),
-                                GestureDetector(
-                                  onTap: () {
-                                    Get.toNamed(Routes.REGIS);
-                                    controller.emailC.clear();
-                                    controller.passC.clear();
-                                  },
-                                  child: const Text(
-                                    " Sign Up",
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+  Widget _buildDivider() {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: const Color.fromARGB(255, 0, 0, 0))),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+            'Sign in with',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              color: const Color.fromARGB(255, 0, 0, 0),
             ),
           ),
         ),
-
-        /// LOADING OVERLAY
-        Obx(() {
-          if (!authC.isloading.value) return const SizedBox();
-          return loading_overlay();
-        }),
+        Expanded(child: Divider(color: const Color.fromARGB(255, 0, 0, 0))),
       ],
     );
+  }
+
+  Widget _buildSocialLogin(AuthController authC) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () {}, // optional facebook login
+          child: SvgPicture.network(
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776827835/logos_facebook_vmtf1p.svg',
+            width: 35,
+          ),
+        ),
+        const SizedBox(width: 20),
+        GestureDetector(
+          onTap: () {
+            authC.loginWithGoogle();
+            _clearFields();
+          },
+          child: SvgPicture.network(
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776827835/devicon_google_jsb43q.svg',
+            width: 35,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSignup() {
+    return Column(
+      children: [
+        SizedBox(height: 10,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Don't have an account? ",
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                color: const Color.fromARGB(255, 70, 114, 223),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.REGIS);
+                _clearFields();
+              },
+              child: Text(
+                'Sign up',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF1565C0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoading(AuthController authC) {
+    return Obx(() {
+      return authC.isloading.value
+          ? loading_overlay()
+          : const SizedBox.shrink();
+    });
   }
 }

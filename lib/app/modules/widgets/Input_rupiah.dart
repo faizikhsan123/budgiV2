@@ -45,7 +45,7 @@ class input_rupiah extends StatelessWidget {
         isDense: true,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xffBC9CC6), width: 2),
+          borderSide: const BorderSide(  color: Color.fromARGB(255, 19, 91, 173), width: 2),
         ),
       ),
     );

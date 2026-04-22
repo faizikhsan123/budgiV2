@@ -23,452 +23,529 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(246, 255, 255, 255),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                    stream: controller.streamProfile(),
-                    builder: (context, asyncSnapshot) {
-                      if (asyncSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+      backgroundColor: const Color(0xFFF5F6FA),
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: controller.streamProfile(),
+                  builder: (context, asyncSnapshot) {
+                    if (asyncSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const SizedBox(
+                        height: 300,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
 
-                      if (!asyncSnapshot.hasData) {
-                        return Center(child: Text("Data Is Empty"));
-                      }
+                    if (!asyncSnapshot.hasData) {
+                      return const Center(child: Text("Data Is Empty"));
+                    }
 
-                      var data = asyncSnapshot.data!;
-                      var rupiah = Rupiah();
-                      String imageUrl =
-                          "https://api.dicebear.com/9.x/initials/png?seed=${data['name']}";
+                    final data = asyncSnapshot.data!;
+                    final rupiah = Rupiah();
+                    final String imageUrl =
+                        "https://api.dicebear.com/9.x/initials/png?seed=${data['name']}";
+                    final String photoUrl = (data['photo_url'] ?? '').isEmpty
+                        ? imageUrl
+                        : data['photo_url'];
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image:
-                                        data['photo_url'] == null ||
-                                            data['photo_url'] == ""
-                                        ? NetworkImage(imageUrl)
-                                        : NetworkImage(data['photo_url']),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
 
-                              const SizedBox(width: 13),
-                              Column(
+                        // ── Header: Avatar + Greeting + Profile Icon ──────
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 24,
+                              backgroundImage: NetworkImage(photoUrl),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Builder(
-                                    builder: (context) {
-                                      // Greeting berdasarkan jam
-                                      final hour = DateTime.now().hour;
-                                      String greeting;
-                                      if (hour >= 4 && hour < 10) {
-                                        greeting = 'Good Morning';
-                                      } else if (hour >= 10 && hour < 15) {
-                                        greeting = 'Good Afternoon';
-                                      } else if (hour >= 15 && hour < 18) {
-                                        greeting = 'Good Evening';
-                                      } else {
-                                        greeting = 'Good Night';
-                                      }
-
-                                      return Text(
-                                        greeting,
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.textDark,
-                                          letterSpacing: 1.0,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 4),
                                   Text(
                                     '${data['name']}',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.textDark,
-                                      letterSpacing: -0.45,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF1A1D2E),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Welcome Back!',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey[500],
                                     ),
                                   ),
                                 ],
+                              ),
+                            ),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.person_outline_rounded,
+                                size: 20,
+                                color: Color(0xFF1A1D2E),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // ── Expense & Income Summary Cards ────────────────
+                        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                          stream: controller.streamTransaction(),
+                          builder: (context, snap) {
+                            // Hitung total expense & income dari 5 transaksi terakhir
+                            // (opsional: bisa dikembangkan lebih lanjut di controller)
+                            return Row(
+                              children: [
+                                _SummaryCard(
+                                  label: 'Expenses',
+                                  // Placeholder — ganti dengan nilai real dari stream
+                                  amount: 'Rp. 21,000',
+                                  isExpense: true,
+                                ),
+                                const SizedBox(width: 12),
+                                _SummaryCard(
+                                  label: 'Income',
+                                  amount: '\$11.000',
+                                  isExpense: false,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        // ── Balance Card ──────────────────────────────────
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 28,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Color(0xFF1A1D2E),
+                                Color(0xFF2D3561),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF2D3561).withOpacity(0.4),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 24),
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(24, 20, 24, 24),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border(
-                                top: BorderSide(
-                                  color: const Color(0xFFBC9CC6),
-                                  width: 1,
-                                ),
-                                bottom: BorderSide(
-                                  color: const Color(0xFFBC9CC6),
-                                  width: 1,
-                                ),
-                                left: BorderSide(
-                                  color: const Color(0xFFBC9CC6),
-                                  width: 1,
-                                ),
-                                right: BorderSide(
-                                  color: const Color(0xFFBC9CC6),
-                                  width: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Balance',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white70,
                                 ),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 1,
-                                  offset: Offset(0, 1),
+                              const SizedBox(height: 12),
+                              Text(
+                                rupiah.convertToRupiah('${data['balance']}'),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  letterSpacing: -0.5,
                                 ),
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 1,
-                                  offset: Offset(1, 3),
-                                ),
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 1,
-                                  offset: Offset(-1, 1),
-                                ),
-                              ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
 
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  const Color(0xFFBC9CC6),
-                                  Color.fromARGB(255, 221, 213, 226),
-                                ],
+                        // ── Category Header ───────────────────────────────
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Category',
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF1A1D2E),
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Your Balance',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color.fromARGB(
-                                        255,
-                                        255,
-                                        255,
-                                        255,
-                                      ),
-                                      letterSpacing: -0.30,
-                                    ),
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 30,
-                                  ),
-                                  child: Text(
-                                    '${rupiah.convertToRupiah('${data['balance']}')}',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.white,
-                                      letterSpacing: -0.75,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            const Icon(
+                              Icons.more_horiz,
+                              color: Colors.grey,
                             ),
-                          ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
 
-                          SizedBox(height: 28),
+                        // ── Quick Actions / Category Row ──────────────────
+                        QuickActionsRow(),
+                        const SizedBox(height: 24),
 
-                          // ── Quick Actions ─────────────────────────────────
-                          QuickActionsRow(),
-                          SizedBox(height: 24),
-
-                          // ── Recent Activity Header ────────────────────────
-                          Text(
-                            'Recent Activity',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textDark,
-                              letterSpacing: -0.30,
+                        // ── Transactions Header ───────────────────────────
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Transactions',
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF1A1D2E),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 10),
+                            const Icon(
+                              Icons.more_horiz,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
 
-                          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                            stream: controller.streamTransaction(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
+                        // ── Transaction List ──────────────────────────────
+                        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                          stream: controller.streamTransaction(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                              if (!snapshot.hasData ||
-                                  snapshot.data!.docs.isEmpty) {
-                                return SizedBox(
-                                  width: double.infinity,
-                                  height: 200,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.receipt_long_outlined,
-                                        size: 48,
-                                        color: const Color(0xFFBC9CC6),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        "No Recent Activity",
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey[700],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        "Your transactions will appear here",
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-
-                              var dataPerhari = snapshot.data!;
-
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: dataPerhari.docs.length,
-                                itemBuilder: (context, index) {
-                                  var doc = dataPerhari.docs[index];
-                                  String docId = doc.id;
-
-                                  return StreamBuilder<
-                                    QuerySnapshot<Map<String, dynamic>>
-                                  >(
-                                    stream: controller.streamTransactionItem(
-                                      docId,
+                            if (!snapshot.hasData ||
+                                snapshot.data!.docs.isEmpty) {
+                              return SizedBox(
+                                width: double.infinity,
+                                height: 180,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.receipt_long_outlined,
+                                      size: 48,
+                                      color: Colors.grey[300],
                                     ),
-                                    builder: (context, itemSnapshot) {
-                                      // Kalau items kosong, sembunyikan seluruh card
-                                      if (!itemSnapshot.hasData ||
-                                          itemSnapshot.data!.docs.isEmpty) {
-                                        return const SizedBox.shrink(); // card hilang total
-                                      }
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      "No Transactions Yet",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Your transactions will appear here",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
 
-                                      var dataItem = itemSnapshot.data!;
+                            final docs = snapshot.data!.docs;
 
-                                      return Container(
-                                        margin: const EdgeInsets.only(
-                                          bottom: 20,
-                                        ),
-                                        padding: const EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            18,
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: docs.length,
+                              itemBuilder: (context, index) {
+                                final doc = docs[index];
+
+                                return StreamBuilder<
+                                  QuerySnapshot<Map<String, dynamic>>
+                                >(
+                                  stream: controller.streamTransactionItem(
+                                    doc.id,
+                                  ),
+                                  builder: (context, itemSnap) {
+                                    if (!itemSnap.hasData ||
+                                        itemSnap.data!.docs.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+
+                                    final items = itemSnap.data!.docs;
+
+                                    return Column(
+                                      children: List.generate(items.length, (i) {
+                                        final item = items[i];
+                                        final bool isIncome =
+                                            item['category']
+                                                .toString()
+                                                .toLowerCase() ==
+                                            'income';
+
+                                        return GestureDetector(
+                                          onTap: () => Get.toNamed(
+                                            Routes.CRUD,
+                                            arguments: {
+                                              ...item.data(),
+                                              'id': item.id,
+                                            },
                                           ),
-                                          border: Border.all(
-                                            color: const Color(0xFFBC9CC6),
-                                            width: 0.8,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFFBC9CC6),
-                                              blurRadius: 3,
-                                              offset: const Offset(0, 1),
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                              bottom: 10,
                                             ),
-                                            BoxShadow(
-                                              color: const Color(0xFFBC9CC6),
-                                              blurRadius: 3,
-                                              offset: const Offset(0, -1),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 14,
                                             ),
-                                            BoxShadow(
-                                              color: const Color(0xFFBC9CC6),
-                                              blurRadius: 3,
-                                              offset: const Offset(1, 0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.05),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
                                             ),
-                                            BoxShadow(
-                                              color: const Color(0xFFBC9CC6),
-                                              blurRadius: 3,
-                                              offset: const Offset(-1, 0),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              DateFormat(
-                                                'EEEE, d MMMM yyyy',
-                                              ).format(
-                                                DateFormat(
-                                                  "d-M-yyyy",
-                                                ).parse(doc['date']),
-                                              ),
-                                              style:
-                                                  GoogleFonts.plusJakartaSans(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.grey[900],
-                                                  ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            ListView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemCount: dataItem.docs.length,
-                                              itemBuilder: (context, i) {
-                                                var item = dataItem.docs[i];
-                                                bool isIncome =
-                                                    item['category']
-                                                        .toString()
-                                                        .toLowerCase() ==
-                                                    'income';
-
-                                                return Column(
-                                                  children: [
-                                                    ListTile(
-                                                      onTap: () {
-                                                        Get.toNamed(
-                                                          Routes.CRUD,
-                                                          arguments: {
-                                                            ...item.data(),
-                                                            'id': item.id,
-                                                          },
-                                                        );
-                                                      },
-                                                      contentPadding:
-                                                          EdgeInsets.zero,
-                                                      leading: Container(
-                                                        width: 42,
-                                                        height: 42,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets.all(
-                                                                8,
-                                                              ),
-                                                          child:
-                                                              SvgPicture.network(
-                                                                item['icon'],
-                                                                fit: BoxFit
-                                                                    .contain,
-                                                              ),
+                                            child: Row(
+                                              children: [
+                                                // Icon
+                                                Container(
+                                                  width: 44,
+                                                  height: 44,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(
+                                                      0xFFF5F6FA,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
                                                         ),
-                                                      ),
-                                                      title: Text(
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: SvgPicture.network(
+                                                    item['icon'],
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+
+                                                // Label + date
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
                                                         item['category'],
                                                         style:
-                                                            GoogleFonts.plusJakartaSans(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 14,
-                                                            ),
-                                                      ),
-                                                      subtitle:
-                                                          (item['notes'] ==
-                                                                  null ||
-                                                              item['notes']
-                                                                  .toString()
-                                                                  .trim()
-                                                                  .isEmpty)
-                                                          ? null
-                                                          : Text(
-                                                              item['notes'],
-                                                              style: GoogleFonts.plusJakartaSans(
-                                                                fontSize: 12,
-                                                                color: Colors
-                                                                    .grey[900],
-                                                              ),
-                                                            ),
-                                                      trailing: Text(
-                                                        isIncome
-                                                            ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
-                                                            : "-${rupiah.convertToRupiah('${item['amount']}')}",
-                                                        style:
-                                                            GoogleFonts.plusJakartaSans(
+                                                            GoogleFonts.poppins(
                                                               fontSize: 13,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w700,
-                                                              color: isIncome
-                                                                  ? Colors.green
-                                                                  : Colors.red,
+                                                                      .w600,
+                                                              color: const Color(
+                                                                0xFF1A1D2E,
+                                                              ),
                                                             ),
                                                       ),
-                                                    ),
-                                                    if (i !=
-                                                        dataItem.docs.length -
-                                                            1)
-                                                      const Divider(height: 1),
-                                                  ],
-                                                );
-                                              },
+                                                      if (item['notes'] !=
+                                                              null &&
+                                                          item['notes']
+                                                              .toString()
+                                                              .trim()
+                                                              .isNotEmpty)
+                                                        Text(
+                                                          item['notes'],
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 11,
+                                                                color: Colors
+                                                                    .grey[500],
+                                                              ),
+                                                          maxLines: 1,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                        ),
+                                                      Text(
+                                                        DateFormat(
+                                                          'd MMMM yyyy',
+                                                        ).format(
+                                                          DateFormat(
+                                                            "d-M-yyyy",
+                                                          ).parse(doc['date']),
+                                                        ),
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 11,
+                                                              color: Colors
+                                                                  .grey[400],
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                // Amount
+                                                Text(
+                                                  isIncome
+                                                      ? "+${rupiah.convertToRupiah('${item['amount']}')}"
+                                                      : "-${rupiah.convertToRupiah('${item['amount']}')}",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: isIncome
+                                                        ? const Color(
+                                                            0xFF2ECC71,
+                                                          )
+                                                        : const Color(
+                                                            0xFFE74C3C,
+                                                          ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                                          ),
+                                        );
+                                      }),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  },
                 ),
               ),
+            ),
 
-              // ── Bottom Navigation Bar ─────────────────────────────────
-              bottom_navbar(pageC: pageC),
-            ],
+            // ── Bottom Navigation Bar ─────────────────────────────────────
+            bottom_navbar(pageC: pageC),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Summary Card Widget ──────────────────────────────────────────────────────
+class _SummaryCard extends StatelessWidget {
+  final String label;
+  final String amount;
+  final bool isExpense;
+
+  const _SummaryCard({
+    required this.label,
+    required this.amount,
+    required this.isExpense,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: isExpense
+                ? [const Color(0xFF3D5AF1), const Color(0xFF5B6EF5)]
+                : [const Color(0xFF8B5CF6), const Color(0xFFA78BFA)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: (isExpense
+                      ? const Color(0xFF3D5AF1)
+                      : const Color(0xFF8B5CF6))
+                  .withOpacity(0.35),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                isExpense ? Icons.arrow_upward : Icons.arrow_downward,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  amount,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

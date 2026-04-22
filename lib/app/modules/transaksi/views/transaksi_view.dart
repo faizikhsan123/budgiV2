@@ -1,8 +1,7 @@
 import 'package:budgi/app/controllers/page_index_controller.dart';
-import 'package:budgi/app/modules/widgets/ButtonPink_transaksi.dart';
-import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,450 +11,461 @@ import '../controllers/transaksi_controller.dart';
 class TransaksiView extends GetView<TransaksiController> {
   final pageC = Get.find<PageIndexController>();
 
+  TransaksiView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: bottom_navbar(pageC: pageC),
+    return Obx(() {
+      final isExpense = controller.transactionType.value == 'expense';
 
-      body: SafeArea(
-        child: Column(
-          children: [
-            // ✅ Scrollable content
-            Expanded(
-              child: SingleChildScrollView(
+      return Scaffold(
+        backgroundColor: const Color(0xFFF0EBF8),
+        bottomNavigationBar: bottom_navbar(pageC: pageC),
+        body: SafeArea(
+          child: Column(
+            children: [
+              // ── Header ────────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        isExpense ? 'Add Expense' : 'Add Income',
+                        style: GoogleFonts.poppins(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF1A1D2E),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: () => Get.back(),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Color(0xFF1A1D2E),
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Amount input ──────────────────────────────────────
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
                     Text(
-                      "New Transaction",
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[900],
+                      'Input your expense',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.grey[400],
                       ),
                     ),
+                    const SizedBox(height: 6),
+                    Container(
+                      height: 1,
+                      width: 140,
+                      color: Colors.grey[300],
+                    ),
+                  ],
+                ),
+              ),
 
-                    const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-                    /// 🔹 SWITCH EXPENSE / INCOME
-                    Obx(() {
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    controller.transactionType.value ==
-                                        "expense"
-                                    ? const Color(0xFFBC9CC6)
-                                    : Colors.white,
-                                side: const BorderSide(
-                                  color: Color.fromARGB(255, 197, 160, 208),
-                                  width: 2,
+              // ── Scrollable content ────────────────────────────────
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Date picker row ─────────────────────────
+                      GestureDetector(
+                        onTap: () => _showDatePicker(),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.calendar_today_outlined,
+                                size: 18,
+                                color: Color(0xFF3D5AF1),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Date',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF1A1D2E),
                                 ),
                               ),
-                              onPressed: controller.setExpense,
+                              const Spacer(),
+                              Obx(
+                                () => Text(
+                                  controller.nilaiTanggal.value.isEmpty
+                                      ? 'Today'
+                                      : controller.nilaiTanggal.value,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                size: 18,
+                                color: Color(0xFF1A1D2E),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // ── Select Category (Expense only) ───────────
+                      if (isExpense) ...[
+                        Text(
+                          'Select Category',
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1A1D2E),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            const crossCount = 4;
+                            const spacing = 12.0;
+                            final itemWidth =
+                                (constraints.maxWidth -
+                                    spacing * (crossCount - 1)) /
+                                crossCount;
+
+                            return Wrap(
+                              spacing: spacing,
+                              runSpacing: spacing,
+                              children: List.generate(
+                                controller.categories.length,
+                                (index) => Obx(
+                                  () {
+                                    final isSelected =
+                                        controller
+                                            .selectedCategoryIndex
+                                            .value ==
+                                        index;
+                                    return GestureDetector(
+                                      onTap: () => controller
+                                          .selectedCategoryIndex
+                                          .value = index,
+                                      child: _CategoryBox(
+                                        name:
+                                            '${controller.categories[index]['name']}',
+                                        iconUrl:
+                                            '${controller.categories[index]['icon']}',
+                                        isSelected: isSelected,
+                                        size: itemWidth,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Other category text field
+                        Obx(() {
+                          if (controller.selectedCategoryIndex.value == -1)
+                            return const SizedBox.shrink();
+                          final isOther =
+                              controller
+                                      .categories[controller
+                                          .selectedCategoryIndex
+                                          .value]['name'] ==
+                                  'Other';
+                          if (!isOther) return const SizedBox.shrink();
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _buildTextField(
+                              controller: controller.otherC,
+                              hint: 'Category Name',
+                            ),
+                          );
+                        }),
+                      ],
+
+                      // ── Notes ────────────────────────────────────
+                      _buildTextField(
+                        controller: isExpense
+                            ? controller.notes1C
+                            : controller.notes2C,
+                        hint: 'add your notes here',
+                        maxLines: 4,
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // ── Action buttons ───────────────────────────
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Get.back(),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                side: BorderSide(color: Colors.grey[300]!),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                backgroundColor: Colors.white,
+                              ),
                               child: Text(
-                                "Expense",
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      controller.transactionType.value ==
-                                          "expense"
-                                      ? Colors.white
-                                      : Colors.black,
+                                'Cancel',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[600],
                                 ),
                               ),
                             ),
                           ),
-
-                          const SizedBox(width: 10),
-
+                          const SizedBox(width: 12),
                           Expanded(
                             child: ElevatedButton(
+                              onPressed: () {
+                                isExpense
+                                    ? controller.tambahExpense(
+                                        controller.notes1C.text,
+                                      )
+                                    : controller.tambahTransaksiIncome(
+                                        controller.notes2C.text,
+                                      );
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    controller.transactionType.value == "income"
-                                    ? const Color(0xFFBC9CC6)
-                                    : Colors.white,
-                                side: const BorderSide(
-                                  color: Color.fromARGB(255, 197, 160, 208),
-                                  width: 2,
+                                backgroundColor: const Color(0xFF2D3A8C),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                              onPressed: controller.setIncome,
                               child: Text(
-                                "Income",
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      controller.transactionType.value ==
-                                          "income"
-                                      ? Colors.white
-                                      : Colors.black,
+                                'Save',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                           ),
                         ],
-                      );
-                    }),
-
-                    const SizedBox(height: 20),
-
-                    /// 🔹 DATE PICKER
-                    InkWell(
-                      onTap: () => Get.dialog(
-                        Dialog(
-                          child: Container(
-                            height: 400,
-                            padding: const EdgeInsets.all(10),
-                            child: SfDateRangePicker(
-                              selectionMode:
-                                  DateRangePickerSelectionMode.single,
-                              showActionButtons: true,
-                              selectionColor: const Color(0xFFBC9CC6),
-                              onCancel: () => Get.back(),
-                              onSubmit: (obj) {
-                                DateTime date = obj as DateTime;
-                                controller.nilaiTanggal.value =
-                                    "${date.day}-${date.month}-${date.year}";
-                                Get.back();
-                              },
-                            ),
-                          ),
-                        ),
                       ),
-                      child: Obx(
-                        () => Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: const Color.fromARGB(255, 206, 204, 207),
-                              width: 2,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.calendar_month_outlined,
-                                color: Color(0xFFBC9CC6),
-                              ),
-                              const SizedBox(width: 10),
-                              const Text("Date"),
-                              const Spacer(),
-                              Text(controller.nilaiTanggal.value),
-                              const SizedBox(width: 10),
-                              const Icon(Icons.arrow_forward_ios, size: 16),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
 
-                    const SizedBox(height: 20),
-
-                    /// 🔹 INPUT RUPIAH
-                    Obx(
-                      () => input_rupiah(
-                        hintText: "Rp 0.00",
-
-                        // hintText: "",
-                        amountC: controller.transactionType.value == "expense"
-                            ? controller.amount1C
-                            : controller.amount2C,
-                      ),
-                    ),
-
-                    Obx(
-                      () => controller.transactionType.value == "expense"
-                          ? const SizedBox(height: 20)
-                          : const SizedBox(height: 0),
-                    ),
-
-                    /// 🔹 SELECT CATEGORY (Expense only)
-                    Obx(
-                      () => controller.transactionType.value == "expense"
-                          ? Row(
-                              children: [
-                                Text(
-                                  "Select Category",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-                    ),
-
-                    SizedBox(height: 10),
-
-                    Obx(
-                      () => controller.transactionType.value == "expense"
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30,
-                              ),
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  double itemWidth =
-                                      (constraints.maxWidth - (15 * 3)) / 4;
-
-                                  return Wrap(
-                                    spacing: 15,
-                                    runSpacing: 28,
-                                    children: List.generate(
-                                      controller.categories.length,
-                                      (index) => Obx(
-                                        () => InkWell(
-                                          onTap: () {
-                                            controller
-                                                    .selectedCategoryIndex
-                                                    .value =
-                                                index;
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: itemWidth,
-                                                height: itemWidth,
-                                                decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.5),
-                                                      spreadRadius: 1,
-                                                      blurRadius: 3,
-                                                    ),
-                                                  ],
-                                                  border:
-                                                      controller
-                                                              .selectedCategoryIndex
-                                                              .value ==
-                                                          index
-                                                      ? Border.all(
-                                                          color:
-                                                              const Color.fromARGB(
-                                                                255,
-                                                                195,
-                                                                131,
-                                                                214,
-                                                              ),
-                                                          width: 2,
-                                                        )
-                                                      : Border.all(
-                                                          color:
-                                                              const Color.fromARGB(
-                                                                255,
-                                                                255,
-                                                                255,
-                                                                255,
-                                                              ),
-                                                          width: 2,
-                                                        ),
-                                                  color:
-                                                      controller
-                                                              .selectedCategoryIndex
-                                                              .value ==
-                                                          index
-                                                      ? const Color.fromARGB(
-                                                          255,
-                                                          234,
-                                                          217,
-                                                          239,
-                                                        )
-                                                      : Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 2,
-                                                      ),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: SvgPicture.network(
-                                                            "${controller.categories[index]['icon']}",
-                                                            fit: BoxFit.contain,
-                                                            width:
-                                                                itemWidth *
-                                                                0.45,
-                                                            height:
-                                                                itemWidth *
-                                                                0.45,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      FittedBox(
-                                                        child: Text(
-                                                          "${controller.categories[index]['name']}",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              GoogleFonts.plusJakartaSans(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 10,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : const SizedBox(),
-                    ),
-
-                  
-
-                    //other
-                    Obx(() {
-                      // Guard: jika belum pilih kategori, jangan akses array
-                      if (controller.selectedCategoryIndex.value == -1) {
-                        return const SizedBox(height: 0);
-                      }
-
-                      return controller.categories[controller
-                                      .selectedCategoryIndex
-                                      .value]['name'] ==
-                                  "Other" &&
-                              controller.transactionType.value == "expense"
-                          ? Container(
-                              margin: const EdgeInsets.only(top: 20),
-                            
-                            child: TextField(
-                                controller: controller.otherC,
-                                keyboardType: TextInputType.name,
-                                decoration: InputDecoration(
-                                  hintText: "Category Name",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: Color.fromARGB(255, 215, 204, 219),
-                                      width: 2,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xffBC9CC6),
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          )
-                          : const SizedBox(height: 0);
-                    }),
-
-                    
-                    Obx(
-                      () => controller.transactionType.value == "expense"
-                          ? const SizedBox(height: 12)
-                          : const SizedBox(height: 0),
-                    ),
-
-                    /// 🔹 NOTES
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Notes",
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(),
-                      ],
-                    ),
-                    SizedBox(height: 7),
-
-                    Obx(
-                      () => TextField(
-                        controller:
-                            controller.transactionType.value == "expense"
-                            ? controller.notes1C
-                            : controller.notes2C,
-                        maxLines: 3,
-
-                        keyboardType: TextInputType.name,
-
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color.fromARGB(255, 215, 204, 219),
-                              width: 2,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color(0xffBC9CC6),
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Obx(
-                      () => controller.transactionType.value == "expense"
-                          ? const SizedBox(height: 15)
-                          : const SizedBox(height: 216),
-                    ),
-
-                    buildButtonPinkTransaksi(
-                      text: "Add Transaction",
-                      onTap: () {
-                        controller.transactionType.value == "expense"
-                            ? controller.tambahExpense(controller.notes1C.text)
-                            : controller.tambahTransaksiIncome(
-                                controller.notes2C.text,
-                              );
-                      },
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      );
+    });
+  }
+
+  void _showDatePicker() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          height: 400,
+          padding: const EdgeInsets.all(12),
+          child: SfDateRangePicker(
+            selectionMode: DateRangePickerSelectionMode.single,
+            showActionButtons: true,
+            selectionColor: const Color(0xFF3D5AF1),
+            todayHighlightColor: const Color(0xFF3D5AF1),
+            maxDate: DateTime.now(),
+            onCancel: () => Get.back(),
+            onSubmit: (obj) {
+              final date = obj as DateTime;
+              controller.nilaiTanggal.value =
+                  '${date.day}-${date.month}-${date.year}';
+              Get.back();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF1A1D2E)),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[400]),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: Color(0xFF3D5AF1),
+            width: 1.5,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Category Box ─────────────────────────────────────────────────────────────
+class _CategoryBox extends StatelessWidget {
+  final String name;
+  final String iconUrl;
+  final bool isSelected;
+  final double size;
+
+  const _CategoryBox({
+    required this.name,
+    required this.iconUrl,
+    required this.isSelected,
+    required this.size,
+  });
+
+  // Warna gradient per kategori
+  List<Color> _gradientColors() {
+    switch (name.toLowerCase()) {
+      case 'food':
+        return [const Color(0xFFFF6B35), const Color(0xFFFF8C42)];
+      case 'transport':
+        return [const Color(0xFF3D9BE9), const Color(0xFF2D7DD2)];
+      case 'shopping':
+        return [const Color(0xFFE91E8C), const Color(0xFFFF4081)];
+      case 'health':
+        return [const Color(0xFF4CAF50), const Color(0xFF66BB6A)];
+      case 'entertain':
+        return [const Color(0xFF9C27B0), const Color(0xFFBA68C8)];
+      case 'transfer':
+        return [const Color(0xFFFFB300), const Color(0xFFFFCA28)];
+      case 'bill':
+        return [const Color(0xFF00ACC1), const Color(0xFF26C6DA)];
+      case 'other':
+        return [const Color(0xFF607D8B), const Color(0xFF90A4AE)];
+      default:
+        return [const Color(0xFF8D8D8D), const Color(0xFFAAAAAA)];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = _gradientColors();
+
+    return SizedBox(
+      width: size,
+      child: Column(
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isSelected
+                    ? colors
+                    : [colors[0].withOpacity(0.85), colors[1].withOpacity(0.85)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(14),
+              border: isSelected
+                  ? Border.all(color: Colors.white, width: 2.5)
+                  : null,
+              boxShadow: [
+                BoxShadow(
+                  color: colors[0].withOpacity(isSelected ? 0.5 : 0.25),
+                  blurRadius: isSelected ? 10 : 4,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Center(
+              child: SvgPicture.network(
+                iconUrl,
+                width: size * 0.44,
+                height: size * 0.44,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.poppins(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF1A1D2E),
+            ),
+          ),
+        ],
       ),
     );
   }

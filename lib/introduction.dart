@@ -7,143 +7,140 @@ import 'package:budgi/app/routes/app_pages.dart';
 import 'package:lottie/lottie.dart';
 
 class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
+
   void _finishOnboarding() {
-    final box = GetStorage();
-    box.write('onboarding_done', true);
+    GetStorage().write('onboarding_done', true);
     Get.offAllNamed(Routes.LOGIN);
   }
 
   @override
   Widget build(BuildContext context) {
     return IntroductionScreen(
+      globalBackgroundColor: Colors.white,
       pages: [
-        PageViewModel(
-          image: Container(
-            alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(top: 100),
-            child: Center(
-              child: Lottie.asset(
-                'assets/lottie/intro.json',
-                height: 200,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
-          ),
-
-          titleWidget: Text(
-            "Record Daily Transactions",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-
-          bodyWidget: Text(
-            textAlign: TextAlign.center,
-            "Manage your income and expenses easily, practically, and quickly every day.",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-          ),
+        _buildPage(
+          lottie: 'assets/lottie/intro.json',
+          title: 'Record Daily Transaction',
+          body:
+              'Take full control of your daily finances with accurate and effortless tracking.',
         ),
-        PageViewModel(
-          image: Container(
-            alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(top: 100),
-            child: Center(
-              child: Lottie.asset(
-                'assets/lottie/Analytics.json',
-                height: 200,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
-          ),
-
-          titleWidget: Text(
-            "Smart Financial Analysis",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-
-          bodyWidget: Text(
-            textAlign: TextAlign.center,
-            "Understand your spending habits through accurate and easy-to-read statistical reports.",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-          ),
+        _buildPage(
+          lottie: 'assets/lottie/Analytics.json',
+          title: 'Smart Financial Analysis',
+          body:
+              'Understand your spending habits through accurate and easy-to-read statistical reports.',
         ),
-        PageViewModel(
-          image: Container(
-            alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(top: 100),
-            child: Center(
-              child: Lottie.asset(
-                'assets/lottie/bill.json',
-                height: 200,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
-          ),
-
-          titleWidget: Text(
-            "Split Bills",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-
-          bodyWidget: Text(
-            textAlign: TextAlign.center,
-            "Split bills automatically with friends by simply scanning a photo of your shopping receipt.",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-          ),
+        _buildPage(
+          lottie: 'assets/lottie/bill.json',
+          title: 'Split Bills',
+          body:
+              'Split bills automatically with friends by simply scanning a photo of your shopping receipt.',
         ),
       ],
-      onDone: _finishOnboarding, // ✅ Tombol Done di halaman terakhir
-      onSkip: _finishOnboarding, // ✅ Tombol Skip
-      showSkipButton: true, // Tampilkan tombol Skip
+      onDone: _finishOnboarding,
+      onSkip: _finishOnboarding,
+      showSkipButton: true,
+
+      // ── Skip ──
       skip: Text(
         'Skip',
-        style: GoogleFonts.plusJakartaSans(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          color: const Color(0xFF3D5AF1),
         ),
       ),
-      next:  Icon(Icons.arrow_forward, size: 30),
+
+      // ── Next ──
+      next: Text(
+        'Next',
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          color: const Color(0xFF3D5AF1),
+        ),
+      ),
+
+      // ── Done ──
       done: Text(
         'Start',
-        style: GoogleFonts.plusJakartaSans(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          color: const Color(0xFF3D5AF1),
         ),
       ),
+
+      // ── Dots ──
       dotsDecorator: DotsDecorator(
         size: const Size(8, 8),
-        activeSize: const Size(20, 8),
+        activeSize: const Size(22, 8),
         activeShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
-        activeColor: Color(0xFFBC9CC6),
-        color: Colors.grey.shade300,
+        activeColor: const Color(0xFF3D5AF1),
+        color: const Color(0xFFD0D5F5),
+        spacing: const EdgeInsets.symmetric(horizontal: 4),
       ),
+
+      // ── Controls style ──
+      skipOrBackFlex: 1,
+      nextFlex: 1,
+      controlsMargin: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+      controlsPadding: EdgeInsets.zero,
+
+      baseBtnStyle: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+
+  PageViewModel _buildPage({
+    required String lottie,
+    required String title,
+    required String body,
+  }) {
+    return PageViewModel(
+      decoration: const PageDecoration(
+        pageColor: Colors.white,
+        imagePadding: EdgeInsets.only(top: 60, bottom: 0),
+        titlePadding: EdgeInsets.only(top: 32, bottom: 12),
+        bodyPadding: EdgeInsets.symmetric(horizontal: 24),
+        contentMargin: EdgeInsets.zero,
+      ),
+      image: _buildImage(lottie),
+      titleWidget: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFF1A1D2E),
+          height: 1.3,
+        ),
+      ),
+      bodyWidget: Text(
+        body,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: Colors.grey[500],
+          height: 1.6,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImage(String assetPath) {
+    return Lottie.asset(
+      assetPath,
+      height: 280,
+      fit: BoxFit.cover,
+      filterQuality: FilterQuality.high,
     );
   }
 }
