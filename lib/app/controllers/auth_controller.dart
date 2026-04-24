@@ -102,7 +102,12 @@ class AuthController extends GetxController {
 
   Future<void> loginForm(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar('Failed', 'All fields are required');
+      Get.snackbar(
+        'Failed',
+        'All fields are required',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
       return;
     }
 
@@ -121,7 +126,12 @@ class AuthController extends GetxController {
 
       if (!freshUser.emailVerified) {
         await auth.signOut(); // 🔥 penting
-        Get.snackbar('Failed', 'Please verify your email check your inbox / spam ');
+        Get.snackbar(
+          'Failed',
+          'Please verify your email check your inbox / spam ',
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
         return;
       }
 

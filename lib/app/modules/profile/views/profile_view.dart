@@ -50,7 +50,7 @@ class ProfileView extends GetView<ProfileController> {
                             Center(
                               child: Text(
                                 'Profile',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w700,
                                   color: const Color(0xFF1A1D2E),
@@ -100,24 +100,7 @@ class ProfileView extends GetView<ProfileController> {
                                     radius: 44,
                                     backgroundImage: NetworkImage(photoUrl),
                                   ),
-                                  Positioned(
-                                    right: -4,
-                                    bottom: -4,
-                                    child: CircleAvatar(
-                                      radius: 14,
-                                      backgroundColor: const Color(0xFF3D5AF1),
-                                      child: Text(
-                                        (user['name'] as String)
-                                            .substring(0, 1)
-                                            .toUpperCase(),
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+
                                 ],
                               ),
                               const SizedBox(height: 14),
@@ -125,7 +108,7 @@ class ProfileView extends GetView<ProfileController> {
                               // Name
                               Text(
                                 user['name'],
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,
                                   color: const Color(0xFF1A1D2E),
@@ -134,7 +117,7 @@ class ProfileView extends GetView<ProfileController> {
                               const SizedBox(height: 2),
                               Text(
                                 user['email'],
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 13,
                                   color: Colors.grey[500],
                                 ),
@@ -172,7 +155,7 @@ class ProfileView extends GetView<ProfileController> {
                                       const SizedBox(width: 6),
                                       Text(
                                         'Edit Profile',
-                                        style: GoogleFonts.poppins(
+                                        style: GoogleFonts.plusJakartaSans(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.white,
@@ -343,7 +326,7 @@ class _MenuItem extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: color,

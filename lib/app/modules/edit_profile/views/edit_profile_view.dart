@@ -39,7 +39,7 @@ class EditProfileView extends GetView<EditProfileController> {
                       Center(
                         child: Text(
                           'Edit Profile',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF1A1D2E),
@@ -149,7 +149,7 @@ class EditProfileView extends GetView<EditProfileController> {
                             ),
                             child: Text(
                               'Save Changes',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.plusJakartaSans(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -204,7 +204,7 @@ class EditProfileView extends GetView<EditProfileController> {
                 const SizedBox(width: 36),
                 Text(
                   'Profile Photo',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -248,7 +248,7 @@ class EditProfileView extends GetView<EditProfileController> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontSize: 13,
           fontWeight: FontWeight.w500,
           color: const Color(0xFF1A1D2E),
@@ -265,10 +265,16 @@ class EditProfileView extends GetView<EditProfileController> {
     return TextField(
       controller: controller,
       readOnly: readOnly,
-      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E)),
+      style: GoogleFonts.plusJakartaSans(
+        fontSize: 14,
+        color: const Color(0xFF1A1D2E),
+      ),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[400]),
+        hintStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 13,
+          color: Colors.grey[400],
+        ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
@@ -312,7 +318,7 @@ class _SheetItem extends StatelessWidget {
       leading: Icon(icon, color: color),
       title: Text(
         label,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),

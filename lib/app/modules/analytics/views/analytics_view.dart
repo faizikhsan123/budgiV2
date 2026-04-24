@@ -32,7 +32,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                       Center(
                         child: Text(
                           'Analytics',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF1A1D2E),
@@ -66,7 +66,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                         children: [
                           Text(
                             controller.nilaiTanggal.value,
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                               color: const Color(0xFF3D5AF1),
@@ -123,13 +123,18 @@ class AnalyticsView extends GetView<AnalyticsController> {
                       }
 
                       final allDocs = snapshot.data!.docs;
-                      final filteredItems =
-                          ctrl.filterByType(allDocs, currentType);
+                      final filteredItems = ctrl.filterByType(
+                        allDocs,
+                        currentType,
+                      );
                       final metrics = ctrl.computeMetrics(allDocs);
-                      final chartData =
-                          ctrl.buildChartData(filteredItems, currentType);
-                      final percentages =
-                          ctrl.computeCategoryPercentages(filteredItems);
+                      final chartData = ctrl.buildChartData(
+                        filteredItems,
+                        currentType,
+                      );
+                      final percentages = ctrl.computeCategoryPercentages(
+                        filteredItems,
+                      );
 
                       final maxValue = currentType == 'income'
                           ? metrics['totalIncome']!
@@ -182,33 +187,22 @@ class AnalyticsView extends GetView<AnalyticsController> {
                             const SizedBox(height: 16),
 
                             // ── Category Bubbles ─────────────────────
-                            if (percentages.isNotEmpty)
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                alignment: WrapAlignment.center,
-                                children: (percentages.entries.toList()
-                                      ..sort(
-                                        (a, b) => b.value.compareTo(a.value),
-                                      ))
-                                    .map(
-                                      (entry) => _CategoryBubble(
-                                        label: entry.key,
-                                        percentage: entry.value,
-                                        color: currentType == 'income'
-                                            ? ctrl.getIncomeCategoryColor(
-                                                entry.key,
-                                              )
-                                            : ctrl.getExpenseCategoryColor(
-                                                entry.key,
-                                              ),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Activity",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
 
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 8),
 
+                            // ── List / Summary ───────────────────────
                             // ── List / Summary ───────────────────────
                             if (currentType == 'expense')
                               dates.isEmpty
@@ -218,18 +212,26 @@ class AnalyticsView extends GetView<AnalyticsController> {
                                       physics:
                                           const NeverScrollableScrollPhysics(),
                                       itemCount: dates.length,
-                                      itemBuilder: (context, i) =>
-                                          _DateGroup(
-                                            date: dates[i],
-                                            items: grouped[dates[i]]!,
-                                          ),
+                                      itemBuilder: (context, i) => _DateGroup(
+                                        date: dates[i],
+                                        items: grouped[dates[i]]!,
+                                        isIncome: false,
+                                      ),
                                     )
                             else
-                              _IncomeSummaryCard(
-                                totalIncome: metrics['totalIncome']!,
-                                nilaiTanggal: ctrl.nilaiTanggal.value,
-                              ),
-
+                              dates.isEmpty
+                                  ? _emptyState(ctrl)
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: dates.length,
+                                      itemBuilder: (context, i) => _DateGroup(
+                                        date: dates[i],
+                                        items: grouped[dates[i]]!,
+                                        isIncome: true,
+                                      ),
+                                    ),
                             const SizedBox(height: 24),
                           ],
                         ),
@@ -265,17 +267,12 @@ class AnalyticsView extends GetView<AnalyticsController> {
             onSubmit: (obj) {
               final range = obj as PickerDateRange;
               if (range.endDate == null) {
-                controller.pickDateRange(
-                  range.startDate!,
-                  range.startDate!,
-                );
-                controller.nilaiTanggal.value =
-                    DateFormat('EEEE, d MMMM yyyy').format(range.startDate!);
+                controller.pickDateRange(range.startDate!, range.startDate!);
+                controller.nilaiTanggal.value = DateFormat(
+                  'EEEE, d MMMM yyyy',
+                ).format(range.startDate!);
               } else {
-                controller.pickDateRange(
-                  range.startDate!,
-                  range.endDate!,
-                );
+                controller.pickDateRange(range.startDate!, range.endDate!);
                 controller.nilaiTanggal.value =
                     "${DateFormat('d MMM yyyy').format(range.startDate!)} - "
                     "${DateFormat('d MMM yyyy').format(range.endDate!)}";
@@ -301,7 +298,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
                   ? 'No expenses found'
                   : 'No expenses on\n${ctrl.nilaiTanggal.value}',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.plusJakartaSans(
                 fontSize: 13,
                 color: Colors.grey[400],
               ),
@@ -337,10 +334,9 @@ class _TabItem extends StatelessWidget {
               child: Text(
                 label,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
-                  fontWeight:
-                      isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   color: isSelected
                       ? const Color(0xFF3D5AF1)
                       : Colors.grey[500],
@@ -388,7 +384,7 @@ class _RadialChart extends StatelessWidget {
               children: [
                 Text(
                   'Total Value',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF1A1D2E),
@@ -396,7 +392,7 @@ class _RadialChart extends StatelessWidget {
                 ),
                 Text(
                   currentType == 'income' ? 'Income' : 'Expense',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
                     color: Colors.grey[500],
                   ),
@@ -451,13 +447,18 @@ class _BarChart extends StatelessWidget {
         final date = DateFormat('d-M-yyyy').parse(dateStr);
         final day = date.day;
         String key;
-        if (day <= 6) key = '1-6';
-        else if (day <= 12) key = '7-12';
-        else if (day <= 18) key = '13-18';
-        else if (day <= 24) key = '19-24';
-        else key = '25-30';
-        weeklyTotals[key] = (weeklyTotals[key] ?? 0) +
-            (item['amount'] as num).toDouble();
+        if (day <= 6)
+          key = '1-6';
+        else if (day <= 12)
+          key = '7-12';
+        else if (day <= 18)
+          key = '13-18';
+        else if (day <= 24)
+          key = '19-24';
+        else
+          key = '25-30';
+        weeklyTotals[key] =
+            (weeklyTotals[key] ?? 0) + (item['amount'] as num).toDouble();
       } catch (_) {}
     }
 
@@ -472,7 +473,7 @@ class _BarChart extends StatelessWidget {
         primaryXAxis: CategoryAxis(
           majorGridLines: const MajorGridLines(width: 0),
           axisLine: const AxisLine(width: 0),
-          labelStyle: GoogleFonts.poppins(
+          labelStyle: GoogleFonts.plusJakartaSans(
             fontSize: 10,
             color: Colors.grey[500],
           ),
@@ -484,7 +485,7 @@ class _BarChart extends StatelessWidget {
             color: Color(0xFFEEEEEE),
           ),
           axisLine: const AxisLine(width: 0),
-          labelStyle: GoogleFonts.poppins(
+          labelStyle: GoogleFonts.plusJakartaSans(
             fontSize: 10,
             color: Colors.grey[400],
           ),
@@ -493,7 +494,7 @@ class _BarChart extends StatelessWidget {
         tooltipBehavior: TooltipBehavior(
           enable: true,
           color: const Color(0xFF2D3A8C),
-          textStyle: GoogleFonts.poppins(
+          textStyle: GoogleFonts.plusJakartaSans(
             fontSize: 11,
             color: Colors.white,
           ),
@@ -524,8 +525,13 @@ class _BarData {
 class _DateGroup extends StatelessWidget {
   final String date;
   final List<Map<String, dynamic>> items;
+  final bool isIncome; // ← tambah ini
 
-  const _DateGroup({required this.date, required this.items});
+  const _DateGroup({
+    required this.date,
+    required this.items,
+    this.isIncome = false, // ← default false
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -548,9 +554,10 @@ class _DateGroup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DateFormat('EEEE, d MMMM yyyy')
-                .format(DateFormat('d-M-yyyy').parse(date)),
-            style: GoogleFonts.poppins(
+            DateFormat(
+              'EEEE, d MMMM yyyy',
+            ).format(DateFormat('d-M-yyyy').parse(date)),
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Colors.grey[600],
@@ -587,7 +594,7 @@ class _DateGroup extends StatelessWidget {
                       children: [
                         Text(
                           item['category'],
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF1A1D2E),
@@ -597,7 +604,7 @@ class _DateGroup extends StatelessWidget {
                             item['notes'].toString().trim().isNotEmpty)
                           Text(
                             item['notes'],
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 11,
                               color: Colors.grey[500],
                             ),
@@ -607,69 +614,22 @@ class _DateGroup extends StatelessWidget {
                       ],
                     ),
                   ),
+                  // ← amount warna & prefix beda sesuai tipe
                   Text(
-                    '-${rupiah.convertToRupiah('${item['amount']}')}',
-                    style: GoogleFonts.poppins(
+                    isIncome
+                        ? '+${rupiah.convertToRupiah('${item['amount']}')}'
+                        : '-${rupiah.convertToRupiah('${item['amount']}')}',
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFFE74C3C),
+                      color: isIncome
+                          ? const Color(0xFF2ECC71)
+                          : const Color(0xFFE74C3C),
                     ),
                   ),
                 ],
               );
             },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Income Summary Card ───────────────────────────────────────────────────────
-class _IncomeSummaryCard extends StatelessWidget {
-  final double totalIncome;
-  final String nilaiTanggal;
-
-  const _IncomeSummaryCard({
-    required this.totalIncome,
-    required this.nilaiTanggal,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final rupiah = Rupiah();
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Total Income',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF1A1D2E),
-            ),
-          ),
-          Text(
-            '+${rupiah.convertToRupiah('$totalIncome')}',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF2ECC71),
-            ),
           ),
         ],
       ),
@@ -709,7 +669,7 @@ class _CategoryBubble extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
               fontWeight: FontWeight.w600,
               color: color.withOpacity(0.9),
@@ -718,7 +678,7 @@ class _CategoryBubble extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             '${percentage.toStringAsFixed(1)}%',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
               fontWeight: FontWeight.w700,
               color: color,

@@ -11,7 +11,7 @@ class QuickActionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<_CategoryData> categories = [
       _CategoryData(
-        label: 'Analystic',
+        label: 'Analytics',
         url:
             'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970771/Group_37263_h71lvx.svg',
 
@@ -34,7 +34,7 @@ class QuickActionsRow extends StatelessWidget {
     ];
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: categories.map((cat) => _CategoryItem(data: cat)).toList(),
     );
   }

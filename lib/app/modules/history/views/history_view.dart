@@ -30,7 +30,7 @@ class HistoryView extends GetView<HistoryController> {
                       Center(
                         child: Text(
                           'History',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF1A1D2E),
@@ -61,7 +61,7 @@ class HistoryView extends GetView<HistoryController> {
                         children: [
                           Text(
                             controller.nilaiTanggal.value,
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                               color: const Color(0xFF3D5AF1),
@@ -87,13 +87,13 @@ class HistoryView extends GetView<HistoryController> {
               child: TextField(
                 controller: controller.searchC,
                 onChanged: controller.search,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
                   color: const Color(0xFF1A1D2E),
                 ),
                 decoration: InputDecoration(
                   hintText: 'search here',
-                  hintStyle: GoogleFonts.poppins(
+                  hintStyle: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
                     color: Colors.grey[400],
                   ),
@@ -177,7 +177,7 @@ class HistoryView extends GetView<HistoryController> {
                               padding: const EdgeInsets.only(bottom: 8, top: 4),
                               child: Text(
                                 _formatDate(date),
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.grey[600],
@@ -240,11 +240,14 @@ class HistoryView extends GetView<HistoryController> {
                                           children: [
                                             Text(
                                               item['category'] ?? '',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
-                                                color: const Color(0xFF1A1D2E),
-                                              ),
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: const Color(
+                                                      0xFF1A1D2E,
+                                                    ),
+                                                  ),
                                             ),
                                             if ((item['notes'] ?? '')
                                                 .toString()
@@ -252,10 +255,11 @@ class HistoryView extends GetView<HistoryController> {
                                                 .isNotEmpty)
                                               Text(
                                                 item['notes'],
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 11,
-                                                  color: Colors.grey[500],
-                                                ),
+                                                style:
+                                                    GoogleFonts.plusJakartaSans(
+                                                      fontSize: 11,
+                                                      color: Colors.grey[500],
+                                                    ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -268,7 +272,7 @@ class HistoryView extends GetView<HistoryController> {
                                         isIncome
                                             ? '+${rupiah.convertToRupiah('${item['amount']}')}'
                                             : '-${rupiah.convertToRupiah('${item['amount']}')}',
-                                        style: GoogleFonts.poppins(
+                                        style: GoogleFonts.plusJakartaSans(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w700,
                                           color: isIncome
@@ -323,8 +327,6 @@ class HistoryView extends GetView<HistoryController> {
               controller.pickDateRange(range.startDate!, endDate);
               // Get.back() sudah dipanggil di dalam pickDateRange
             },
-            
-         
           ),
         ),
       ),
@@ -363,7 +365,7 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'No transactions found',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.grey[500],

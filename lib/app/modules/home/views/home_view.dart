@@ -75,7 +75,7 @@ class HomeView extends GetView<HomeController> {
                                 children: [
                                   Text(
                                     '${data['name']}',
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.plusJakartaSans(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       color: const Color(0xFF1A1D2E),
@@ -83,7 +83,7 @@ class HomeView extends GetView<HomeController> {
                                   ),
                                   Text(
                                     greeting,
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.plusJakartaSans(
                                       fontSize: 12,
                                       color: Colors.grey[500],
                                     ),
@@ -181,7 +181,7 @@ class HomeView extends GetView<HomeController> {
                             children: [
                               Text(
                                 'Balance',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 14,
                                   color: Colors.white70,
                                   fontWeight: FontWeight.w400,
@@ -193,7 +193,7 @@ class HomeView extends GetView<HomeController> {
                                 children: [
                                   Text(
                                     rupiah.convertToRupiah('${data['balance']}'),
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.plusJakartaSans(
                                       fontSize: 28,
                                       fontWeight: FontWeight.w700,
                                       color: const Color(0xFFFFFBC4),
@@ -220,7 +220,7 @@ class HomeView extends GetView<HomeController> {
                         // Recent Activity
                         Text(
                           'Recent Activity',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF1A1D2E),
@@ -263,8 +263,8 @@ class HomeView extends GetView<HomeController> {
                                         borderRadius: BorderRadius.circular(16),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.05),
-                                            blurRadius: 8,
+                                            color: Colors.black.withOpacity(0.2),
+                                            blurRadius: 1,
                                             offset: const Offset(0, 2),
                                           ),
                                         ],
@@ -276,7 +276,7 @@ class HomeView extends GetView<HomeController> {
                                             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                                             child: Text(
                                               _formatDate(doc['date']),
-                                              style: GoogleFonts.poppins(
+                                              style: GoogleFonts.plusJakartaSans(
                                                 fontSize: 11,
                                                 color: Colors.grey[400],
                                               ),
@@ -316,7 +316,7 @@ class HomeView extends GetView<HomeController> {
                                                         children: [
                                                           Text(
                                                             d['category'] ?? '',
-                                                            style: GoogleFonts.poppins(
+                                                            style: GoogleFonts.plusJakartaSans(
                                                               fontSize: 13,
                                                               fontWeight: FontWeight.w600,
                                                               color: const Color(0xFF1A1D2E),
@@ -325,7 +325,7 @@ class HomeView extends GetView<HomeController> {
                                                           if ((d['notes'] ?? '').toString().trim().isNotEmpty)
                                                             Text(
                                                               d['notes'],
-                                                              style: GoogleFonts.poppins(fontSize: 11, color: Colors.grey[500]),
+                                                              style: GoogleFonts.plusJakartaSans(fontSize: 11, color: Colors.grey[500]),
                                                               maxLines: 1,
                                                               overflow: TextOverflow.ellipsis,
                                                             ),
@@ -336,7 +336,7 @@ class HomeView extends GetView<HomeController> {
                                                       isIncome
                                                           ? '+${rupiah.convertToRupiah('${d['amount']}')}'
                                                           : '-${rupiah.convertToRupiah('${d['amount']}')}',
-                                                      style: GoogleFonts.poppins(
+                                                      style: GoogleFonts.plusJakartaSans(
                                                         fontSize: 13,
                                                         fontWeight: FontWeight.w700,
                                                         color: isIncome
@@ -396,12 +396,12 @@ class _EmptyTransactions extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'No Transactions Yet',
-            style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+            style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey[600]),
           ),
           const SizedBox(height: 4),
           Text(
             'Your transactions will appear here',
-            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[400]),
+            style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.grey[400]),
           ),
         ],
       ),
@@ -455,8 +455,8 @@ class _SummaryCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: GoogleFonts.poppins(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w700)),
-                  Text(amount, style: GoogleFonts.poppins(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w400), overflow: TextOverflow.ellipsis),
+                  Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w700)),
+                  Text(amount, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w400), overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),

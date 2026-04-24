@@ -17,18 +17,16 @@ class RegisController extends GetxController {
   late TextEditingController passC;
   late TextEditingController passReC;
 
-
   Future<void> jalankanRegis() async {
     if (nameC.text.trim().isEmpty ||
         emailC.text.trim().isEmpty ||
         passC.text.trim().isEmpty ||
-        passReC.text.trim().isEmpty 
-        ) {
+        passReC.text.trim().isEmpty) {
       Get.snackbar(
         "Failed",
         "All fields are required",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
@@ -37,20 +35,18 @@ class RegisController extends GetxController {
       Get.snackbar(
         "Failed",
         "Name must be at least 3 characters",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
-
-   
 
     if (!GetUtils.isEmail(emailC.text.trim())) {
       Get.snackbar(
         "Failed",
         "Email is not valid",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
@@ -59,8 +55,8 @@ class RegisController extends GetxController {
       Get.snackbar(
         "Failed",
         "Password must be at least 6 characters",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
@@ -69,8 +65,8 @@ class RegisController extends GetxController {
       Get.snackbar(
         "Failed",
         "Password does not match",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
@@ -115,8 +111,8 @@ class RegisController extends GetxController {
       Get.snackbar(
         "Failed",
         "Please check your internet connection",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
     } finally {
       isloading.value = false;

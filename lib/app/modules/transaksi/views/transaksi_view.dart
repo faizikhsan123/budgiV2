@@ -32,7 +32,7 @@ class TransaksiView extends GetView<TransaksiController> {
                           controller.transactionType.value == 'expense'
                               ? 'Add Expense'
                               : 'Add Income',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF1A1D2E),
@@ -127,7 +127,7 @@ class TransaksiView extends GetView<TransaksiController> {
                               const SizedBox(width: 10),
                               Text(
                                 'Date',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                   color: const Color(0xFF1A1D2E),
@@ -136,7 +136,7 @@ class TransaksiView extends GetView<TransaksiController> {
                               const Spacer(),
                               Obx(() => Text(
                                     controller.tanggalLabel,
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.plusJakartaSans(
                                       fontSize: 13,
                                       color: Colors.grey[500],
                                     ),
@@ -158,7 +158,7 @@ class TransaksiView extends GetView<TransaksiController> {
                       if (isExpense) ...[
                         Text(
                           'Select Category',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF1A1D2E),
@@ -251,7 +251,7 @@ class TransaksiView extends GetView<TransaksiController> {
                               ),
                               child: Text(
                                 'Cancel',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.grey[600],
@@ -284,7 +284,7 @@ class TransaksiView extends GetView<TransaksiController> {
                               ),
                               child: Text(
                                 'Save',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -341,14 +341,14 @@ class TransaksiView extends GetView<TransaksiController> {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.plusJakartaSans(
         fontSize: 13,
         color: const Color(0xFF1A1D2E),
       ),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle:
-            GoogleFonts.poppins(fontSize: 13, color: Colors.grey[400]),
+            GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.grey[400]),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
@@ -397,7 +397,7 @@ class _TabItem extends StatelessWidget {
               child: Text(
                 label,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight:
                       isSelected ? FontWeight.w600 : FontWeight.w400,
@@ -514,7 +514,7 @@ class _CategoryBox extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 10,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF1A1D2E),
