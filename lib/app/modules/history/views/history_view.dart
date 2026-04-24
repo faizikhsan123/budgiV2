@@ -3,141 +3,135 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
-
 import 'package:get/get.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
 import '../controllers/history_controller.dart';
 
 class HistoryView extends GetView<HistoryController> {
+  const HistoryView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 45, bottom: 0),
-
+      backgroundColor: const Color(0xFFF0EBF8),
+      body: SafeArea(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    Get.back();
-                  },
-                  icon: const Icon(Icons.arrow_back, size: 30),
-                ),
-                Text(
-                  "History",
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                InkWell(
-                  onTap: () => Get.dialog(
-                    Dialog(
-                      child: Container(
-                        height: 400,
-                        padding: const EdgeInsets.all(20),
-                        child: SfDateRangePicker(
-                          selectionMode: DateRangePickerSelectionMode
-                              .range, //ini bisa multipel
-                          showActionButtons: true,
-                          initialSelectedDate: null,
-
-                          todayHighlightColor: Colors.transparent,
-                          showNavigationArrow: true,
-                          showTodayButton: false,
-
-                          startRangeSelectionColor: Color(0xFFBC9CC6),
-                          endRangeSelectionColor: Color(0xFFBC9CC6),
-                          onCancel: () => Get.back(),
-                          onSubmit: (obj) {
-                            final range = obj as PickerDateRange;
-                            print(obj);
-
-                            if (range.endDate == null) {
-                              //single date
-                              controller.pickDateRange(
-                                range.startDate!,
-                                range.startDate!,
-                              );
-                            } else {
-                              controller.pickDateRange(
-                                range.startDate!,
-                                range.endDate!,
-                              );
-                            }
-                          },
+            // ── Header ────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          'History',
+                          style: GoogleFonts.poppins(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1A1D2E),
+                          ),
                         ),
                       ),
-                    ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: GestureDetector(
+                          onTap: () => Get.back(),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xFF1A1D2E),
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      border: Border.all(
-                        color: const Color(0xFFBC9CC6),
-                        width: 2,
-                      ),
+                  const SizedBox(height: 4),
 
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 5,
-                        horizontal: 10,
-                      ),
-                      child: Row(
+                  // Date filter trigger
+                  GestureDetector(
+                    onTap: () => _showDatePicker(),
+                    child: Obx(
+                      () => Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.calendar_month_outlined,
-                            size: 20,
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                          Text(
+                            controller.nilaiTanggal.value,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF3D5AF1),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 18,
+                            color: Color(0xFF3D5AF1),
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-
-            TextField(
-              controller: controller.searchC,
-              onChanged: (value) => controller.search(
-                value,
-              ), //menangkap data yang diketik pada textfield
-              cursorColor: Colors.amber,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.amberAccent, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.amber, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                hintText: 'Search by category or notes',
-                suffixIcon: InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () {},
-                  child: Icon(Icons.search, color: Colors.amber),
-                ),
-                fillColor: Colors.white,
-                filled: true,
+                ],
               ),
             ),
 
+            // ── Search Bar ────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                controller: controller.searchC,
+                onChanged: controller.search,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: const Color(0xFF1A1D2E),
+                ),
+                decoration: InputDecoration(
+                  hintText: 'search here',
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.grey[400],
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  suffixIcon: const Icon(
+                    Icons.search,
+                    color: Color(0xFF3D5AF1),
+                    size: 20,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF3D5AF1),
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // ── List ──────────────────────────────────────────────────
             Expanded(
               child: Obx(() {
+                // Reactive dependencies
                 final _ = controller.keyword.value;
                 final __ = controller.start.value;
                 final ___ = controller.end.value;
@@ -149,102 +143,147 @@ class HistoryView extends GetView<HistoryController> {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    if (!snapshot.hasData) {
-                      return const Center(child: Text("No transactions found"));
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return _EmptyState();
                     }
 
-                    // ← filter di client side
-                    var dataItem = snapshot.data!.docs;
+                    final docs = snapshot.data!.docs;
+                    final rupiah = Rupiah();
 
-                    if (dataItem.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.receipt_long_outlined,
-                              size: 60,
-                              color: Colors.grey,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              "No transactions found",
-                              style: GoogleFonts.plusJakartaSans(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                    // Group by date
+                    final Map<
+                      String,
+                      List<QueryDocumentSnapshot<Map<String, dynamic>>>
+                    >
+                    grouped = {};
+                    for (final doc in docs) {
+                      final date = doc.data()['date']?.toString() ?? '';
+                      grouped.putIfAbsent(date, () => []).add(doc);
                     }
-
-                    var rupiah = Rupiah();
+                    final dates = grouped.keys.toList();
 
                     return ListView.builder(
-                      itemCount: dataItem!.length,
-                      itemBuilder: (context, index) {
-                        var item = dataItem![index].data();
-                        // var item = filtered[index];
-                        bool isIncome = item['type'] == "income";
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: dates.length,
+                      itemBuilder: (context, i) {
+                        final date = dates[i];
+                        final items = grouped[date]!;
 
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xFFBC9CC6),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            onTap: () {
-                              Get.toNamed(
-                                Routes.CRUD,
-                                arguments: {
-                                  ...item,
-                                  "id":
-                                      dataItem[index].id, // 🔥 INI YANG KURANG
-                                },
-                                
-                              );
-                            },
-                            leading: SvgPicture.network(
-                              item!['icon'] ?? '',
-                              width: 30,
-                              height: 30,
-                            ),
-                            title: Text(
-                              item!['category'] ?? '',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (item!['notes'] != null &&
-                                    item!['notes'].toString().isNotEmpty)
-                                  Text(item!['notes'] ?? ''),
-                                Text(
-                                  DateFormat('d MMM yyyy').format(
-                                    DateFormat("d-M-yyyy").parse(item['date']),
-                                  ),
-                                  style: const TextStyle(fontSize: 11),
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Date label
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8, top: 4),
+                              child: Text(
+                                _formatDate(date),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[600],
                                 ),
-                              ],
-                            ),
-                            trailing: Text(
-                              isIncome
-                                  ? "+ ${rupiah.convertToRupiah('${item['amount']}')}"
-                                  : "- ${rupiah.convertToRupiah('${item['amount']}')}",
-                              style: TextStyle(
-                                color: isIncome ? Colors.green : Colors.red,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
+
+                            // Items for this date
+                            ...items.map((doc) {
+                              final item = doc.data();
+                              final bool isIncome = item['type'] == 'income';
+
+                              return GestureDetector(
+                                onTap: () => Get.toNamed(
+                                  Routes.CRUD,
+                                  arguments: {...item, 'id': doc.id},
+                                ),
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.04),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // Icon
+                                      Container(
+                                        width: 38,
+                                        height: 38,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF5F6FA),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.all(7),
+                                        child: SvgPicture.network(
+                                          item['icon'] ?? '',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+
+                                      // Category + notes
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item['category'] ?? '',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w600,
+                                                color: const Color(0xFF1A1D2E),
+                                              ),
+                                            ),
+                                            if ((item['notes'] ?? '')
+                                                .toString()
+                                                .trim()
+                                                .isNotEmpty)
+                                              Text(
+                                                item['notes'],
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 11,
+                                                  color: Colors.grey[500],
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      // Amount
+                                      Text(
+                                        isIncome
+                                            ? '+${rupiah.convertToRupiah('${item['amount']}')}'
+                                            : '-${rupiah.convertToRupiah('${item['amount']}')}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700,
+                                          color: isIncome
+                                              ? const Color(0xFF2ECC71)
+                                              : const Color(0xFFE74C3C),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+
+                            const SizedBox(height: 4),
+                          ],
                         );
                       },
                     );
@@ -254,6 +293,83 @@ class HistoryView extends GetView<HistoryController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showDatePicker() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          height: 400,
+          padding: const EdgeInsets.all(12),
+          child: SfDateRangePicker(
+            selectionMode: DateRangePickerSelectionMode.range,
+            showActionButtons: true,
+            todayHighlightColor: Colors.transparent,
+            showNavigationArrow: true,
+            showTodayButton: false,
+            startRangeSelectionColor: const Color(0xFF3D5AF1),
+            endRangeSelectionColor: const Color(0xFF3D5AF1),
+            rangeSelectionColor: const Color(0xFF3D5AF1).withOpacity(0.15),
+            onCancel: () => Get.back(),
+            onSubmit: (obj) {
+              if (obj == null) return;
+              final range = obj as PickerDateRange;
+              if (range.startDate == null) return;
+
+              final endDate = range.endDate ?? range.startDate!;
+              controller.pickDateRange(range.startDate!, endDate);
+              // Get.back() sudah dipanggil di dalam pickDateRange
+            },
+            
+         
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _currentDateLabel() {
+    final start = controller.start.value;
+    final end = controller.end.value;
+    if (start == null) return DateFormat('MMMM yyyy').format(DateTime.now());
+    if (start == end || end == null) {
+      return DateFormat('d MMM yyyy').format(start);
+    }
+    return '${DateFormat('d MMM').format(start)} - ${DateFormat('d MMM yyyy').format(end)}';
+  }
+
+  String _formatDate(String rawDate) {
+    try {
+      return DateFormat(
+        'EEEE, d MMMM yyyy',
+      ).format(DateFormat('d-M-yyyy').parse(rawDate));
+    } catch (_) {
+      return rawDate;
+    }
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.receipt_long_outlined, size: 52, color: Colors.grey[300]),
+          const SizedBox(height: 12),
+          Text(
+            'No transactions found',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[500],
+            ),
+          ),
+        ],
       ),
     );
   }

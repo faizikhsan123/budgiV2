@@ -17,42 +17,53 @@ class HomeController extends GetxController {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> streamProfile() {
     final uid = auth.currentUser!.uid;
-
-    return firestore.collection("users").doc(uid).snapshots();
+    return firestore.collection('users').doc(uid).snapshots();
   }
 
+  /// Stream dokumen tanggal (untuk list recent activity)
   Stream<QuerySnapshot<Map<String, dynamic>>> streamTransaction() {
     final uid = auth.currentUser!.uid;
-
     return firestore
-        .collection("users")
+        .collection('users')
         .doc(uid)
-        .collection("transactions")
-        .orderBy("filter_tanggal", descending: true)
+        .collection('transactions')
+        .orderBy('filter_tanggal', descending: true)
         .limit(5)
         .snapshots();
   }
 
-  // STREAM ITEMS BERDASARKAN TANGGAL
+  /// Stream items berdasarkan docId tanggal
   Stream<QuerySnapshot<Map<String, dynamic>>> streamTransactionItem(
     String docId,
   ) {
     final uid = auth.currentUser!.uid;
-
     return firestore
-        .collection("users")
+        .collection('users')
         .doc(uid)
-        .collection("transactions")
+        .collection('transactions')
         .doc(docId)
-        .collection("items")
-        .orderBy("filter_tanggal", descending: true)
+        .collection('items')
+        .orderBy('filter_tanggal', descending: true)
+        .snapshots();
+  }
+
+  /// Stream semua items dari all_transactions (flat) untuk kalkulasi
+  /// summary expense/income. Ini FIX untuk error:
+  /// "Bad state: field 'type' does not exist within the DocumentSnapshot"
+  /// karena field 'type' ada di items, bukan di dokumen tanggal.
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamAllItems() {
+    final uid = auth.currentUser!.uid;
+    return firestore
+        .collection('users')
+        .doc(uid)
+        .collection('all_transactions')
+        .orderBy('created_at', descending: false)
         .snapshots();
   }
 
   @override
   void onInit() {
-    pageC.pageIndex.value = 0; // ✅ Force reset ke Home saat halaman Home init
-    // TODO: implement onInit
+    pageC.pageIndex.value = 0;
     super.onInit();
   }
 }

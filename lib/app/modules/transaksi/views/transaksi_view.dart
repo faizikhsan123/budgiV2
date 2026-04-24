@@ -1,7 +1,7 @@
 import 'package:budgi/app/controllers/page_index_controller.dart';
+import 'package:budgi/app/modules/widgets/Input_rupiah.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,81 +15,90 @@ class TransaksiView extends GetView<TransaksiController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final isExpense = controller.transactionType.value == 'expense';
-
-      return Scaffold(
-        backgroundColor: const Color(0xFFF0EBF8),
-        bottomNavigationBar: bottom_navbar(pageC: pageC),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // ── Header ────────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Center(
-                      child: Text(
-                        isExpense ? 'Add Expense' : 'Add Income',
-                        style: GoogleFonts.poppins(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF1A1D2E),
-                        ),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0EBF8),
+      bottomNavigationBar: bottom_navbar(pageC: pageC),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Header ────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: Obx(() => Text(
+                          controller.transactionType.value == 'expense'
+                              ? 'Add Expense'
+                              : 'Add Income',
+                          style: GoogleFonts.poppins(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1A1D2E),
+                          ),
+                        )),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () => Get.back(),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: Color(0xFF1A1D2E),
+                        size: 22,
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () => Get.back(),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Color(0xFF1A1D2E),
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              // ── Amount input ──────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Text(
-                      'Input your expense',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: Colors.grey[400],
+            // ── Tab Toggle ────────────────────────────────────────────
+            Obx(() => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      _TabItem(
+                        label: 'Expense',
+                        isSelected:
+                            controller.transactionType.value == 'expense',
+                        onTap: controller.setExpense,
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      height: 1,
-                      width: 140,
-                      color: Colors.grey[300],
-                    ),
-                  ],
-                ),
-              ),
+                      _TabItem(
+                        label: 'Income',
+                        isSelected:
+                            controller.transactionType.value == 'income',
+                        onTap: controller.setIncome,
+                      ),
+                    ],
+                  ),
+                )),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-              // ── Scrollable content ────────────────────────────────
-              Expanded(
-                child: SingleChildScrollView(
+            // ── Scrollable content ────────────────────────────────────
+            Expanded(
+              child: Obx(() {
+                final isExpense =
+                    controller.transactionType.value == 'expense';
+
+                return SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── Date picker row ─────────────────────────
+                      // ── Amount input ──────────────────────────────
+                      input_rupiah(
+                        amountC: isExpense
+                            ? controller.amount1C
+                            : controller.amount2C,
+                        hintText: 'Rp 0',
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // ── Date picker row ───────────────────────────
                       GestureDetector(
                         onTap: () => _showDatePicker(),
                         child: Container(
@@ -125,17 +134,13 @@ class TransaksiView extends GetView<TransaksiController> {
                                 ),
                               ),
                               const Spacer(),
-                              Obx(
-                                () => Text(
-                                  controller.nilaiTanggal.value.isEmpty
-                                      ? 'Today'
-                                      : controller.nilaiTanggal.value,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ),
+                              Obx(() => Text(
+                                    controller.tanggalLabel,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                      color: Colors.grey[500],
+                                    ),
+                                  )),
                               const SizedBox(width: 6),
                               const Icon(
                                 Icons.chevron_right_rounded,
@@ -149,7 +154,7 @@ class TransaksiView extends GetView<TransaksiController> {
 
                       const SizedBox(height: 16),
 
-                      // ── Select Category (Expense only) ───────────
+                      // ── Select Category (Expense only) ────────────
                       if (isExpense) ...[
                         Text(
                           'Select Category',
@@ -166,36 +171,31 @@ class TransaksiView extends GetView<TransaksiController> {
                             const spacing = 12.0;
                             final itemWidth =
                                 (constraints.maxWidth -
-                                    spacing * (crossCount - 1)) /
-                                crossCount;
+                                        spacing * (crossCount - 1)) /
+                                    crossCount;
 
                             return Wrap(
                               spacing: spacing,
                               runSpacing: spacing,
                               children: List.generate(
                                 controller.categories.length,
-                                (index) => Obx(
-                                  () {
-                                    final isSelected =
-                                        controller
-                                            .selectedCategoryIndex
-                                            .value ==
-                                        index;
-                                    return GestureDetector(
-                                      onTap: () => controller
-                                          .selectedCategoryIndex
-                                          .value = index,
-                                      child: _CategoryBox(
-                                        name:
-                                            '${controller.categories[index]['name']}',
-                                        iconUrl:
-                                            '${controller.categories[index]['icon']}',
-                                        isSelected: isSelected,
-                                        size: itemWidth,
-                                      ),
-                                    );
-                                  },
-                                ),
+                                (index) => Obx(() {
+                                  final isSelected =
+                                      controller.selectedCategoryIndex.value ==
+                                      index;
+                                  return GestureDetector(
+                                    onTap: () => controller
+                                        .selectedCategoryIndex.value = index,
+                                    child: _CategoryBox(
+                                      name:
+                                          '${controller.categories[index]['name']}',
+                                      iconUrl:
+                                          '${controller.categories[index]['icon']}',
+                                      isSelected: isSelected,
+                                      size: itemWidth,
+                                    ),
+                                  );
+                                }),
                               ),
                             );
                           },
@@ -204,14 +204,13 @@ class TransaksiView extends GetView<TransaksiController> {
 
                         // Other category text field
                         Obx(() {
-                          if (controller.selectedCategoryIndex.value == -1)
+                          if (controller.selectedCategoryIndex.value == -1) {
                             return const SizedBox.shrink();
-                          final isOther =
-                              controller
-                                      .categories[controller
-                                          .selectedCategoryIndex
-                                          .value]['name'] ==
-                                  'Other';
+                          }
+                          final isOther = controller
+                                  .categories[controller
+                                      .selectedCategoryIndex.value]['name'] ==
+                              'Other';
                           if (!isOther) return const SizedBox.shrink();
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
@@ -223,7 +222,7 @@ class TransaksiView extends GetView<TransaksiController> {
                         }),
                       ],
 
-                      // ── Notes ────────────────────────────────────
+                      // ── Notes ─────────────────────────────────────
                       _buildTextField(
                         controller: isExpense
                             ? controller.notes1C
@@ -234,7 +233,7 @@ class TransaksiView extends GetView<TransaksiController> {
 
                       const SizedBox(height: 24),
 
-                      // ── Action buttons ───────────────────────────
+                      // ── Action buttons ────────────────────────────
                       Row(
                         children: [
                           Expanded(
@@ -298,13 +297,13 @@ class TransaksiView extends GetView<TransaksiController> {
                       const SizedBox(height: 20),
                     ],
                   ),
-                ),
-              ),
-            ],
-          ),
+                );
+              }),
+            ),
+          ],
         ),
-      );
-    });
+      ),
+    );
   }
 
   void _showDatePicker() {
@@ -322,6 +321,7 @@ class TransaksiView extends GetView<TransaksiController> {
             maxDate: DateTime.now(),
             onCancel: () => Get.back(),
             onSubmit: (obj) {
+              if (obj == null) return;
               final date = obj as DateTime;
               controller.nilaiTanggal.value =
                   '${date.day}-${date.month}-${date.year}';
@@ -341,10 +341,14 @@ class TransaksiView extends GetView<TransaksiController> {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF1A1D2E)),
+      style: GoogleFonts.poppins(
+        fontSize: 13,
+        color: const Color(0xFF1A1D2E),
+      ),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[400]),
+        hintStyle:
+            GoogleFonts.poppins(fontSize: 13, color: Colors.grey[400]),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
@@ -361,17 +365,66 @@ class TransaksiView extends GetView<TransaksiController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Color(0xFF3D5AF1),
-            width: 1.5,
-          ),
+          borderSide:
+              const BorderSide(color: Color(0xFF3D5AF1), width: 1.5),
         ),
       ),
     );
   }
 }
 
-// ── Category Box ─────────────────────────────────────────────────────────────
+// ── Tab Item ──────────────────────────────────────────────────────────────────
+class _TabItem extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _TabItem({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight:
+                      isSelected ? FontWeight.w600 : FontWeight.w400,
+                  color: isSelected
+                      ? const Color(0xFF3D5AF1)
+                      : Colors.grey[500],
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF3D5AF1)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Category Box ──────────────────────────────────────────────────────────────
 class _CategoryBox extends StatelessWidget {
   final String name;
   final String iconUrl;
@@ -385,7 +438,6 @@ class _CategoryBox extends StatelessWidget {
     required this.size,
   });
 
-  // Warna gradient per kategori
   List<Color> _gradientColors() {
     switch (name.toLowerCase()) {
       case 'food':
@@ -424,7 +476,10 @@ class _CategoryBox extends StatelessWidget {
               gradient: LinearGradient(
                 colors: isSelected
                     ? colors
-                    : [colors[0].withOpacity(0.85), colors[1].withOpacity(0.85)],
+                    : [
+                        colors[0].withOpacity(0.85),
+                        colors[1].withOpacity(0.85),
+                      ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

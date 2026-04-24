@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import 'app_colors.dart';
 
 class QuickActionsRow extends StatelessWidget {
   const QuickActionsRow({super.key});
@@ -12,44 +11,45 @@ class QuickActionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<_CategoryData> categories = [
       _CategoryData(
-        label: 'Analytics',
-        assetPath: 'assets/icons/analytics.svg',
-        color: const Color(0xFFFF6B35),
+        label: 'Analystic',
+        url:
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970771/Group_37263_h71lvx.svg',
+
         onTap: () => Get.toNamed(Routes.ANALYTICS),
       ),
       _CategoryData(
         label: 'History',
-        assetPath: 'assets/icons/history.svg',
-        color: const Color(0xFF4CAF50),
+        url:
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970872/Group_37264_hdwxrj.svg',
+
         onTap: () => Get.toNamed(Routes.HISTORY),
       ),
       _CategoryData(
-        label: 'Coming Soon',
-        assetPath: 'assets/icons/scan.svg',
-        color: const Color(0xFF2196F3),
+        label: 'Split Bill',
+        url:
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970902/Group_37261_m0fego.svg',
+
         onTap: () {},
       ),
     ];
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: categories
-          .map((cat) => _CategoryItem(data: cat))
-          .toList(),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: categories.map((cat) => _CategoryItem(data: cat)).toList(),
     );
   }
 }
 
 class _CategoryData {
   final String label;
-  final String assetPath;
-  final Color color;
+  final String url;
+
   final VoidCallback onTap;
 
   const _CategoryData({
     required this.label,
-    required this.assetPath,
-    required this.color,
+    required this.url,
+
     required this.onTap,
   });
 }
@@ -68,28 +68,24 @@ class _CategoryItem extends StatelessWidget {
           Container(
             width: 60,
             height: 60,
-            decoration: BoxDecoration(
-              color: data.color,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: data.color.withOpacity(0.35),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(14),
-            child: SvgPicture.asset(
-              data.assetPath,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
+          
+            child: SvgPicture.network(
+              data.url,
               fit: BoxFit.contain,
+              placeholderBuilder: (context) => const Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+       
           Text(
             data.label,
             style: GoogleFonts.poppins(

@@ -253,6 +253,7 @@ class TransaksiController extends GetxController {
       String cleanText = amount2C.text
           .replaceAll("Rp", "")
           .replaceAll(".", "")
+           .replaceAll(",", "") // ← tambah ini
           .trim();
 
       int? number = int.tryParse(cleanText);

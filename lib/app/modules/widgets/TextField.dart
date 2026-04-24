@@ -24,10 +24,7 @@ Widget buildTextField({
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(
-          color: Color.fromARGB(255, 215, 204, 219),
-          width: 2,
-        ),
+        borderSide: BorderSide.none,
       ),
 
       hintText: hint,
