@@ -16,6 +16,7 @@ class ProfileView extends GetView<ProfileController> {
   ProfileView({super.key});
 
   @override
+
   Widget build(BuildContext context) {
     return Obx(() {
       final isDark = controller.isDark.value;
@@ -75,17 +76,7 @@ class ProfileView extends GetView<ProfileController> {
                                   ),
                                 ),
                               ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: GestureDetector(
-                                  onTap: () => Get.back(),
-                                  child: Icon(
-                                    Icons.arrow_back,
-                                    color: iconColor,
-                                    size: 22,
-                                  ),
-                                ),
-                              ),
+                              
                             ],
                           ),
                           const SizedBox(height: 24),

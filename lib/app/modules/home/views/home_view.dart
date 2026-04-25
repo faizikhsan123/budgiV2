@@ -93,7 +93,10 @@ class HomeView extends GetView<HomeController> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => Get.toNamed(Routes.PROFILE),
+                              onTap: () {
+                                Get.toNamed(Routes.PROFILE);
+                                pageC.changePage(2);
+                              },
                               child: Container(
                                 width: 44,
                                 height: 44,
@@ -194,27 +197,40 @@ class HomeView extends GetView<HomeController> {
                                 ),
                               ),
                               const SizedBox(height: 12),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    rupiah.convertToRupiah(
-                                      '${data['balance']}',
+
+                              Obx(
+                                () => Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      controller.hideBalance.value
+                                          ? '*****'
+                                          : rupiah.convertToRupiah(
+                                              '${data['balance']}',
+                                            ),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFFFFFBC4),
+                                        letterSpacing: -0.5,
+                                      ),
                                     ),
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color(0xFFFFFBC4),
-                                      letterSpacing: -0.5,
+
+                                    IconButton(
+                                      onPressed: () {
+                                        controller.hideBalance.toggle();
+                                      },
+                                      icon: Icon(
+                                        controller.hideBalance.value
+                                            ? Icons.visibility_off_outlined
+                                            : Icons
+                                                  .visibility_outlined, //Icons.visibility_outlined,
+                                        size: 20,
+                                        color: Color(0xFFFFFBC4),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Icon(
-                                    Icons.remove_red_eye_outlined,
-                                    color: Colors.white54,
-                                    size: 20,
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -10,6 +10,9 @@ class HomeController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final pageC = Get.put(PageIndexController());
+  RxBool hideBalance = false.obs;
+
+
 
   void logout() async {
     await auth.signOut();

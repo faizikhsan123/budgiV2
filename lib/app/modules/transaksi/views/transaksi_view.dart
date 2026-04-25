@@ -39,17 +39,7 @@ class TransaksiView extends GetView<TransaksiController> {
                           ),
                         )),
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      onTap: () => Get.back(),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Color(0xFF1A1D2E),
-                        size: 22,
-                      ),
-                    ),
-                  ),
+                 
                 ],
               ),
             ),
@@ -239,29 +229,7 @@ class TransaksiView extends GetView<TransaksiController> {
                       // ── Action buttons ────────────────────────────
                       Row(
                         children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () => Get.back(),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                side: BorderSide(color: Colors.grey[300]!),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                backgroundColor: Colors.white,
-                              ),
-                              child: Text(
-                                'Cancel',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                          ),
+                         
                           const SizedBox(width: 12),
                           Expanded(
                             child: ElevatedButton(
