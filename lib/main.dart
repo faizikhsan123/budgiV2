@@ -1,3 +1,4 @@
+import 'package:budgi/app/bahasa/translate.dart';
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/connectivity_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
@@ -39,6 +40,8 @@ class NyApp extends StatelessWidget {
       title: "Budgi",
       home: SplashGate(),
       getPages: AppPages.routes,
+      translations: MyTranslate(),
+      locale: Locale('en'),
       builder: (context, child) {
         return ConnectivityWrapper(child: child!);
       },
@@ -70,9 +73,9 @@ class _SplashGateState extends State<SplashGate> {
           MaterialPageRoute(builder: (_) => OnboardingScreen()),
         );
       } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => AuthWrapper()),
-        );
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (_) => AuthWrapper()));
       }
     }
   }
@@ -158,10 +161,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         return;
       }
 
-      
       final balance = data["balance"];
-
-      
 
       if (balance == null) {
         Get.offAllNamed(Routes.COMPLETE_BALANCE);
@@ -179,9 +179,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_isOffline) {
@@ -213,8 +211,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
       );
     }
 
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

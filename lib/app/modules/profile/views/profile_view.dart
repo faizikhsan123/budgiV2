@@ -20,15 +20,20 @@ class ProfileView extends GetView<ProfileController> {
     return Obx(() {
       final isDark = controller.isDark.value;
 
-      // ── Warna dinamis ──────────────────────────────────
-      final bgColor = isDark ? const Color(0xFF0D0D0D) : const Color(0xFFF5F6FA);
+      final bgColor = isDark
+          ? const Color(0xFF0D0D0D)
+          : const Color(0xFFF5F6FA);
       final cardColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
       final textPrimary = isDark ? Colors.white : const Color(0xFF1A1D2E);
       final textSecondary = isDark ? Colors.grey[400] : Colors.grey[500];
       final iconColor = isDark ? Colors.white70 : const Color(0xFF1A1D2E);
       final menuCardColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
-      final shadowColor = isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05);
-      final editBtnColor = isDark ? const Color(0xFF0B30FF) : const Color.fromARGB(255, 77, 85, 129);
+      final shadowColor = isDark
+          ? Colors.black.withOpacity(0.3)
+          : Colors.black.withOpacity(0.05);
+      final editBtnColor = isDark
+          ? const Color(0xFF0B30FF)
+          : const Color.fromARGB(255, 77, 85, 129);
 
       return Scaffold(
         backgroundColor: bgColor,
@@ -62,7 +67,7 @@ class ProfileView extends GetView<ProfileController> {
                             children: [
                               Center(
                                 child: Text(
-                                  'Profile',
+                                  'profile'.tr, // ← .tr
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w700,
@@ -105,14 +110,12 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             child: Column(
                               children: [
-                                // Avatar
                                 CircleAvatar(
                                   radius: 44,
                                   backgroundImage: NetworkImage(photoUrl),
                                 ),
                                 const SizedBox(height: 14),
 
-                                // Name
                                 Text(
                                   user['name'],
                                   style: GoogleFonts.plusJakartaSans(
@@ -138,7 +141,8 @@ class ProfileView extends GetView<ProfileController> {
                                     arguments: {
                                       "name": user.data()?['name'] ?? '',
                                       "email": user.data()?['email'] ?? '',
-                                      "photo_url": user.data()?['photo_url'] ?? '',
+                                      "photo_url":
+                                          user.data()?['photo_url'] ?? '',
                                     },
                                   ),
                                   child: Container(
@@ -153,10 +157,14 @@ class ProfileView extends GetView<ProfileController> {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(Icons.edit_outlined, color: Colors.white, size: 15),
+                                        const Icon(
+                                          Icons.edit_outlined,
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
                                         const SizedBox(width: 6),
                                         Text(
-                                          'Edit Profile',
+                                          'edit_profile'.tr, // ← .tr
                                           style: GoogleFonts.plusJakartaSans(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w600,
@@ -176,23 +184,27 @@ class ProfileView extends GetView<ProfileController> {
                           // ── Menu Items ───────────────────────────────────
                           _MenuItem(
                             icon: Icons.language_outlined,
-                            label: 'Language',
+                            label: 'language'.tr, // ← .tr
                             isDark: isDark,
                             menuCardColor: menuCardColor,
-                            onTap: (position) => _showPopupMenu(context, position),
+                            onTap: (position) =>
+                                _showPopupMenu(context, position),
                           ),
                           const SizedBox(height: 18),
                           _MenuItem(
-                            icon: Icons.settings_outlined,
-                            label: 'Theme',
+                            icon: isDark
+                                ? Icons.dark_mode_outlined
+                                : Icons.light_mode_outlined,
+                            label: 'theme'.tr, // ← .tr
                             isDark: isDark,
                             menuCardColor: menuCardColor,
-                            onTap: (position) => _showPopupMenuThema(context, position),
+                            onTap: (position) =>
+                                _showPopupMenuThema(context, position),
                           ),
                           const SizedBox(height: 18),
                           _MenuItem(
                             icon: Icons.logout_outlined,
-                            label: 'Logout',
+                            label: 'logout'.tr, // ← .tr
                             isDark: isDark,
                             menuCardColor: menuCardColor,
                             isDestructive: true,
@@ -226,18 +238,30 @@ class ProfileView extends GetView<ProfileController> {
               color: const Color(0xFFFFEEEE),
               border: Border.all(color: const Color(0xFFFFCCCC), width: 1.5),
             ),
-            child: const Icon(Icons.logout_rounded, color: Color(0xFFE53935), size: 28),
+            child: const Icon(
+              Icons.logout_rounded,
+              color: Color(0xFFE53935),
+              size: 28,
+            ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Logout',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1A1A2E)),
+          Text(
+            'logout'.tr, // ← .tr
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1A1A2E),
+            ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Are you sure want to logout?',
+            'logout_confirm'.tr, // ← .tr
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: Colors.grey[500], height: 1.5),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey[500],
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 4),
         ],
@@ -249,9 +273,17 @@ class ProfileView extends GetView<ProfileController> {
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 13),
             side: const BorderSide(color: Color(0xFFB6B6B6)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-          child: const Text('Cancel', style: TextStyle(color: Color(0xFF555555), fontWeight: FontWeight.w600)),
+          child: Text(
+            'cancel'.tr, // ← .tr
+            style: const TextStyle(
+              color: Color(0xFF555555),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
       confirm: SizedBox(
@@ -262,9 +294,17 @@ class ProfileView extends GetView<ProfileController> {
             backgroundColor: const Color(0xFFE53935),
             padding: const EdgeInsets.symmetric(vertical: 13),
             elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-          child: const Text('Yes, Logout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+          child: Text(
+            'yes_logout'.tr, // ← .tr
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );
@@ -272,20 +312,60 @@ class ProfileView extends GetView<ProfileController> {
 }
 
 void _showPopupMenu(BuildContext context, Offset position) async {
+  final profileC = Get.find<ProfileController>();
   final result = await showMenu<String>(
     context: context,
-    position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx + 1, position.dy + 1),
+    position: RelativeRect.fromLTRB(
+      position.dx,
+      position.dy,
+      position.dx + 1,
+      position.dy + 1,
+    ),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 4,
     items: [
       PopupMenuItem<String>(
-        value: 'english',
-        child: Text('English', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
+        value: 'en',
+        child: Text(
+          '🇺🇸  English',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
-        value: 'indonesia',
-        child: Text('Indonesia', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
+        value: 'id',
+        child: Text(
+          '🇮🇩  Indonesia',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
+      ),
+      const PopupMenuDivider(height: 1),
+      PopupMenuItem<String>(
+        value: 'es',
+        child: Text(
+          '🇪🇸  Español',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
+      ),
+      const PopupMenuDivider(height: 1),
+      PopupMenuItem<String>(
+        value: 'zh',
+        child: Text(
+          '🇨🇳  中文',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
     ],
   );
@@ -293,11 +373,17 @@ void _showPopupMenu(BuildContext context, Offset position) async {
   if (result == null) return;
 
   switch (result) {
-    case 'english':
-      print("English selected");
+    case 'en':
+      profileC.bahasainggris();
       break;
-    case 'indonesia':
-      print("Indonesia selected");
+    case 'id':
+      profileC.bahasaindo();
+      break;
+    case 'es':
+      profileC.bahasaspanyol();
+      break;
+    case 'zh':
+      profileC.bahasamandarin();
       break;
   }
 }
@@ -306,18 +392,35 @@ void _showPopupMenuThema(BuildContext context, Offset position) async {
   final profileC = Get.find<ProfileController>();
   final result = await showMenu<String>(
     context: context,
-    position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx + 1, position.dy + 1),
+    position: RelativeRect.fromLTRB(
+      position.dx,
+      position.dy,
+      position.dx + 1,
+      position.dy + 1,
+    ),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 4,
     items: [
       PopupMenuItem<String>(
         value: 'gelap',
-        child: Text('Dark Mode', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '🌙  ${'dark_mode'.tr}',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'terang',
-        child: Text('Light Mode', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '☀️  ${'light_mode'.tr}',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
     ],
   );
@@ -357,8 +460,8 @@ class _MenuItem extends StatelessWidget {
     final color = isDestructive
         ? const Color(0xFFE53935)
         : isDark
-            ? Colors.white
-            : const Color(0xFF1A1D2E);
+        ? Colors.white
+        : const Color(0xFF1A1D2E);
 
     return GestureDetector(
       onTapDown: (details) => onTap(details.globalPosition),
@@ -369,7 +472,9 @@ class _MenuItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.04),
+              color: isDark
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -380,6 +485,7 @@ class _MenuItem extends StatelessWidget {
             Icon(icon, color: color),
             const SizedBox(width: 14),
             Expanded(
+              // label sudah .tr dari pemanggil, tidak perlu .tr lagi di sini
               child: Text(
                 label,
                 style: GoogleFonts.plusJakartaSans(

@@ -15,27 +15,50 @@ class ProfileController extends GetxController {
   }
 
   RxBool isDark = false.obs;
+  RxString currentLang = 'id'.obs; // ← ganti jadi RxString biar bisa 5 bahasa
 
   void darkMode() {
     isDark.value = true;
     Get.changeThemeMode(ThemeMode.dark);
     box.write('isDark', true);
-    print("dada");
   }
 
   void lightMode() {
     isDark.value = false;
     Get.changeThemeMode(ThemeMode.light);
     box.write('isDark', false);
-    print("dadad");
   }
+
+  void _changeLang(String langCode, String countryCode) {
+    currentLang.value = langCode;
+    box.write('lang', langCode);
+    Get.updateLocale(Locale(langCode, countryCode));
+  }
+
+  void bahasaindo()    => _changeLang('id', 'ID');
+  void bahasainggris() => _changeLang('en', 'US'); // ← fix bug: tadi value nya salah
+  void bahasaspanyol() => _changeLang('es', 'ES');
+  void bahasamandarin() => _changeLang('zh', 'CN');
 
   @override
   void onInit() {
     super.onInit();
-    // Load saved theme saat controller pertama kali dibuat
     final savedDark = box.read<bool>('isDark') ?? false;
+    final savedLang = box.read<String>('lang') ?? 'id'; // ← baca string
+
     isDark.value = savedDark;
+    currentLang.value = savedLang;
+
     Get.changeThemeMode(savedDark ? ThemeMode.dark : ThemeMode.light);
+
+    // map langCode ke countryCode
+    final localeMap = {
+      'id': const Locale('id', 'ID'),
+      'en': const Locale('en', 'US'),
+      'es': const Locale('es', 'ES'),
+      'ar': const Locale('ar', 'SA'),
+      'zh': const Locale('zh', 'CN'),
+    };
+    Get.updateLocale(localeMap[savedLang] ?? const Locale('id', 'ID'));
   }
 }
