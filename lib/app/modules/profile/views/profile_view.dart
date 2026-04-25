@@ -17,148 +17,143 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: controller.streamUser(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+    return Obx(() {
+      final isDark = controller.isDark.value;
 
-                  final user = snapshot.data!;
-                  final String photoUrl = (user['photo_url'] ?? '').isEmpty
-                      ? "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}"
-                      : user['photo_url'];
+      // ── Warna dinamis ──────────────────────────────────
+      final bgColor = isDark ? const Color(0xFF0D0D0D) : const Color(0xFFF5F6FA);
+      final cardColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
+      final textPrimary = isDark ? Colors.white : const Color(0xFF1A1D2E);
+      final textSecondary = isDark ? Colors.grey[400] : Colors.grey[500];
+      final iconColor = isDark ? Colors.white70 : const Color(0xFF1A1D2E);
+      final menuCardColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
+      final shadowColor = isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05);
+      final editBtnColor = isDark ? const Color(0xFF0B30FF) : const Color.fromARGB(255, 77, 85, 129);
 
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 16),
+      return Scaffold(
+        backgroundColor: bgColor,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: controller.streamUser(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                        // ── Header ──────────────────────────────────────
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Center(
-                              child: Text(
-                                'Profile',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  color: const Color(0xFF1A1D2E),
+                    final user = snapshot.data!;
+                    final String photoUrl = (user['photo_url'] ?? '').isEmpty
+                        ? "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}"
+                        : user['photo_url'];
+
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+
+                          // ── Header ──────────────────────────────────────
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'Profile',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: textPrimary,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: GestureDetector(
-                                onTap: () => Get.back(),
-                                child: const Icon(
-                                  Icons.arrow_back,
-                                  color: Color(0xFF1A1D2E),
-                                  size: 22,
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                  onTap: () => Get.back(),
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: iconColor,
+                                    size: 22,
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-
-                        // ── Profile Card ────────────────────────────────
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          child: Column(
-                            children: [
-                              // Avatar
-                              Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 44,
-                                    backgroundImage: NetworkImage(photoUrl),
+                          const SizedBox(height: 24),
+
+                          // ── Profile Card ────────────────────────────────
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 24,
+                            ),
+                            decoration: BoxDecoration(
+                              color: cardColor,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: shadowColor,
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                // Avatar
+                                CircleAvatar(
+                                  radius: 44,
+                                  backgroundImage: NetworkImage(photoUrl),
+                                ),
+                                const SizedBox(height: 14),
+
+                                // Name
+                                Text(
+                                  user['name'],
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: textPrimary,
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 14),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  user['email'],
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 13,
+                                    color: textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
 
-                              // Name
-                              Text(
-                                user['name'],
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: const Color(0xFF1A1D2E),
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                user['email'],
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              // Edit Profile Button
-                              GestureDetector(
-                                onTap: () => Get.toNamed(
-                                  Routes.EDIT_PROFILE,
-                                  arguments: {
-                                    "name": user.data()?['name'] ?? '',
-                                    "email": user.data()?['email'] ?? '',
-                                    "photo_url":
-                                        user.data()?['photo_url'] ?? '',
-                                  },
-                                ),
-                                child: Obx(
-                                  () => Container(
+                                // Edit Profile Button
+                                GestureDetector(
+                                  onTap: () => Get.toNamed(
+                                    Routes.EDIT_PROFILE,
+                                    arguments: {
+                                      "name": user.data()?['name'] ?? '',
+                                      "email": user.data()?['email'] ?? '',
+                                      "photo_url": user.data()?['photo_url'] ?? '',
+                                    },
+                                  ),
+                                  child: Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 24,
                                       vertical: 10,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: controller.isDark.value == true
-                                          ? const Color.fromARGB(
-                                              255,
-                                              11,
-                                              48,
-                                              255,
-                                            )
-                                          : const Color(0xFF1A1D2E),
+                                      color: editBtnColor,
                                       borderRadius: BorderRadius.circular(24),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(
-                                          Icons.edit_outlined,
-                                          color: Colors.white,
-                                          size: 15,
-                                        ),
+                                        const Icon(Icons.edit_outlined, color: Colors.white, size: 15),
                                         const SizedBox(width: 6),
                                         Text(
                                           'Edit Profile',
@@ -172,51 +167,49 @@ class ProfileView extends GetView<ProfileController> {
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
+                          const SizedBox(height: 20),
+                          const SizedBox(height: 12),
 
-                        // ── Menu Items ──────────────────────────────────
-                        const SizedBox(height: 12),
-
-                        // Logout item — merah
-                        _MenuItem(
-                          icon: Icons.language_outlined,
-                          label: 'Language',
-                          onTap: (position) {
-                            _showPopupMenu(context, position);
-                          },
-                        ),
-                        const SizedBox(height: 18),
-                        _MenuItem(
-                          icon: Icons.settings_outlined,
-                          label: 'Theme',
-                          onTap: (position) {
-                            _showPopupMenuThema(context, position);
-                          },
-                        ),
-                        const SizedBox(height: 18),
-                        _MenuItem(
-                          icon: Icons.logout_outlined,
-                          label: 'Logout',
-                          onTap: (position) {
-                            _showLogoutDialog(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                          // ── Menu Items ───────────────────────────────────
+                          _MenuItem(
+                            icon: Icons.language_outlined,
+                            label: 'Language',
+                            isDark: isDark,
+                            menuCardColor: menuCardColor,
+                            onTap: (position) => _showPopupMenu(context, position),
+                          ),
+                          const SizedBox(height: 18),
+                          _MenuItem(
+                            icon: Icons.settings_outlined,
+                            label: 'Theme',
+                            isDark: isDark,
+                            menuCardColor: menuCardColor,
+                            onTap: (position) => _showPopupMenuThema(context, position),
+                          ),
+                          const SizedBox(height: 18),
+                          _MenuItem(
+                            icon: Icons.logout_outlined,
+                            label: 'Logout',
+                            isDark: isDark,
+                            menuCardColor: menuCardColor,
+                            isDestructive: true,
+                            onTap: (position) => _showLogoutDialog(context),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-
-            bottom_navbar(pageC: pageC),
-          ],
+              bottom_navbar(pageC: pageC),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   void _showLogoutDialog(BuildContext context) {
@@ -233,30 +226,18 @@ class ProfileView extends GetView<ProfileController> {
               color: const Color(0xFFFFEEEE),
               border: Border.all(color: const Color(0xFFFFCCCC), width: 1.5),
             ),
-            child: const Icon(
-              Icons.logout_rounded,
-              color: Color(0xFFE53935),
-              size: 28,
-            ),
+            child: const Icon(Icons.logout_rounded, color: Color(0xFFE53935), size: 28),
           ),
           const SizedBox(height: 16),
           const Text(
             'Logout',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1A2E),
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1A1A2E)),
           ),
           const SizedBox(height: 8),
           Text(
             'Are you sure want to logout?',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey[500],
-              height: 1.5,
-            ),
+            style: TextStyle(fontSize: 13, color: Colors.grey[500], height: 1.5),
           ),
           const SizedBox(height: 4),
         ],
@@ -268,17 +249,9 @@ class ProfileView extends GetView<ProfileController> {
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 13),
             side: const BorderSide(color: Color(0xFFB6B6B6)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
-              color: Color(0xFF555555),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          child: const Text('Cancel', style: TextStyle(color: Color(0xFF555555), fontWeight: FontWeight.w600)),
         ),
       ),
       confirm: SizedBox(
@@ -289,14 +262,9 @@ class ProfileView extends GetView<ProfileController> {
             backgroundColor: const Color(0xFFE53935),
             padding: const EdgeInsets.symmetric(vertical: 13),
             elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          child: const Text(
-            'Yes, Logout',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-          ),
+          child: const Text('Yes, Logout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
         ),
       ),
     );
@@ -306,35 +274,18 @@ class ProfileView extends GetView<ProfileController> {
 void _showPopupMenu(BuildContext context, Offset position) async {
   final result = await showMenu<String>(
     context: context,
-    position: RelativeRect.fromLTRB(
-      position.dx,
-      position.dy,
-      position.dx + 1,
-      position.dy + 1,
-    ),
+    position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx + 1, position.dy + 1),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 4,
     items: [
       PopupMenuItem<String>(
         value: 'english',
-        child: Text(
-          'English',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: const Color(0xFF1A1D2E),
-          ),
-        ),
+        child: Text('English', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'indonesia',
-        child: Text(
-          'Indonesia',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: const Color(0xFF1A1D2E),
-          ),
-        ),
+        child: Text('Indonesia', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
       ),
     ],
   );
@@ -355,35 +306,18 @@ void _showPopupMenuThema(BuildContext context, Offset position) async {
   final profileC = Get.find<ProfileController>();
   final result = await showMenu<String>(
     context: context,
-    position: RelativeRect.fromLTRB(
-      position.dx,
-      position.dy,
-      position.dx + 1,
-      position.dy + 1,
-    ),
+    position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx + 1, position.dy + 1),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 4,
     items: [
       PopupMenuItem<String>(
         value: 'gelap',
-        child: Text(
-          'Dark Mode',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: const Color(0xFF1A1D2E),
-          ),
-        ),
+        child: Text('Dark Mode', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'terang',
-        child: Text(
-          'Light Mode',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: const Color(0xFF1A1D2E),
-          ),
-        ),
+        child: Text('Light Mode', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1A1D2E))),
       ),
     ],
   );
@@ -406,11 +340,15 @@ class _MenuItem extends StatelessWidget {
   final String label;
   final Function(Offset position) onTap;
   final bool isDestructive;
+  final bool isDark;
+  final Color menuCardColor;
 
   const _MenuItem({
     required this.icon,
     required this.label,
     required this.onTap,
+    required this.isDark,
+    required this.menuCardColor,
     this.isDestructive = false,
   });
 
@@ -418,18 +356,20 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isDestructive
         ? const Color(0xFFE53935)
-        : const Color(0xFF1A1D2E);
+        : isDark
+            ? Colors.white
+            : const Color(0xFF1A1D2E);
 
     return GestureDetector(
       onTapDown: (details) => onTap(details.globalPosition),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: menuCardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

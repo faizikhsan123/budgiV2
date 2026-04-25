@@ -1,4 +1,5 @@
 import 'package:budgi/app/controllers/page_index_controller.dart';
+import 'package:budgi/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,15 +10,23 @@ class bottom_navbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profileC = Get.find<ProfileController>();
+
     return Obx(() {
       final current = pageC.pageIndex.value;
+      final isDark = profileC.isDark.value;
+
+      final navBgColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
+      final shadowColor = isDark
+          ? Colors.black.withOpacity(0.3)
+          : Colors.black.withOpacity(0.08);
 
       return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: navBgColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: shadowColor,
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -30,15 +39,14 @@ class bottom_navbar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                // Home
                 _NavItem(
                   icon: Icons.home_rounded,
                   label: 'Home',
                   isSelected: current == 0,
+                  isDark: isDark,
                   onTap: () => pageC.changePage(0),
                 ),
 
-                // Add Transaction — FAB style
                 GestureDetector(
                   onTap: () => pageC.changePage(1),
                   child: Container(
@@ -63,11 +71,11 @@ class bottom_navbar extends StatelessWidget {
                   ),
                 ),
 
-                // Profile
                 _NavItem(
                   icon: Icons.person_outline_rounded,
                   label: 'Profile',
                   isSelected: current == 2,
+                  isDark: isDark,
                   onTap: () => pageC.changePage(2),
                 ),
               ],
@@ -83,17 +91,23 @@ class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
+  final bool isDark;
   final VoidCallback onTap;
 
   const _NavItem({
     required this.icon,
     required this.label,
     required this.isSelected,
+    required this.isDark,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final inactiveColor = isDark
+        ? const Color(0xFF6B6F8E)
+        : const Color(0xFFB0B3C6);
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -105,9 +119,7 @@ class _NavItem extends StatelessWidget {
             Icon(
               icon,
               size: 26,
-              color: isSelected
-                  ? const Color(0xFF3D5AF1)
-                  : const Color(0xFFB0B3C6),
+              color: isSelected ? const Color(0xFF3D5AF1) : inactiveColor,
             ),
             const SizedBox(height: 2),
             AnimatedContainer(

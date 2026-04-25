@@ -2,6 +2,7 @@ import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/connectivity_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/login/controllers/login_controller.dart';
+import 'package:budgi/app/modules/profile/controllers/profile_controller.dart';
 import 'package:budgi/app/modules/widgets/connectivity_wrapper.dart';
 import 'package:budgi/firebase_options.dart';
 import 'package:budgi/introduction.dart';
@@ -29,6 +30,7 @@ class NyApp extends StatelessWidget {
   final pageC = Get.put(PageIndexController(), permanent: true);
   final loginC = Get.put(LoginController(), permanent: true);
   final connectivityC = Get.put(ConnectivityController(), permanent: true);
+  final profileC = Get.put(ProfileController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
