@@ -534,12 +534,16 @@ class HomeView extends GetView<HomeController> {
 
     switch (result) {
       case 'detail':
+        print("detail");
+        Get.toNamed(Routes.DETAIL, arguments: {...item, 'id': docId});
       //
       case 'edit':
+        print("edit");
+        Get.toNamed(Routes.EDIT_TRANSAKSI, arguments: {...item, 'id': docId});
         // Get.toNamed(Routes.CRUD, arguments: {...item, 'id': docId});
         break;
       case 'delete':
-        // controller.deleteItem(docId);
+        //  controller.deleteItem(docId);
         break;
     }
   }

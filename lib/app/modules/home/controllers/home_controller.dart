@@ -61,6 +61,8 @@ class HomeController extends GetxController {
         .snapshots();
   }
 
+  
+
   @override
   void onInit() {
     pageC.pageIndex.value = 0;

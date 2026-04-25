@@ -89,11 +89,14 @@ class TransaksiView extends GetView<TransaksiController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // ── Amount input ──────────────────────────────
-                      input_rupiah(
-                        amountC: isExpense
-                            ? controller.amount1C
-                            : controller.amount2C,
-                        hintText: 'Rp 0',
+                      Center(
+                        child: input_rupiah(
+                          amountC: isExpense
+                              ? controller.amount1C
+                              : controller.amount2C,
+                          hintText: isExpense ? 'input your expense' : 'input your income',
+
+                        ),
                       ),
 
                       const SizedBox(height: 16),
