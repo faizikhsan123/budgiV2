@@ -75,6 +75,8 @@ class HistoryController extends GetxController {
     keyword.value = value;
   }
 
+
+
   void pickDateRange(DateTime startDate, DateTime endDate) {
     start.value = DateTime(startDate.year, startDate.month, startDate.day);
     end.value = DateTime(endDate.year, endDate.month, endDate.day);

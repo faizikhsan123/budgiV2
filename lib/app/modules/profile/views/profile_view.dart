@@ -11,13 +11,14 @@ import '../controllers/profile_controller.dart';
 class ProfileView extends GetView<ProfileController> {
   final pageC = Get.find<PageIndexController>();
   final authC = Get.find<AuthController>();
+  final controller = Get.find<ProfileController>();
 
   ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3EEF8),
+      backgroundColor: Colors.white,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -31,10 +32,9 @@ class ProfileView extends GetView<ProfileController> {
                   }
 
                   final user = snapshot.data!;
-                  final String photoUrl =
-                      (user['photo_url'] ?? '').isEmpty
-                          ? "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}"
-                          : user['photo_url'];
+                  final String photoUrl = (user['photo_url'] ?? '').isEmpty
+                      ? "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}"
+                      : user['photo_url'];
 
                   return SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -100,7 +100,6 @@ class ProfileView extends GetView<ProfileController> {
                                     radius: 44,
                                     backgroundImage: NetworkImage(photoUrl),
                                   ),
-
                                 ],
                               ),
                               const SizedBox(height: 14),
@@ -135,33 +134,42 @@ class ProfileView extends GetView<ProfileController> {
                                         user.data()?['photo_url'] ?? '',
                                   },
                                 ),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF2D3A8C),
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(
-                                        Icons.edit_outlined,
-                                        color: Colors.white,
-                                        size: 15,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Edit Profile',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
+                                child: Obx(
+                                  () => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: controller.isDark.value == true
+                                          ? const Color.fromARGB(
+                                              255,
+                                              11,
+                                              48,
+                                              255,
+                                            )
+                                          : const Color(0xFF1A1D2E),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.edit_outlined,
                                           color: Colors.white,
+                                          size: 15,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Edit Profile',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -171,27 +179,32 @@ class ProfileView extends GetView<ProfileController> {
                         const SizedBox(height: 20),
 
                         // ── Menu Items ──────────────────────────────────
-                        _MenuItem(
-                          icon: Icons.translate_rounded,
-                          label: 'Languages',
-                          onTap: () {},
-                        ),
-                        const SizedBox(height: 12),
-                        _MenuItem(
-                          icon: Icons.settings_outlined,
-                          label: 'Theme',
-                          onTap: () {},
-                        ),
                         const SizedBox(height: 12),
 
                         // Logout item — merah
                         _MenuItem(
-                          icon: Icons.logout_rounded,
-                          label: 'Logout',
-                          isDestructive: true,
-                          onTap: () => _showLogoutDialog(context),
+                          icon: Icons.language_outlined,
+                          label: 'Language',
+                          onTap: (position) {
+                            _showPopupMenu(context, position);
+                          },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 18),
+                        _MenuItem(
+                          icon: Icons.settings_outlined,
+                          label: 'Theme',
+                          onTap: (position) {
+                            _showPopupMenuThema(context, position);
+                          },
+                        ),
+                        const SizedBox(height: 18),
+                        _MenuItem(
+                          icon: Icons.logout_outlined,
+                          label: 'Logout',
+                          onTap: (position) {
+                            _showLogoutDialog(context);
+                          },
+                        ),
                       ],
                     ),
                   );
@@ -239,7 +252,11 @@ class ProfileView extends GetView<ProfileController> {
           Text(
             'Are you sure want to logout?',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: Colors.grey[500], height: 1.5),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey[500],
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 4),
         ],
@@ -286,11 +303,108 @@ class ProfileView extends GetView<ProfileController> {
   }
 }
 
+void _showPopupMenu(BuildContext context, Offset position) async {
+  final result = await showMenu<String>(
+    context: context,
+    position: RelativeRect.fromLTRB(
+      position.dx,
+      position.dy,
+      position.dx + 1,
+      position.dy + 1,
+    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 4,
+    items: [
+      PopupMenuItem<String>(
+        value: 'english',
+        child: Text(
+          'English',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
+      ),
+      const PopupMenuDivider(height: 1),
+      PopupMenuItem<String>(
+        value: 'indonesia',
+        child: Text(
+          'Indonesia',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
+      ),
+    ],
+  );
+
+  if (result == null) return;
+
+  switch (result) {
+    case 'english':
+      print("English selected");
+      break;
+    case 'indonesia':
+      print("Indonesia selected");
+      break;
+  }
+}
+
+void _showPopupMenuThema(BuildContext context, Offset position) async {
+  final profileC = Get.find<ProfileController>();
+  final result = await showMenu<String>(
+    context: context,
+    position: RelativeRect.fromLTRB(
+      position.dx,
+      position.dy,
+      position.dx + 1,
+      position.dy + 1,
+    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 4,
+    items: [
+      PopupMenuItem<String>(
+        value: 'gelap',
+        child: Text(
+          'Dark Mode',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
+      ),
+      const PopupMenuDivider(height: 1),
+      PopupMenuItem<String>(
+        value: 'terang',
+        child: Text(
+          'Light Mode',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
+      ),
+    ],
+  );
+
+  if (result == null) return;
+
+  switch (result) {
+    case 'gelap':
+      profileC.darkMode();
+      break;
+    case 'terang':
+      profileC.lightMode();
+      break;
+  }
+}
+
 // ── Menu Item Widget ─────────────────────────────────────────────────────────
 class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
+  final Function(Offset position) onTap;
   final bool isDestructive;
 
   const _MenuItem({
@@ -302,10 +416,12 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive ? const Color(0xFFE53935) : const Color(0xFF1A1D2E);
+    final color = isDestructive
+        ? const Color(0xFFE53935)
+        : const Color(0xFF1A1D2E);
 
     return GestureDetector(
-      onTap: onTap,
+      onTapDown: (details) => onTap(details.globalPosition),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         decoration: BoxDecoration(
@@ -321,7 +437,7 @@ class _MenuItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: color, size: 22),
+            Icon(icon, color: color),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
@@ -333,11 +449,7 @@ class _MenuItem extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: color,
-              size: 20,
-            ),
+            Icon(Icons.chevron_right_rounded, color: color, size: 20),
           ],
         ),
       ),
