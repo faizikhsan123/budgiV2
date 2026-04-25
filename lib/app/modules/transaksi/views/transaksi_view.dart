@@ -444,7 +444,7 @@ class _CategoryBox extends StatelessWidget {
   List<Color> _gradientColors() {
     switch (name.toLowerCase()) {
       case 'food':
-        return [const Color(0xFFFF6B35), const Color(0xFFFF8C42)];
+        return [const Color.fromARGB(255, 131, 100, 89), const Color(0xFFFF8C42)];
       case 'transport':
         return [const Color(0xFF3D9BE9), const Color(0xFF2D7DD2)];
       case 'shopping':

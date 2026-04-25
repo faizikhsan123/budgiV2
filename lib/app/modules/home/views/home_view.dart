@@ -543,7 +543,7 @@ class HomeView extends GetView<HomeController> {
         // Get.toNamed(Routes.CRUD, arguments: {...item, 'id': docId});
         break;
       case 'delete':
-        //  controller.deleteItem(docId);
+        controller.deleteData(item['date'] ?? '', docId);
         break;
     }
   }

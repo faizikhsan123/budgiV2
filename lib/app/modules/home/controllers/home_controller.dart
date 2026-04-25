@@ -2,6 +2,7 @@ import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -61,11 +62,45 @@ class HomeController extends GetxController {
         .snapshots();
   }
 
-  
-
   @override
   void onInit() {
     pageC.pageIndex.value = 0;
     super.onInit();
+  }
+
+  void deleteData(String date, String id) async {
+    if (id.isEmpty) {
+      Get.snackbar("Error", "ID transaksi tidak ditemukan");
+      return;
+    }
+
+    try {
+      final uid = auth.currentUser!.uid;
+
+      await firestore
+          .collection("users")
+          .doc(uid)
+          .collection("transactions")
+          .doc(date)
+          .collection("items")
+          .doc(id)
+          .delete();
+
+      await firestore
+          .collection("users")
+          .doc(uid)
+          .collection("all_transactions")
+          .doc(id)
+          .delete();
+
+      Get.snackbar(
+        "Sukses",
+        "Transaksi berhasil dihapus",
+        backgroundColor: const Color(0xFF2ECC71),
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
   }
 }
