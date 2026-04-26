@@ -27,35 +27,43 @@ class TransaksiController extends GetxController {
   final categories = [
     {
       "name": "Food",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--fork-spoon-fill_k44lpk.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--fork-spoon-fill_k44lpk.svg",
     },
     {
       "name": "Transport",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--car-fill_oyvkvd.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--car-fill_oyvkvd.svg",
     },
     {
       "name": "Health",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1775021799/mingcute--shield-fill_1_hbbsu5.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1775021799/mingcute--shield-fill_1_hbbsu5.svg",
     },
     {
       "name": "Bill",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--bill-fill_f1txbv.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--bill-fill_f1txbv.svg",
     },
     {
       "name": "Shopping",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--shopping-cart-2-fill_dbgrgo.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--shopping-cart-2-fill_dbgrgo.svg",
     },
     {
       "name": "Transfer",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--transfer-3-fill_vywadq.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--transfer-3-fill_vywadq.svg",
     },
     {
       "name": "Entertain",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--movie-fill_kps26w.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--movie-fill_kps26w.svg",
     },
     {
       "name": "Other",
-      "icon": "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--more-4-fill_g3maa8.svg",
+      "icon":
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--more-4-fill_g3maa8.svg",
     },
   ];
 
@@ -65,7 +73,9 @@ class TransaksiController extends GetxController {
   String _getTodayFormatted() => DateFormat('d-M-yyyy').format(DateTime.now());
 
   String get tanggalLabel {
-    return nilaiTanggal.value == _getTodayFormatted() ? 'today'.tr : nilaiTanggal.value;
+    return nilaiTanggal.value == _getTodayFormatted()
+        ? 'today'.tr
+        : nilaiTanggal.value;
   }
 
   void resetForm() {
@@ -137,9 +147,9 @@ class TransaksiController extends GetxController {
           .collection("transactions")
           .doc(docId)
           .set({
-        "date": docId,
-        "filter_tanggal": filterTanggal.toIso8601String(),
-      });
+            "date": docId,
+            "filter_tanggal": filterTanggal.toIso8601String(),
+          });
     }
   }
 
@@ -203,6 +213,19 @@ class TransaksiController extends GetxController {
       return;
     }
 
+    // ✅ VALIDASI OTHER
+    final isOther = categories[selectedCategoryIndex.value]['name'] == "Other";
+
+    if (isOther && otherC.text.trim().isEmpty) {
+      _snackError('category_name_required');
+      return;
+    }
+
+    if (_auth.currentUser == null) {
+      _snackError('user_not_logged_in');
+      return;
+    }
+
     Get.defaultDialog(
       title: 'confirm_transaction'.tr,
       content: contentBefore(
@@ -220,8 +243,8 @@ class TransaksiController extends GetxController {
 
             final categoryName =
                 categories[selectedCategoryIndex.value]['name'] == "Other"
-                    ? _capitalize(otherC.text)
-                    : categories[selectedCategoryIndex.value]['name'] as String;
+                ? _capitalize(otherC.text)
+                : categories[selectedCategoryIndex.value]['name'] as String;
 
             final formattedNote = _capitalize(noteText);
 
@@ -292,8 +315,7 @@ class TransaksiController extends GetxController {
             final itemId = DateTime.now().millisecondsSinceEpoch.toString();
             final formattedNote = _capitalize(noteText);
 
-            final userDoc =
-                await _firestore.collection("users").doc(uid).get();
+            final userDoc = await _firestore.collection("users").doc(uid).get();
             final balance = userDoc.data()?['balance'] ?? 0;
 
             final data = {
