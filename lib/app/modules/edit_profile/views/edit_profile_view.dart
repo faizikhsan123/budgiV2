@@ -38,7 +38,7 @@ class EditProfileView extends GetView<EditProfileController> {
                     children: [
                       Center(
                         child: Text(
-                          'Edit Profile',
+                          'edit_profile'.tr,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
@@ -64,7 +64,7 @@ class EditProfileView extends GetView<EditProfileController> {
 
                 // ── Avatar ───────────────────────────────────────────────
                 GestureDetector(
-                  onTap: () => _showPhotoSheet(),
+                  onTap: _showPhotoSheet,
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -117,17 +117,17 @@ class EditProfileView extends GetView<EditProfileController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('Full Name'),
+                        _buildLabel('full_name'.tr),
                         _buildField(
-                          controller: controller.nameC,
-                          hint: 'Full name',
+                          ctrl: controller.nameC,
+                          hint: 'full_name'.tr,
                         ),
                         const SizedBox(height: 16),
 
-                        _buildLabel('Email'),
+                        _buildLabel('email'.tr),
                         _buildField(
-                          controller: controller.emailC,
-                          hint: 'Email',
+                          ctrl: controller.emailC,
+                          hint: 'email'.tr,
                           readOnly: true,
                         ),
 
@@ -148,7 +148,7 @@ class EditProfileView extends GetView<EditProfileController> {
                               ),
                             ),
                             child: Text(
-                              'Save Changes',
+                              'save_changes'.tr,
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -188,7 +188,6 @@ class EditProfileView extends GetView<EditProfileController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
             Container(
               width: 40,
               height: 4,
@@ -203,7 +202,7 @@ class EditProfileView extends GetView<EditProfileController> {
               children: [
                 const SizedBox(width: 36),
                 Text(
-                  'Profile Photo',
+                  'profile_photo'.tr,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -218,22 +217,21 @@ class EditProfileView extends GetView<EditProfileController> {
             const SizedBox(height: 8),
             _SheetItem(
               icon: Icons.photo_library_outlined,
-              label: 'Gallery',
+              label: 'gallery'.tr,
               color: const Color(0xFF3D5AF1),
               onTap: () async {
                 await controller.selectImage();
-                Get.back();
               },
             ),
             if (hasPhoto) ...[
               const Divider(height: 1),
               _SheetItem(
                 icon: Icons.delete_outline_rounded,
-                label: 'Delete Image',
+                label: 'delete_image'.tr,
                 color: Colors.red,
                 onTap: () {
-                  controller.deleteImage();
                   Get.back();
+                  controller.deleteImage();
                 },
               ),
             ],
@@ -258,12 +256,12 @@ class EditProfileView extends GetView<EditProfileController> {
   }
 
   Widget _buildField({
-    required TextEditingController controller,
+    required TextEditingController ctrl,
     required String hint,
     bool readOnly = false,
   }) {
     return TextField(
-      controller: controller,
+      controller: ctrl,
       readOnly: readOnly,
       style: GoogleFonts.plusJakartaSans(
         fontSize: 14,

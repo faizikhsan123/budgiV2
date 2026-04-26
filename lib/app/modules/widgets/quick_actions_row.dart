@@ -9,26 +9,20 @@ class QuickActionsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<_CategoryData> categories = [
+    final categories = [
       _CategoryData(
-        label: 'Analytics',
-        url:
-            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970771/Group_37263_h71lvx.svg',
-
+        labelKey: 'analytics',
+        url: 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970771/Group_37263_h71lvx.svg',
         onTap: () => Get.toNamed(Routes.ANALYTICS),
       ),
       _CategoryData(
-        label: 'History',
-        url:
-            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970872/Group_37264_hdwxrj.svg',
-
+        labelKey: 'history',
+        url: 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970872/Group_37264_hdwxrj.svg',
         onTap: () => Get.toNamed(Routes.HISTORY),
       ),
       _CategoryData(
-        label: 'Split Bill',
-        url:
-            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970902/Group_37261_m0fego.svg',
-
+        labelKey: 'split_bill',
+        url: 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970902/Group_37261_m0fego.svg',
         onTap: () {},
       ),
     ];
@@ -41,22 +35,19 @@ class QuickActionsRow extends StatelessWidget {
 }
 
 class _CategoryData {
-  final String label;
+  final String labelKey;
   final String url;
-
   final VoidCallback onTap;
 
   const _CategoryData({
-    required this.label,
+    required this.labelKey,
     required this.url,
-
     required this.onTap,
   });
 }
 
 class _CategoryItem extends StatelessWidget {
   final _CategoryData data;
-
   const _CategoryItem({required this.data});
 
   @override
@@ -69,11 +60,10 @@ class _CategoryItem extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
-          
             child: SvgPicture.network(
               data.url,
               fit: BoxFit.contain,
-              placeholderBuilder: (context) => const Center(
+              placeholderBuilder: (_) => const Center(
                 child: SizedBox(
                   width: 20,
                   height: 20,
@@ -85,9 +75,8 @@ class _CategoryItem extends StatelessWidget {
               ),
             ),
           ),
-       
           Text(
-            data.label,
+            data.labelKey.tr,
             style: GoogleFonts.poppins(
               fontSize: 11,
               fontWeight: FontWeight.w500,

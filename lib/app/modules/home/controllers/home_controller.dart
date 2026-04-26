@@ -7,21 +7,16 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class HomeController extends GetxController {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final pageC = Get.put(PageIndexController());
-  RxBool balance = false.obs;
   final box = GetStorage();
+
+  final RxBool balance = false.obs;
 
   void hidebalance() {
     balance.value = !balance.value;
     box.write('balance', balance.value);
-  }
-
-  void logout() async {
-    await auth.signOut();
-    Get.offNamed(Routes.LOGIN);
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> streamProfile() {
@@ -29,7 +24,6 @@ class HomeController extends GetxController {
     return firestore.collection('users').doc(uid).snapshots();
   }
 
-  /// Stream dokumen tanggal (untuk list recent activity)
   Stream<QuerySnapshot<Map<String, dynamic>>> streamTransaction() {
     final uid = auth.currentUser!.uid;
     return firestore
@@ -41,7 +35,6 @@ class HomeController extends GetxController {
         .snapshots();
   }
 
-  /// Stream items berdasarkan docId tanggal
   Stream<QuerySnapshot<Map<String, dynamic>>> streamTransactionItem(
     String docId,
   ) {
@@ -56,10 +49,6 @@ class HomeController extends GetxController {
         .snapshots();
   }
 
-  /// Stream semua items dari all_transactions (flat) untuk kalkulasi
-  /// summary expense/income. Ini FIX untuk error:
-  /// "Bad state: field 'type' does not exist within the DocumentSnapshot"
-  /// karena field 'type' ada di items, bukan di dokumen tanggal.
   Stream<QuerySnapshot<Map<String, dynamic>>> streamAllItems() {
     final uid = auth.currentUser!.uid;
     return firestore
@@ -73,43 +62,44 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     pageC.pageIndex.value = 0;
-    balance.value = box.read<bool>('balance') ?? false; // ← load saat init
+    balance.value = box.read<bool>('balance') ?? false;
     super.onInit();
   }
 
-  void deleteData(String date, String id) async {
+  Future<void> deleteData(String date, String id) async {
     if (id.isEmpty) {
-      Get.snackbar("Error", "ID transaksi tidak ditemukan");
+      Get.snackbar('error'.tr, 'delete_error'.tr);
       return;
     }
 
     try {
       final uid = auth.currentUser!.uid;
 
-      await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("transactions")
-          .doc(date)
-          .collection("items")
-          .doc(id)
-          .delete();
-
-      await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("all_transactions")
-          .doc(id)
-          .delete();
+      await Future.wait([
+        firestore
+            .collection('users')
+            .doc(uid)
+            .collection('transactions')
+            .doc(date)
+            .collection('items')
+            .doc(id)
+            .delete(),
+        firestore
+            .collection('users')
+            .doc(uid)
+            .collection('all_transactions')
+            .doc(id)
+            .delete(),
+      ]);
 
       Get.snackbar(
-        "Sukses",
-        "Transaksi berhasil dihapus",
+        'done'.tr,
+        'delete_success'.tr,
         backgroundColor: const Color(0xFF2ECC71),
         colorText: Colors.white,
       );
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar('error'.tr, e.toString());
     }
   }
 }

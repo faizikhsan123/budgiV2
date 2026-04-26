@@ -1,3 +1,4 @@
+import 'package:budgi/app/bahasa/category_helper.dart';
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
@@ -26,10 +27,10 @@ class HomeView extends GetView<HomeController> {
     final rupiah = Rupiah();
     final hour = DateTime.now().hour;
     final String greeting = hour < 12
-        ? 'Good Morning!'
+        ? 'good_morning'.tr
         : hour < 18
-        ? 'Good Afternoon!'
-        : 'Good Evening!';
+        ? 'good_afternoon'.tr
+        : 'good_evening'.tr;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -51,7 +52,7 @@ class HomeView extends GetView<HomeController> {
                       );
                     }
                     if (!profileSnap.hasData) {
-                      return const Center(child: Text('Data Is Empty'));
+                      return Center(child: Text('data_empty'.tr));
                     }
 
                     final data = profileSnap.data!;
@@ -63,189 +64,16 @@ class HomeView extends GetView<HomeController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-
-                        // ── Header ────────────────────────────────────────
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 24,
-                              backgroundImage: NetworkImage(photoUrl),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${data['name']}',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF1A1D2E),
-                                    ),
-                                  ),
-                                  Text(
-                                    greeting,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: Colors.grey[500],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.toNamed(Routes.PROFILE);
-                                pageC.changePage(2);
-                              },
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.08),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(
-                                  Icons.person_outline_rounded,
-                                  size: 22,
-                                  color: Color(0xFF09197A),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        _buildHeader(data, photoUrl, greeting),
                         const SizedBox(height: 20),
-
-                        // ── Summary Cards ─────────────────────────────────
-                        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream: controller.streamAllItems(),
-                          builder: (context, allSnap) {
-                            double totalExpense = 0;
-                            double totalIncome = 0;
-                            if (allSnap.hasData) {
-                              for (final doc in allSnap.data!.docs) {
-                                final d = doc.data();
-                                final type = (d['type'] ?? '')
-                                    .toString()
-                                    .toLowerCase();
-                                final amount =
-                                    (d['amount'] as num?)?.toDouble() ?? 0;
-                                if (type == 'income') {
-                                  totalIncome += amount;
-                                } else {
-                                  totalExpense += amount;
-                                }
-                              }
-                            }
-                            return Row(
-                              children: [
-                                _SummaryCard(
-                                  label: 'Expenses',
-                                  amount: rupiah.convertToRupiah(
-                                    '${totalExpense.toInt()}',
-                                  ),
-                                  isExpense: true,
-                                ),
-                                const SizedBox(width: 12),
-                                _SummaryCard(
-                                  label: 'Income',
-                                  amount: rupiah.convertToRupiah(
-                                    '${totalIncome.toInt()}',
-                                  ),
-                                  isExpense: false,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                        _buildSummaryCards(rupiah),
                         const SizedBox(height: 16),
-
-                        // ── Balance Card ──────────────────────────────────
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Color(0xFF1A1D2E), Color(0xFF2D3561)],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF2D3561).withOpacity(0.4),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Balance',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-
-                              Obx(
-                                () => Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      controller.balance.value
-                                          ? '*****'
-                                          : rupiah.convertToRupiah(
-                                              '${data['balance']}',
-                                            ),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color(0xFFFFFBC4),
-                                        letterSpacing: -0.5,
-                                      ),
-                                    ),
-
-                                    IconButton(
-                                      onPressed: () {
-                                        controller.hidebalance();
-                                      },
-                                      icon: Icon(
-                                        controller.balance.value
-                                            ? Icons.visibility_off_outlined
-                                            : Icons
-                                                  .visibility_outlined, //Icons.visibility_outlined,
-                                        size: 20,
-                                        color: Color(0xFFFFFBC4),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        _buildBalanceCard(rupiah, data),
                         const SizedBox(height: 24),
-
-                        // ── Quick Actions ─────────────────────────────────
-                        QuickActionsRow(),
+                        const QuickActionsRow(),
                         const SizedBox(height: 24),
-
-                        // ── Recent Activity ───────────────────────────────
                         Text(
-                          'Recent Activity', 
+                          'recent_activity'.tr,
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -253,235 +81,7 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ),
                         const SizedBox(height: 10),
-
-                        // ── Transaction List — grouped per tanggal ────────
-                        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream: controller.streamTransaction(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            if (!snapshot.hasData ||
-                                snapshot.data!.docs.isEmpty) {
-                              return _EmptyTransactions();
-                            }
-
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                final doc = snapshot.data!.docs[index];
-
-                                return StreamBuilder<
-                                  QuerySnapshot<Map<String, dynamic>>
-                                >(
-                                  stream: controller.streamTransactionItem(
-                                    doc.id,
-                                  ),
-                                  builder: (context, itemSnap) {
-                                    if (!itemSnap.hasData ||
-                                        itemSnap.data!.docs.isEmpty) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    final items = itemSnap.data!.docs;
-
-                                    return Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                              0.05,
-                                            ),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Date header
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                              16,
-                                              12,
-                                              16,
-                                              8,
-                                            ),
-                                            child: Text(
-                                              _formatDate(doc['date']),
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 11,
-                                                color: Colors.grey[400],
-                                              ),
-                                            ),
-                                          ),
-                                          Divider(
-                                            height: 1,
-                                            indent: 16,
-                                            endIndent: 16,
-                                            color: Colors.grey[100],
-                                          ),
-
-                                          // Items
-                                          ...List.generate(items.length, (i) {
-                                            final item = items[i];
-                                            final d = item.data();
-                                            final bool isIncome =
-                                                (d['category'] ?? '')
-                                                    .toString()
-                                                    .toLowerCase() ==
-                                                'income';
-                                            final bool isLast =
-                                                i == items.length - 1;
-
-                                            return Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 12,
-                                                      ),
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        width: 40,
-                                                        height: 40,
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFFF5F6FA,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                10,
-                                                              ),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                              8,
-                                                            ),
-                                                        child:
-                                                            SvgPicture.network(
-                                                              d['icon'] ?? '',
-                                                              fit: BoxFit
-                                                                  .contain,
-                                                            ),
-                                                      ),
-                                                      const SizedBox(width: 12),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              d['category'] ??
-                                                                  '',
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color:
-                                                                    const Color(
-                                                                      0xFF1A1D2E,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            if ((d['notes'] ??
-                                                                    '')
-                                                                .toString()
-                                                                .trim()
-                                                                .isNotEmpty)
-                                                              Text(
-                                                                d['notes'],
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 11,
-                                                                  color: Colors
-                                                                      .grey[500],
-                                                                ),
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      // Amount + popup menu
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            isIncome
-                                                                ? '+${rupiah.convertToRupiah('${d['amount']}')}'
-                                                                : '-${rupiah.convertToRupiah('${d['amount']}')}',
-                                                            style: GoogleFonts.poppins(
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              color: isIncome
-                                                                  ? const Color(
-                                                                      0xFF2ECC71,
-                                                                    )
-                                                                  : const Color(
-                                                                      0xFFE74C3C,
-                                                                    ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          GestureDetector(
-                                                            onTapDown: (details) =>
-                                                                _showPopupMenu(
-                                                                  context,
-                                                                  details
-                                                                      .globalPosition,
-                                                                  d,
-                                                                  item.id,
-                                                                ),
-                                                            child: const Icon(
-                                                              Icons
-                                                                  .more_vert_outlined,
-                                                              size: 20,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                if (!isLast)
-                                                  Divider(
-                                                    height: 1,
-                                                    indent: 16,
-                                                    endIndent: 16,
-                                                    color: Colors.grey[100],
-                                                  ),
-                                              ],
-                                            );
-                                          }),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
+                        _buildTransactionList(rupiah),
                         const SizedBox(height: 20),
                       ],
                     );
@@ -493,6 +93,348 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(
+    DocumentSnapshot<Map<String, dynamic>> data,
+    String photoUrl,
+    String greeting,
+  ) {
+    return Row(
+      children: [
+        CircleAvatar(radius: 24, backgroundImage: NetworkImage(photoUrl)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${data['name']}',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1A1D2E),
+                ),
+              ),
+              Text(
+                greeting,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.toNamed(Routes.PROFILE);
+            pageC.changePage(2);
+          },
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.person_outline_rounded,
+              size: 22,
+              color: Color(0xFF09197A),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryCards(Rupiah rupiah) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: controller.streamAllItems(),
+      builder: (context, allSnap) {
+        double totalExpense = 0;
+        double totalIncome = 0;
+
+        if (allSnap.hasData) {
+          for (final doc in allSnap.data!.docs) {
+            final d = doc.data();
+            final type = (d['type'] ?? '').toString().toLowerCase();
+            final amount = (d['amount'] as num?)?.toDouble() ?? 0;
+            if (type == 'income') {
+              totalIncome += amount;
+            } else {
+              totalExpense += amount;
+            }
+          }
+        }
+
+        return Row(
+          children: [
+            _SummaryCard(
+              label: 'expenses'.tr,
+              amount: rupiah.convertToRupiah('${totalExpense.toInt()}'),
+              isExpense: true,
+            ),
+            const SizedBox(width: 12),
+            _SummaryCard(
+              label: 'income'.tr,
+              amount: rupiah.convertToRupiah('${totalIncome.toInt()}'),
+              isExpense: false,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildBalanceCard(
+    Rupiah rupiah,
+    DocumentSnapshot<Map<String, dynamic>> data,
+  ) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF1A1D2E), Color(0xFF2D3561)],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2D3561).withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'balance'.tr,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.white70,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  controller.balance.value
+                      ? '*****'
+                      : rupiah.convertToRupiah('${data['balance']}'),
+                  style: GoogleFonts.poppins(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFFFFFBC4),
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                IconButton(
+                  onPressed: controller.hidebalance,
+                  icon: Icon(
+                    controller.balance.value
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: 20,
+                    color: const Color(0xFFFFFBC4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionList(Rupiah rupiah) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: controller.streamTransaction(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const _EmptyTransactions();
+        }
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) {
+            final doc = snapshot.data!.docs[index];
+
+            return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: controller.streamTransactionItem(doc.id),
+              builder: (context, itemSnap) {
+                if (!itemSnap.hasData || itemSnap.data!.docs.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+                final items = itemSnap.data!.docs;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                        child: Text(
+                          _formatDate(doc['date']),
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        indent: 16,
+                        endIndent: 16,
+                        color: Colors.grey[100],
+                      ),
+                      ...List.generate(items.length, (i) {
+                        final item = items[i];
+                        final d = item.data();
+                        final bool isIncome =
+                            (d['type'] ?? '').toString().toLowerCase() ==
+                            'income';
+                        final bool isLast = i == items.length - 1;
+
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF5F6FA),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.all(8),
+                                    child: SvgPicture.network(
+                                      d['icon'] ?? '',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          translateCategory(
+                                            d['category'] ?? '',
+                                          ),
+
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFF1A1D2E),
+                                          ),
+                                        ),
+                                        if ((d['notes'] ?? '')
+                                            .toString()
+                                            .trim()
+                                            .isNotEmpty)
+                                          Text(
+                                            d['notes'],
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 11,
+                                              color: Colors.grey[500],
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        isIncome
+                                            ? '+${rupiah.convertToRupiah('${d['amount']}')}'
+                                            : '-${rupiah.convertToRupiah('${d['amount']}')}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700,
+                                          color: isIncome
+                                              ? const Color(0xFF2ECC71)
+                                              : const Color(0xFFE74C3C),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      GestureDetector(
+                                        onTapDown: (details) => _showPopupMenu(
+                                          context,
+                                          details.globalPosition,
+                                          d,
+                                          item.id,
+                                        ),
+                                        child: const Icon(
+                                          Icons.more_vert_outlined,
+                                          size: 20,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (!isLast)
+                              Divider(
+                                height: 1,
+                                indent: 16,
+                                endIndent: 16,
+                                color: Colors.grey[100],
+                              ),
+                          ],
+                        );
+                      }),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -516,7 +458,7 @@ class HomeView extends GetView<HomeController> {
         PopupMenuItem<String>(
           value: 'detail',
           child: Text(
-            'View Details',
+            'view_details'.tr,
             style: GoogleFonts.poppins(
               fontSize: 14,
               color: const Color(0xFF1A1D2E),
@@ -527,7 +469,7 @@ class HomeView extends GetView<HomeController> {
         PopupMenuItem<String>(
           value: 'edit',
           child: Text(
-            'Update',
+            'update'.tr,
             style: GoogleFonts.poppins(
               fontSize: 14,
               color: const Color(0xFF3D5AF1),
@@ -538,7 +480,7 @@ class HomeView extends GetView<HomeController> {
         PopupMenuItem<String>(
           value: 'delete',
           child: Text(
-            'Delete',
+            'delete'.tr,
             style: GoogleFonts.poppins(
               fontSize: 14,
               color: const Color(0xFFE74C3C),
@@ -552,25 +494,20 @@ class HomeView extends GetView<HomeController> {
 
     switch (result) {
       case 'detail':
-        print("detail");
         Get.toNamed(Routes.DETAIL, arguments: {...item, 'id': docId});
-      //
       case 'edit':
-        print("edit");
         Get.toNamed(Routes.EDIT_TRANSAKSI, arguments: {...item, 'id': docId});
-        // Get.toNamed(Routes.CRUD, arguments: {...item, 'id': docId});
-        break;
       case 'delete':
         controller.deleteData(item['date'] ?? '', docId);
-        break;
     }
   }
 
   String _formatDate(dynamic rawDate) {
     if (rawDate == null || rawDate.toString().isEmpty) return '';
     try {
+      // Ambil locale aktif dari GetX, format ke kode locale intl
       return DateFormat(
-        'EEEE, d MMMM yyyy',
+        'd-M-yyyy',
       ).format(DateFormat('d-M-yyyy').parse(rawDate.toString()));
     } catch (_) {
       return rawDate.toString();
@@ -578,8 +515,9 @@ class HomeView extends GetView<HomeController> {
   }
 }
 
-// ── Empty State ───────────────────────────────────────────────────────────────
 class _EmptyTransactions extends StatelessWidget {
+  const _EmptyTransactions();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -591,7 +529,7 @@ class _EmptyTransactions extends StatelessWidget {
           Icon(Icons.receipt_long_outlined, size: 48, color: Colors.grey[300]),
           const SizedBox(height: 12),
           Text(
-            'No Transactions Yet',
+            'no_transactions'.tr,
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -600,7 +538,7 @@ class _EmptyTransactions extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Your transactions will appear here',
+            'no_transactions_sub'.tr,
             style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[400]),
           ),
         ],
@@ -609,7 +547,6 @@ class _EmptyTransactions extends StatelessWidget {
   }
 }
 
-// ── Summary Card ──────────────────────────────────────────────────────────────
 class _SummaryCard extends StatelessWidget {
   final String label;
   final String amount;

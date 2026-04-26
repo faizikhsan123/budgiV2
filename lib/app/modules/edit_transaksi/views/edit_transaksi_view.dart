@@ -1,3 +1,4 @@
+import 'package:budgi/app/bahasa/category_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
@@ -65,16 +66,11 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                     child: Column(
                       children: [
                         // ── Icon ────────────────────────────────────
-                        Container(
+                        SizedBox(
                           width: 56,
                           height: 56,
-
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.network(
-                            icon,
-                            fit: BoxFit.contain,
-                          ),
-                          ),
+                          child: SvgPicture.network(icon, fit: BoxFit.contain),
+                        ),
                         const SizedBox(height: 12),
 
                         // ── Amount display ───────────────────────────
@@ -99,8 +95,23 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                         // ── Category ─────────────────────────────────
                         _FormRow(
                           label: 'category'.tr,
-                          child: Obx(
-                            () => DropdownButton<String>(
+                          child: Obx(() {
+                          final isIncome = controller.selectedType.value == 'income';
+                            if (isIncome) {
+                              // 🔒 TAMPILAN SAJA (tidak bisa diedit)
+                              return Text(
+                                translateCategory(
+                                  controller.selectedCategory.value,
+                                ),
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  color: const Color(0xFF1A1D2E),
+                                ),
+                              );
+                            }
+
+                            // ✅ DROPDOWN (bisa diedit)
+                            return DropdownButton<String>(
                               value: controller.selectedCategory.value.isEmpty
                                   ? null
                                   : controller.selectedCategory.value,
@@ -113,20 +124,19 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                                 fontSize: 13,
                                 color: const Color(0xFF1A1D2E),
                               ),
-                              items: controller.categories
-                                  .map(
-                                    (c) => DropdownMenuItem(
-                                      value: c,
-                                      child: Text(c),
-                                    ),
-                                  )
-                                  .toList(),
+                              items: controller.categories.map((c) {
+                                return DropdownMenuItem(
+                                  value: c,
+                                  child: Text(translateCategory(c)),
+                                );
+                              }).toList(),
                               onChanged: (val) {
-                                if (val != null)
+                                if (val != null) {
                                   controller.selectedCategory.value = val;
+                                }
                               },
-                            ),
-                          ),
+                            );
+                          }),
                         ),
                         Divider(height: 20, color: Colors.grey[200]),
 
@@ -169,7 +179,7 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                             child: Obx(
                               () => Text(
                                 controller.selectedDate.value.isEmpty
-                                    ? 'Select date'
+                                    ? 'select_date'.tr
                                     : _formatDate(
                                         controller.selectedDate.value,
                                       ),
@@ -182,11 +192,11 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                           ),
                         ),
 
-                        // ← tambah ini di bawah dropdown
+                        // ── Other category input ──────────────────────
                         Obx(() {
                           if (controller.selectedCategory.value.toLowerCase() !=
                               'other') {
-                            return const SizedBox.shrink(); // sembunyikan kalau bukan Other
+                            return const SizedBox.shrink();
                           }
                           return Column(
                             children: [
@@ -197,7 +207,7 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                                   fontSize: 13,
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: 'Category Name',
+                                  hintText: 'category_name'.tr,
                                   hintStyle: GoogleFonts.plusJakartaSans(
                                     fontSize: 13,
                                     color: Colors.grey[400],
@@ -325,18 +335,21 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
     );
   }
 
-  String _formatDate(String raw) {
+  // ── Format tanggal sesuai locale aktif ─────────────────────────────────
+  String _formatDate(dynamic rawDate) {
+    if (rawDate == null || rawDate.toString().isEmpty) return '';
     try {
+      // Ambil locale aktif dari GetX, format ke kode locale intl
       return DateFormat(
-        'd MMMM yyyy',
-      ).format(DateFormat('d-M-yyyy').parse(raw));
+        'd-M-yyyy',
+      ).format(DateFormat('d-M-yyyy').parse(rawDate.toString()));
     } catch (_) {
-      return raw;
+      return rawDate.toString();
     }
   }
 }
 
-// ── Helper Widgets ─────────────────────────────────────────────────────────
+// ── Helper Widget ─────────────────────────────────────────────────────────────
 class _FormRow extends StatelessWidget {
   final String label;
   final Widget child;

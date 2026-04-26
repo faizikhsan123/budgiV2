@@ -24,23 +24,17 @@ class TransaksiView extends GetView<TransaksiController> {
             // ── Header ────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Obx(() => Text(
-                          controller.transactionType.value == 'expense'
-                              ? 'Add Expense'
-                              : 'Add Income',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF1A1D2E),
-                          ),
-                        )),
-                  ),
-                 
-                ],
+              child: Center(
+                child: Obx(() => Text(
+                      controller.transactionType.value == 'expense'
+                          ? 'add_expense'.tr
+                          : 'add_income'.tr,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1D2E),
+                      ),
+                    )),
               ),
             ),
 
@@ -50,15 +44,13 @@ class TransaksiView extends GetView<TransaksiController> {
                   child: Row(
                     children: [
                       _TabItem(
-                        label: 'Expense',
-                        isSelected:
-                            controller.transactionType.value == 'expense',
+                        label: 'expense'.tr,
+                        isSelected: controller.transactionType.value == 'expense',
                         onTap: controller.setExpense,
                       ),
                       _TabItem(
-                        label: 'Income',
-                        isSelected:
-                            controller.transactionType.value == 'income',
+                        label: 'income'.tr,
+                        isSelected: controller.transactionType.value == 'income',
                         onTap: controller.setIncome,
                       ),
                     ],
@@ -70,8 +62,7 @@ class TransaksiView extends GetView<TransaksiController> {
             // ── Scrollable content ────────────────────────────────────
             Expanded(
               child: Obx(() {
-                final isExpense =
-                    controller.transactionType.value == 'expense';
+                final isExpense = controller.transactionType.value == 'expense';
 
                 return SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -81,11 +72,10 @@ class TransaksiView extends GetView<TransaksiController> {
                       // ── Amount input ──────────────────────────────
                       Center(
                         child: input_rupiah(
-                          amountC: isExpense
-                              ? controller.amount1C
-                              : controller.amount2C,
-                          hintText: isExpense ? 'input your expense' : 'input your income',
-
+                          amountC: isExpense ? controller.amount1C : controller.amount2C,
+                          hintText: isExpense
+                              ? 'input_your_expense'.tr
+                              : 'input_your_income'.tr,
                         ),
                       ),
 
@@ -93,7 +83,7 @@ class TransaksiView extends GetView<TransaksiController> {
 
                       // ── Date picker row ───────────────────────────
                       GestureDetector(
-                        onTap: () => _showDatePicker(),
+                        onTap: _showDatePicker,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -119,7 +109,7 @@ class TransaksiView extends GetView<TransaksiController> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                'Date',
+                                'date'.tr,
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -150,7 +140,7 @@ class TransaksiView extends GetView<TransaksiController> {
                       // ── Select Category (Expense only) ────────────
                       if (isExpense) ...[
                         Text(
-                          'Select Category',
+                          'select_category'.tr,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -163,8 +153,7 @@ class TransaksiView extends GetView<TransaksiController> {
                             const crossCount = 4;
                             const spacing = 12.0;
                             final itemWidth =
-                                (constraints.maxWidth -
-                                        spacing * (crossCount - 1)) /
+                                (constraints.maxWidth - spacing * (crossCount - 1)) /
                                     crossCount;
 
                             return Wrap(
@@ -174,14 +163,12 @@ class TransaksiView extends GetView<TransaksiController> {
                                 controller.categories.length,
                                 (index) => Obx(() {
                                   final isSelected =
-                                      controller.selectedCategoryIndex.value ==
-                                      index;
+                                      controller.selectedCategoryIndex.value == index;
                                   return GestureDetector(
-                                    onTap: () => controller
-                                        .selectedCategoryIndex.value = index,
+                                    onTap: () =>
+                                        controller.selectedCategoryIndex.value = index,
                                     child: _CategoryBox(
-                                      name:
-                                          '${controller.categories[index]['name']}',
+                                      name: '${controller.categories[index]['name']}',
                                       iconUrl:
                                           '${controller.categories[index]['icon']}',
                                       isSelected: isSelected,
@@ -201,15 +188,15 @@ class TransaksiView extends GetView<TransaksiController> {
                             return const SizedBox.shrink();
                           }
                           final isOther = controller
-                                  .categories[controller
-                                      .selectedCategoryIndex.value]['name'] ==
+                                  .categories[controller.selectedCategoryIndex.value]
+                              ['name'] ==
                               'Other';
                           if (!isOther) return const SizedBox.shrink();
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: _buildTextField(
                               controller: controller.otherC,
-                              hint: 'Category Name',
+                              hint: 'category_name'.tr,
                             ),
                           );
                         }),
@@ -217,52 +204,40 @@ class TransaksiView extends GetView<TransaksiController> {
 
                       // ── Notes ─────────────────────────────────────
                       _buildTextField(
-                        controller: isExpense
-                            ? controller.notes1C
-                            : controller.notes2C,
-                        hint: 'add your notes here',
+                        controller: isExpense ? controller.notes1C : controller.notes2C,
+                        hint: 'add_notes_here'.tr,
                         maxLines: 4,
                       ),
 
                       const SizedBox(height: 24),
 
-                      // ── Action buttons ────────────────────────────
-                      Row(
-                        children: [
-                         
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                isExpense
-                                    ? controller.tambahExpense(
-                                        controller.notes1C.text,
-                                      )
-                                    : controller.tambahTransaksiIncome(
-                                        controller.notes2C.text,
-                                      );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2D3A8C),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              child: Text(
-                                'Save',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                      // ── Save button ───────────────────────────────
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            isExpense
+                                ? controller.tambahExpense(controller.notes1C.text)
+                                : controller.tambahTransaksiIncome(
+                                    controller.notes2C.text);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2D3A8C),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                        ],
+                          child: Text(
+                            'save'.tr,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 20),
@@ -322,10 +297,8 @@ class TransaksiView extends GetView<TransaksiController> {
             GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.grey[400]),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
@@ -336,8 +309,7 @@ class TransaksiView extends GetView<TransaksiController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide:
-              const BorderSide(color: Color(0xFF3D5AF1), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFF3D5AF1), width: 1.5),
         ),
       ),
     );
@@ -370,8 +342,7 @@ class _TabItem extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
-                  fontWeight:
-                      isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   color: isSelected
                       ? const Color(0xFF3D5AF1)
                       : Colors.grey[500],
@@ -481,7 +452,7 @@ class _CategoryBox extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            name,
+            'cat_${name.toLowerCase()}'.tr,
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

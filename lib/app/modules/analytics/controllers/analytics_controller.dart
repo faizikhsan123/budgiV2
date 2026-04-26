@@ -1,16 +1,15 @@
 import 'package:budgi/app/modules/analytics/views/analytics_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 
 class AnalyticsController extends GetxController {
-  RxString transactionType = "expense".obs;
-  RxString nilaiTanggal = "".obs;
+  final RxString transactionType = "expense".obs;
+  final RxString nilaiTanggal = "".obs;
 
-  FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   DateTime? start;
   DateTime? end;
@@ -18,13 +17,13 @@ class AnalyticsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    nilaiTanggal.value = 'All Time';
+    nilaiTanggal.value = 'all_time'.tr;
   }
 
   Future<void> resetForm() async {
     start = null;
     end = null;
-    nilaiTanggal.value = 'All Time';
+    nilaiTanggal.value = 'all_time'.tr;
     update();
   }
 
@@ -38,7 +37,6 @@ class AnalyticsController extends GetxController {
     Get.back();
   }
 
-  /// Stream semua transaksi dari all_transactions (flat, tidak nested)
   Stream<QuerySnapshot<Map<String, dynamic>>> streamAllTransactions() {
     final uid = auth.currentUser!.uid;
     Query<Map<String, dynamic>> query = firestore
@@ -61,18 +59,19 @@ class AnalyticsController extends GetxController {
     return query.snapshots();
   }
 
-  /// Filter docs by type di client side
   List<Map<String, dynamic>> filterByType(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, String type) {
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    String type,
+  ) {
     return docs
         .where((d) => d.data()['type'] == type)
         .map((d) => d.data())
         .toList();
   }
 
-  /// Hitung total income & expense dari docs
   Map<String, double> computeMetrics(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  ) {
     double totalIncome = 0;
     double totalExpense = 0;
     for (final doc in docs) {
@@ -91,9 +90,9 @@ class AnalyticsController extends GetxController {
     };
   }
 
-  /// Hitung persentase per kategori dari docs yang sudah difilter by type
   Map<String, double> computeCategoryPercentages(
-      List<Map<String, dynamic>> items) {
+    List<Map<String, dynamic>> items,
+  ) {
     final Map<String, double> totals = {};
     double grand = 0;
     for (final item in items) {
@@ -106,9 +105,10 @@ class AnalyticsController extends GetxController {
     return totals.map((k, v) => MapEntry(k, (v / grand) * 100));
   }
 
-  /// Build chart data dari items
   List<CategoryData> buildChartData(
-      List<Map<String, dynamic>> items, String type) {
+    List<Map<String, dynamic>> items,
+    String type,
+  ) {
     final Map<String, double> totals = {};
     for (final item in items) {
       final cat = item['category'] as String;

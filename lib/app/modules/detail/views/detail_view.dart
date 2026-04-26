@@ -1,3 +1,4 @@
+import 'package:budgi/app/bahasa/category_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../controllers/detail_controller.dart';
 
 class DetailView extends GetView<DetailController> {
+  const DetailView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final args = Get.arguments as Map<String, dynamic>;
@@ -18,13 +21,11 @@ class DetailView extends GetView<DetailController> {
     final String date = args['date'] ?? '';
     final num amount = args['amount'] ?? 0;
 
-    print(icon);
-
     String formattedDate = date;
     try {
-      formattedDate = DateFormat(
-        'd MMMM yyyy',
-      ).format(DateFormat('d-M-yyyy').parse(date));
+      final locale = Get.locale?.toString().replaceAll('_', '-') ?? 'en';
+      formattedDate = DateFormat('d-M-yyyy', locale)
+          .format(DateFormat('d-M-yyyy').parse(date));
     } catch (_) {}
 
     return Scaffold(
@@ -34,7 +35,7 @@ class DetailView extends GetView<DetailController> {
         elevation: 0,
         centerTitle: true,
         leading: GestureDetector(
-          onTap: () => Get.back(),
+          onTap: Get.back,
           child: const Icon(Icons.arrow_back, color: Color(0xFF1A1D2E)),
         ),
         title: Text(
@@ -46,14 +47,11 @@ class DetailView extends GetView<DetailController> {
           ),
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
             const SizedBox(height: 16),
-
-            // ── Card Utama ─────────────────────────────────────
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
@@ -70,15 +68,12 @@ class DetailView extends GetView<DetailController> {
               ),
               child: Column(
                 children: [
-                  // ── Icon ──────────────────────────────────────
-                  Container(
+                  SizedBox(
                     width: 56,
                     height: 56,
-                    child: SvgPicture.network("$icon", fit: BoxFit.cover),
+                    child: SvgPicture.network(icon, fit: BoxFit.cover),
                   ),
                   const SizedBox(height: 14),
-
-                  // ── Amount ────────────────────────────────────
                   Text(
                     rupiah.convertToRupiah('${amount.toInt()}'),
                     style: GoogleFonts.plusJakartaSans(
@@ -96,8 +91,6 @@ class DetailView extends GetView<DetailController> {
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // ── Divider + Detail rows ─────────────────────
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -113,9 +106,12 @@ class DetailView extends GetView<DetailController> {
                   Divider(color: Colors.grey[200]),
                   const SizedBox(height: 8),
 
-                  _DetailRow(label: 'category'.tr, value: ('${category}')),
+                  // ← pakai translateCategory di sini
+                  _DetailRow(
+                    label: 'category'.tr,
+                    value: translateCategory(category),
+                  ),
                   const SizedBox(height: 12),
-
                   _DetailRow(
                     label: 'amount'.tr,
                     value: rupiah.convertToRupiah('${amount.toInt()}'),
@@ -137,7 +133,6 @@ class DetailView extends GetView<DetailController> {
   }
 }
 
-// ── Detail Row ────────────────────────────────────────────────────────────────
 class _DetailRow extends StatelessWidget {
   final String label;
   final String value;
@@ -153,7 +148,7 @@ class _DetailRow extends StatelessWidget {
           label,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
-            color: Colors.grey[600],
+            color: Colors.grey[500],
           ),
         ),
         Text(

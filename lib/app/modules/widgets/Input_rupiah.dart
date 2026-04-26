@@ -39,27 +39,6 @@ class input_rupiah extends StatelessWidget {
             fontSize: 14,
             color: Colors.grey[400],
           ),
-
-          // filled: true,
-          // fillColor: const Color.fromARGB(255, 255, 255, 255),
-
-          // contentPadding: const EdgeInsets.symmetric(
-          //   horizontal: 10,
-          //   vertical: 18,
-          // ),
-          // enabledBorder: OutlineInputBorder(
-          //   borderRadius: BorderRadius.circular(8),
-          //   borderSide: const BorderSide(color: Color.fromARGB(255, 215, 204, 219), width: 2),
-          // ),
-          // border: OutlineInputBorder(
-          //   borderRadius: BorderRadius.circular(8),
-          //   borderSide: BorderSide.none,
-          // ),
-          // isDense: true,
-          // focusedBorder: OutlineInputBorder(
-          //   borderRadius: BorderRadius.circular(8),
-          //   borderSide: const BorderSide(  color: Color.fromARGB(255, 19, 91, 173), width: 2),
-          // ),
         ),
       ),
     );

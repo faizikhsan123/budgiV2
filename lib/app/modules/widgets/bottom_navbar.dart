@@ -16,17 +16,12 @@ class bottom_navbar extends StatelessWidget {
       final current = pageC.pageIndex.value;
       final isDark = profileC.isDark.value;
 
-      final navBgColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
-      final shadowColor = isDark
-          ? Colors.black.withOpacity(0.3)
-          : Colors.black.withOpacity(0.08);
-
       return Container(
         decoration: BoxDecoration(
-          color: navBgColor,
+          color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
           boxShadow: [
             BoxShadow(
-              color: shadowColor,
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -41,12 +36,11 @@ class bottom_navbar extends StatelessWidget {
               children: [
                 _NavItem(
                   icon: Icons.home_rounded,
-                  label: 'Home',
+                  label: 'home_label'.tr,
                   isSelected: current == 0,
                   isDark: isDark,
                   onTap: () => pageC.changePage(0),
                 ),
-
                 GestureDetector(
                   onTap: () => pageC.changePage(1),
                   child: Container(
@@ -70,10 +64,9 @@ class bottom_navbar extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 _NavItem(
                   icon: Icons.person_outline_rounded,
-                  label: 'Profile',
+                  label: 'profile_label'.tr,
                   isSelected: current == 2,
                   isDark: isDark,
                   onTap: () => pageC.changePage(2),
@@ -104,10 +97,6 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inactiveColor = isDark
-        ? const Color(0xFF6B6F8E)
-        : const Color(0xFFB0B3C6);
-
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -119,7 +108,11 @@ class _NavItem extends StatelessWidget {
             Icon(
               icon,
               size: 26,
-              color: isSelected ? const Color(0xFF3D5AF1) : inactiveColor,
+              color: isSelected
+                  ? const Color(0xFF3D5AF1)
+                  : isDark
+                      ? const Color(0xFF6B6F8E)
+                      : const Color(0xFFB0B3C6),
             ),
             const SizedBox(height: 2),
             AnimatedContainer(

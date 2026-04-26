@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 class cancel_transaksi extends StatelessWidget {
-  const cancel_transaksi({
-    super.key,
-  });
+  const cancel_transaksi({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +17,9 @@ class cancel_transaksi extends StatelessWidget {
             border: Border.all(color: const Color(0xFFBC9CC6)),
           ),
           child: TextButton(
-            onPressed: () {
-              Get.back();
-            },
+            onPressed: Get.back,
             child: Text(
-              "Cancel",
+              'cancel'.tr,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -31,7 +28,7 @@ class cancel_transaksi extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 20,)
+        const SizedBox(height: 20),
       ],
     );
   }

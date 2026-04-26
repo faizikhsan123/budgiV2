@@ -26,10 +26,8 @@ class LoginView extends GetView<LoginController> {
   }
 
   Widget _buildContent(AuthController authC) {
-    // FIX: Ganti Column+Container(height) dengan Stack agar tidak overflow
     return Stack(
       children: [
-        // Background biru di atas
         Container(
           width: double.infinity,
           height: double.infinity,
@@ -44,8 +42,6 @@ class LoginView extends GetView<LoginController> {
             ),
           ),
         ),
-
-        // White card mengisi layar dari 20% ke bawah
         Positioned(
           top: Get.height * 0.2,
           left: 0,
@@ -97,7 +93,7 @@ class LoginView extends GetView<LoginController> {
     return Column(
       children: [
         Text(
-          'Welcome !',
+          'welcome'.tr,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -105,7 +101,7 @@ class LoginView extends GetView<LoginController> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Here you log in securely',
+          'login_subtitle'.tr,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
             color: const Color(0xFF6B6B6B),
@@ -117,21 +113,18 @@ class LoginView extends GetView<LoginController> {
 
   Widget _buildEmailField() {
     return buildTextField(
-      hint: 'Enter email',
+      hint: 'enter_email'.tr,
       keyboardType: TextInputType.emailAddress,
       controller: controller.emailC,
-      
     );
   }
 
   Widget _buildPasswordField() {
     return Obx(
       () => buildTextField(
-        hint: 'Password',
+        hint: 'password'.tr,
         obscureText: controller.isHide.value,
         controller: controller.passC,
-        
-        
         suffixIcon: IconButton(
           onPressed: controller.isHide.toggle,
           icon: Icon(
@@ -154,7 +147,7 @@ class LoginView extends GetView<LoginController> {
           _clearFields();
         },
         child: Text(
-          'Forgot password?',
+          'forgot_password'.tr,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 12,
             fontWeight: FontWeight.w600,
@@ -166,17 +159,12 @@ class LoginView extends GetView<LoginController> {
   }
 
   Widget _buildLoginButton(AuthController authC) {
-    return Column(
-      children: [
-        buildButtonPink(
-          text: 'Log in',
-          onTap: () {
-            authC.loginForm(controller.emailC.text, controller.passC.text);
-            _clearFields();
-          },
-        ),
-        const SizedBox(height: 16),
-      ],
+    return buildButtonPink(
+      text: 'log_in'.tr,
+      onTap: () {
+        authC.loginForm(controller.emailC.text, controller.passC.text);
+        _clearFields();
+      },
     );
   }
 
@@ -187,7 +175,7 @@ class LoginView extends GetView<LoginController> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Text(
-            'Sign in with',
+            'sign_in_with'.tr,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
               color: Colors.grey[400],
@@ -228,44 +216,37 @@ class LoginView extends GetView<LoginController> {
   }
 
   Widget _buildSignup() {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Don't have an account? ",
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 13,
-                color: const Color.fromARGB(255, 70, 114, 223),
-              ),
+        Text(
+          'no_account'.tr,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            color: const Color.fromARGB(255, 70, 114, 223),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.toNamed(Routes.REGIS);
+            _clearFields();
+          },
+          child: Text(
+            'sign_up'.tr,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1565C0),
             ),
-            GestureDetector(
-              onTap: () {
-                Get.toNamed(Routes.REGIS);
-                _clearFields();
-              },
-              child: Text(
-                'Sign up',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1565C0),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
   }
 
   Widget _buildLoading(AuthController authC) {
-    return Obx(() {
-      return authC.isloading.value
-          ? loading_overlay()
-          : const SizedBox.shrink();
-    });
+    return Obx(
+      () => authC.isloading.value ? loading_overlay() : const SizedBox.shrink(),
+    );
   }
 }

@@ -1,4 +1,5 @@
 // ignore_for_file: must_be_immutable
+import 'package:budgi/app/bahasa/category_helper.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,229 +22,206 @@ class AnalyticsView extends GetView<AnalyticsController> {
         bottom: true,
         child: Column(
           children: [
-            // ── Header ────────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              child: Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Analytics',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF1A1D2E),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          onTap: () async {
-                            await controller.resetForm();
-                            Get.back();
-                          },
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Color(0xFF1A1D2E),
-                            size: 22,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
+            _buildHeader(),
+            _buildTabToggle(),
+            const SizedBox(height: 16),
+            Expanded(child: _buildContent()),
+          ],
+        ),
+      ),
+    );
+  }
 
-                  // Date picker trigger
-                  GestureDetector(
-                    onTap: () => _showDatePicker(),
-                    child: Obx(
-                      () => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            controller.nilaiTanggal.value,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF3D5AF1),
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 18,
-                            color: Color(0xFF3D5AF1),
-                          ),
-                        ],
-                      ),
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: Text(
+                  'analytics'.tr,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1D2E),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: GestureDetector(
+                  onTap: () async {
+                    await controller.resetForm();
+                    Get.back();
+                  },
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Color(0xFF1A1D2E),
+                    size: 22,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          GestureDetector(
+            onTap: _showDatePicker,
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    controller.nilaiTanggal.value,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF3D5AF1),
                     ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 18,
+                    color: Color(0xFF3D5AF1),
                   ),
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            // ── Tab Toggle ────────────────────────────────────────────
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    _TabItem(
-                      label: 'Expense',
-                      isSelected: controller.transactionType.value == 'expense',
-                      onTap: controller.liatExpense,
-                    ),
-                    _TabItem(
-                      label: 'Income',
-                      isSelected: controller.transactionType.value == 'income',
-                      onTap: controller.liatIncome,
-                    ),
-                  ],
-                ),
-              ),
+  Widget _buildTabToggle() {
+    return Obx(
+      () => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            _TabItem(
+              label: 'expenses'.tr,
+              isSelected: controller.transactionType.value == 'expense',
+              onTap: controller.liatExpense,
             ),
-
-            const SizedBox(height: 16),
-
-            // ── Content ───────────────────────────────────────────────
-            Expanded(
-              child: GetBuilder<AnalyticsController>(
-                builder: (ctrl) => Obx(() {
-                  final currentType = ctrl.transactionType.value;
-
-                  return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: ctrl.streamAllTransactions(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      final allDocs = snapshot.data!.docs;
-                      final filteredItems = ctrl.filterByType(
-                        allDocs,
-                        currentType,
-                      );
-                      final metrics = ctrl.computeMetrics(allDocs);
-                      final chartData = ctrl.buildChartData(
-                        filteredItems,
-                        currentType,
-                      );
-                      final percentages = ctrl.computeCategoryPercentages(
-                        filteredItems,
-                      );
-
-                      final maxValue = currentType == 'income'
-                          ? metrics['totalIncome']!
-                          : metrics['totalExpense']!;
-
-                      // Group by date for list
-                      final Map<String, List<Map<String, dynamic>>> grouped =
-                          {};
-                      for (final item in filteredItems) {
-                        final date = item['date'] as String;
-                        grouped.putIfAbsent(date, () => []).add(item);
-                      }
-                      final dates = grouped.keys.toList();
-
-                      return SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            // ── Chart Card ──────────────────────────
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: currentType == 'expense'
-                                  ? _RadialChart(
-                                      chartData: chartData,
-                                      maxValue: maxValue,
-                                      currentType: currentType,
-                                    )
-                                  : _BarChart(
-                                      filteredItems: filteredItems,
-                                      ctrl: ctrl,
-                                    ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // ── Category Bubbles ─────────────────────
-                            Row(
-                              children: [
-                                Text(
-                                  "Activity",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 8),
-
-                            // ── List / Summary ───────────────────────
-                            // ── List / Summary ───────────────────────
-                            if (currentType == 'expense')
-                              dates.isEmpty
-                                  ? _emptyState(ctrl)
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: dates.length,
-                                      itemBuilder: (context, i) => _DateGroup(
-                                        date: dates[i],
-                                        items: grouped[dates[i]]!,
-                                        isIncome: false,
-                                      ),
-                                    )
-                            else
-                              dates.isEmpty
-                                  ? _emptyState(ctrl)
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: dates.length,
-                                      itemBuilder: (context, i) => _DateGroup(
-                                        date: dates[i],
-                                        items: grouped[dates[i]]!,
-                                        isIncome: true,
-                                      ),
-                                    ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                }),
-              ),
+            _TabItem(
+              label: 'income'.tr,
+              isSelected: controller.transactionType.value == 'income',
+              onTap: controller.liatIncome,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    return GetBuilder<AnalyticsController>(
+      builder: (ctrl) => Obx(() {
+        final currentType = ctrl.transactionType.value;
+
+        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: ctrl.streamAllTransactions(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final allDocs = snapshot.data!.docs;
+            final filteredItems = ctrl.filterByType(allDocs, currentType);
+            final metrics = ctrl.computeMetrics(allDocs);
+            final chartData = ctrl.buildChartData(filteredItems, currentType);
+
+            final maxValue = currentType == 'income'
+                ? metrics['totalIncome']!
+                : metrics['totalExpense']!;
+
+            final Map<String, List<Map<String, dynamic>>> grouped = {};
+            for (final item in filteredItems) {
+              final date = item['date'] as String;
+              grouped.putIfAbsent(date, () => []).add(item);
+            }
+            final dates = grouped.keys.toList();
+
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  _buildChartCard(
+                    ctrl,
+                    chartData,
+                    maxValue,
+                    currentType,
+                    filteredItems,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text(
+                        'activity'.tr,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  dates.isEmpty
+                      ? _emptyState(ctrl)
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: dates.length,
+                          itemBuilder: (context, i) => _DateGroup(
+                            date: dates[i],
+                            items: grouped[dates[i]]!,
+                            isIncome: currentType == 'income',
+                          ),
+                        ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            );
+          },
+        );
+      }),
+    );
+  }
+
+  Widget _buildChartCard(
+    AnalyticsController ctrl,
+    List<CategoryData> chartData,
+    double maxValue,
+    String currentType,
+    List<Map<String, dynamic>> filteredItems,
+  ) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: currentType == 'expense'
+          ? _RadialChart(
+              chartData: chartData,
+              maxValue: maxValue,
+              currentType: currentType,
+            )
+          : _BarChart(filteredItems: filteredItems, ctrl: ctrl),
     );
   }
 
@@ -263,7 +241,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
             startRangeSelectionColor: const Color(0xFF3D5AF1),
             endRangeSelectionColor: const Color(0xFF3D5AF1),
             rangeSelectionColor: const Color(0xFF3D5AF1).withOpacity(0.15),
-            onCancel: () => Get.back(),
+            onCancel: Get.back,
             onSubmit: (obj) {
               final range = obj as PickerDateRange;
               if (range.endDate == null) {
@@ -295,8 +273,8 @@ class AnalyticsView extends GetView<AnalyticsController> {
           Obx(
             () => Text(
               ctrl.nilaiTanggal.value.isEmpty
-                  ? 'No expenses found'
-                  : 'No expenses on\n${ctrl.nilaiTanggal.value}',
+                  ? 'no_expense_found'.tr
+                  : '${'no_expense_on'.tr}\n${ctrl.nilaiTanggal.value}',
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 13,
@@ -310,7 +288,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
   }
 }
 
-// ── Tab Item ─────────────────────────────────────────────────────────────────
+// ── Tab Item ──────────────────────────────────────────────────────────────────
 class _TabItem extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -360,7 +338,7 @@ class _TabItem extends StatelessWidget {
   }
 }
 
-// ── Radial Chart (Expense) ────────────────────────────────────────────────────
+// ── Radial Chart ──────────────────────────────────────────────────────────────
 class _RadialChart extends StatelessWidget {
   final List<CategoryData> chartData;
   final double maxValue;
@@ -383,7 +361,7 @@ class _RadialChart extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Total Value',
+                  'total_value'.tr,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -391,7 +369,7 @@ class _RadialChart extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  currentType == 'income' ? 'Income' : 'Expense',
+                  currentType == 'income' ? 'income'.tr : 'expenses'.tr,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
                     color: Colors.grey[500],
@@ -423,7 +401,7 @@ class _RadialChart extends StatelessWidget {
   }
 }
 
-// ── Bar Chart (Income) ────────────────────────────────────────────────────────
+// ── Bar Chart ─────────────────────────────────────────────────────────────────
 class _BarChart extends StatelessWidget {
   final List<Map<String, dynamic>> filteredItems;
   final AnalyticsController ctrl;
@@ -432,7 +410,6 @@ class _BarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Group by week range (1-6, 7-12, 13-18, 19-24, 25-30)
     final Map<String, double> weeklyTotals = {
       '1-6': 0,
       '7-12': 0,
@@ -444,19 +421,16 @@ class _BarChart extends StatelessWidget {
     for (final item in filteredItems) {
       final dateStr = item['date'] as String;
       try {
-        final date = DateFormat('d-M-yyyy').parse(dateStr);
-        final day = date.day;
-        String key;
-        if (day <= 6)
-          key = '1-6';
-        else if (day <= 12)
-          key = '7-12';
-        else if (day <= 18)
-          key = '13-18';
-        else if (day <= 24)
-          key = '19-24';
-        else
-          key = '25-30';
+        final day = DateFormat('d-M-yyyy').parse(dateStr).day;
+        final key = day <= 6
+            ? '1-6'
+            : day <= 12
+            ? '7-12'
+            : day <= 18
+            ? '13-18'
+            : day <= 24
+            ? '19-24'
+            : '25-30';
         weeklyTotals[key] =
             (weeklyTotals[key] ?? 0) + (item['amount'] as num).toDouble();
       } catch (_) {}
@@ -518,19 +492,19 @@ class _BarChart extends StatelessWidget {
 class _BarData {
   final String label;
   final double value;
-  _BarData(this.label, this.value);
+  const _BarData(this.label, this.value);
 }
 
 // ── Date Group ────────────────────────────────────────────────────────────────
 class _DateGroup extends StatelessWidget {
   final String date;
   final List<Map<String, dynamic>> items;
-  final bool isIncome; // ← tambah ini
+  final bool isIncome;
 
   const _DateGroup({
     required this.date,
     required this.items,
-    this.isIncome = false, // ← default false
+    this.isIncome = false,
   });
 
   @override
@@ -554,13 +528,10 @@ class _DateGroup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DateFormat(
-              'EEEE, d MMMM yyyy',
-            ).format(DateFormat('d-M-yyyy').parse(date)),
+            _formatDate(items[0]['date']),
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[600],
+              fontSize: 11,
+              color: Colors.grey[400],
             ),
           ),
           const SizedBox(height: 10),
@@ -583,7 +554,7 @@ class _DateGroup extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.all(8),
                     child: SvgPicture.network(
-                      item['icon'],
+                      item['icon'] ?? '',
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -593,15 +564,15 @@ class _DateGroup extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item['category'],
-                          style: GoogleFonts.plusJakartaSans(
+                          translateCategory(item['category'] ?? ''),
+
+                          style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF1A1D2E),
                           ),
                         ),
-                        if (item['notes'] != null &&
-                            item['notes'].toString().trim().isNotEmpty)
+                        if ((item['notes'] ?? '').toString().trim().isNotEmpty)
                           Text(
                             item['notes'],
                             style: GoogleFonts.plusJakartaSans(
@@ -614,7 +585,6 @@ class _DateGroup extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // ← amount warna & prefix beda sesuai tipe
                   Text(
                     isIncome
                         ? '+${rupiah.convertToRupiah('${item['amount']}')}'
@@ -637,62 +607,21 @@ class _DateGroup extends StatelessWidget {
   }
 }
 
-// ── Category Bubble ───────────────────────────────────────────────────────────
-class _CategoryBubble extends StatelessWidget {
-  final String label;
-  final double percentage;
-  final Color color;
-
-  const _CategoryBubble({
-    required this.label,
-    required this.percentage,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.4), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: color.withOpacity(0.9),
-            ),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '${percentage.toStringAsFixed(1)}%',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class CategoryData {
   final String category;
   final double value;
   final Color color;
-  CategoryData(this.category, this.value, this.color);
+  const CategoryData(this.category, this.value, this.color);
+}
+
+String _formatDate(dynamic rawDate) {
+  if (rawDate == null || rawDate.toString().isEmpty) return '';
+  try {
+    // Ambil locale aktif dari GetX, format ke kode locale intl
+    return DateFormat(
+      'd-M-yyyy',
+    ).format(DateFormat('d-M-yyyy').parse(rawDate.toString()));
+  } catch (_) {
+    return rawDate.toString();
+  }
 }
