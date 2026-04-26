@@ -270,18 +270,25 @@ class AnalyticsView extends GetView<AnalyticsController> {
         children: [
           Icon(Icons.receipt_long_outlined, size: 48, color: Colors.grey[300]),
           const SizedBox(height: 12),
-          Obx(
-            () => Text(
+         
+          Obx(() {
+            final isExpense = ctrl.transactionType.value == "expense";
+
+            final emptyKey = isExpense ? 'no_expense_found' : 'no_income_found';
+
+            final emptyOnKey = isExpense ? 'no_expense_on' : 'no_income_on';
+
+            return Text(
               ctrl.nilaiTanggal.value.isEmpty
-                  ? 'no_expense_found'.tr
-                  : '${'no_expense_on'.tr}\n${ctrl.nilaiTanggal.value}',
+                  ? emptyKey.tr
+                  : '${emptyOnKey.tr}\n${ctrl.nilaiTanggal.value}',
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 13,
                 color: Colors.grey[400],
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );

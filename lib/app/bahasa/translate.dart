@@ -76,13 +76,15 @@ class MyTranslate extends Translations {
       'pass_min': 'Password must be at least 6 characters',
       'pass_not_match': 'Password does not match',
       'regis_success': 'Registration successful',
-      'regis_success_msg': 'Please check your inbox / spam to verify your account',
+      'regis_success_msg':
+          'Please check your inbox / spam to verify your account',
       'regis_failed': 'Registration failed',
       'regis_failed_msg': 'Please check your internet connection',
 
       // Complete Balance
       'welcome_budgi': 'Welcome to Budgi! 👋',
-      'balance_subtitle': 'Start by adding your current balance. You can update it anytime as you record income or expenses.',
+      'balance_subtitle':
+          'Start by adding your current balance. You can update it anytime as you record income or expenses.',
       'start_tracking': 'Start Tracking',
       'balance_required': 'Balance is required',
       'balance_min': 'Balance must be at least 5000',
@@ -90,7 +92,8 @@ class MyTranslate extends Translations {
       // Reset Password
       'forgot_password_title': 'Forgot Password',
       'reset_password': 'Reset Password',
-      'reset_subtitle': 'Enter your account email to receive a password reset link.',
+      'reset_subtitle':
+          'Enter your account email to receive a password reset link.',
       'email_hint': 'example@email.com',
       'send_reset_link': 'Send Reset Link',
       'reset_success': 'Success',
@@ -153,11 +156,13 @@ class MyTranslate extends Translations {
       'gallery': 'Gallery',
       'delete_image': 'Delete Image',
       'delete_photo_title': 'Delete?',
-      'delete_photo_confirm': 'Are you sure you want to delete your profile photo?',
+      'delete_photo_confirm':
+          'Are you sure you want to delete your profile photo?',
 
       // Edit Profile — snackbar
       'profile_updated': 'Profile updated successfully',
-      'update_profile_failed': 'Failed to update profile, check your connection',
+      'update_profile_failed':
+          'Failed to update profile, check your connection',
       'pick_image_failed': 'Failed to pick image',
       'upload_image_failed': 'Failed to upload image, check your connection',
 
@@ -195,6 +200,8 @@ class MyTranslate extends Translations {
       'no_expense_on': 'No expenses on',
       'no_transactions_found': 'No transactions found',
       'search_here': 'Search here',
+      'no_income_found': 'No income found',
+      'no_income_on': 'No income on',
     },
 
     // ── Indonesia ─────────────────────────────────────────────────
@@ -270,13 +277,15 @@ class MyTranslate extends Translations {
       'pass_min': 'Kata sandi minimal 6 karakter',
       'pass_not_match': 'Kata sandi tidak cocok',
       'regis_success': 'Pendaftaran berhasil',
-      'regis_success_msg': 'Silakan cek inbox / spam untuk verifikasi akun kamu',
+      'regis_success_msg':
+          'Silakan cek inbox / spam untuk verifikasi akun kamu',
       'regis_failed': 'Pendaftaran gagal',
       'regis_failed_msg': 'Periksa koneksi internetmu dan coba lagi',
 
       // Complete Balance
       'welcome_budgi': 'Selamat datang di Budgi! 👋',
-      'balance_subtitle': 'Mulai dengan menambahkan saldo kamu saat ini. Kamu bisa memperbaruinya kapan saja saat mencatat pemasukan atau pengeluaran.',
+      'balance_subtitle':
+          'Mulai dengan menambahkan saldo kamu saat ini. Kamu bisa memperbaruinya kapan saja saat mencatat pemasukan atau pengeluaran.',
       'start_tracking': 'Mulai Lacak',
       'balance_required': 'Saldo wajib diisi',
       'balance_min': 'Saldo minimal 5000',
@@ -284,7 +293,8 @@ class MyTranslate extends Translations {
       // Reset Password
       'forgot_password_title': 'Lupa Kata Sandi',
       'reset_password': 'Reset Kata Sandi',
-      'reset_subtitle': 'Masukkan email akun kamu untuk menerima link reset kata sandi.',
+      'reset_subtitle':
+          'Masukkan email akun kamu untuk menerima link reset kata sandi.',
       'email_hint': 'contoh@email.com',
       'send_reset_link': 'Kirim Link Reset',
       'reset_success': 'Berhasil',
@@ -389,6 +399,8 @@ class MyTranslate extends Translations {
       'no_expense_on': 'Tidak ada pengeluaran pada',
       'no_transactions_found': 'Tidak ada transaksi ditemukan',
       'search_here': 'Cari di sini',
+      'no_income_found': 'Tidak ada pemasukan',
+      'no_income_on': 'Tidak ada pemasukan pada',
     },
 
     // ── Español ───────────────────────────────────────────────────
@@ -464,13 +476,15 @@ class MyTranslate extends Translations {
       'pass_min': 'La contraseña debe tener al menos 6 caracteres',
       'pass_not_match': 'Las contraseñas no coinciden',
       'regis_success': 'Registro exitoso',
-      'regis_success_msg': 'Por favor revisa tu bandeja / spam para verificar tu cuenta',
+      'regis_success_msg':
+          'Por favor revisa tu bandeja / spam para verificar tu cuenta',
       'regis_failed': 'Registro fallido',
       'regis_failed_msg': 'Por favor verifica tu conexión a internet',
 
       // Complete Balance
       'welcome_budgi': '¡Bienvenido a Budgi! 👋',
-      'balance_subtitle': 'Comienza agregando tu saldo actual. Puedes actualizarlo en cualquier momento al registrar ingresos o gastos.',
+      'balance_subtitle':
+          'Comienza agregando tu saldo actual. Puedes actualizarlo en cualquier momento al registrar ingresos o gastos.',
       'start_tracking': 'Comenzar seguimiento',
       'balance_required': 'El saldo es obligatorio',
       'balance_min': 'El saldo debe ser al menos 5000',
@@ -478,11 +492,13 @@ class MyTranslate extends Translations {
       // Reset Password
       'forgot_password_title': 'Olvidé mi contraseña',
       'reset_password': 'Restablecer contraseña',
-      'reset_subtitle': 'Ingresa el email de tu cuenta para recibir un enlace de restablecimiento.',
+      'reset_subtitle':
+          'Ingresa el email de tu cuenta para recibir un enlace de restablecimiento.',
       'email_hint': 'ejemplo@email.com',
       'send_reset_link': 'Enviar enlace',
       'reset_success': 'Éxito',
-      'reset_success_msg': 'El enlace de restablecimiento fue enviado a tu email',
+      'reset_success_msg':
+          'El enlace de restablecimiento fue enviado a tu email',
       'reset_failed': 'No se pudo enviar el restablecimiento',
       'email_not_found': 'El email no está registrado',
       'email_format_invalid': 'Formato de email inválido',
@@ -541,11 +557,13 @@ class MyTranslate extends Translations {
       'gallery': 'Galería',
       'delete_image': 'Eliminar foto',
       'delete_photo_title': '¿Eliminar?',
-      'delete_photo_confirm': '¿Estás seguro de que quieres eliminar tu foto de perfil?',
+      'delete_photo_confirm':
+          '¿Estás seguro de que quieres eliminar tu foto de perfil?',
 
       // Edit Profile — snackbar
       'profile_updated': 'Perfil actualizado correctamente',
-      'update_profile_failed': 'Error al actualizar perfil, verifica tu conexión',
+      'update_profile_failed':
+          'Error al actualizar perfil, verifica tu conexión',
       'pick_image_failed': 'Error al seleccionar imagen',
       'upload_image_failed': 'Error al subir imagen, verifica tu conexión',
 
@@ -583,6 +601,8 @@ class MyTranslate extends Translations {
       'no_expense_on': 'Sin gastos el',
       'no_transactions_found': 'No se encontraron transacciones',
       'search_here': 'Buscar aquí',
+      'no_income_found': 'No se encontraron ingresos',
+      'no_income_on': 'Sin ingresos el',
     },
 
     // ── 中文 ──────────────────────────────────────────────────────
@@ -777,6 +797,8 @@ class MyTranslate extends Translations {
       'no_expense_on': '该日期无支出',
       'no_transactions_found': '未找到交易记录',
       'search_here': '在此搜索',
+      'no_income_found': '未找到收入记录',
+      'no_income_on': '该日期无收入',
     },
   };
 }
