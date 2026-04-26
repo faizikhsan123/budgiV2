@@ -4,15 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomeController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final pageC = Get.put(PageIndexController());
-  RxBool hideBalance = false.obs;
+  RxBool balance = false.obs;
+  final box = GetStorage();
 
-
+  void hidebalance() {
+    balance.value = !balance.value;
+    box.write('balance', balance.value);
+  }
 
   void logout() async {
     await auth.signOut();
@@ -68,6 +73,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     pageC.pageIndex.value = 0;
+    balance.value = box.read<bool>('balance') ?? false; // ← load saat init
     super.onInit();
   }
 

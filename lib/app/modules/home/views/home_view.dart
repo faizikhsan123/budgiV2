@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -16,6 +17,7 @@ import '../../widgets/quick_actions_row.dart';
 class HomeView extends GetView<HomeController> {
   final authC = Get.find<AuthController>();
   final pageC = Get.find<PageIndexController>();
+  final box = GetStorage();
 
   HomeView({super.key});
 
@@ -203,7 +205,7 @@ class HomeView extends GetView<HomeController> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      controller.hideBalance.value
+                                      controller.balance.value
                                           ? '*****'
                                           : rupiah.convertToRupiah(
                                               '${data['balance']}',
@@ -218,10 +220,10 @@ class HomeView extends GetView<HomeController> {
 
                                     IconButton(
                                       onPressed: () {
-                                        controller.hideBalance.toggle();
+                                        controller.hidebalance();
                                       },
                                       icon: Icon(
-                                        controller.hideBalance.value
+                                        controller.balance.value
                                             ? Icons.visibility_off_outlined
                                             : Icons
                                                   .visibility_outlined, //Icons.visibility_outlined,
@@ -243,7 +245,7 @@ class HomeView extends GetView<HomeController> {
 
                         // ── Recent Activity ───────────────────────────────
                         Text(
-                          'Recent Activity',
+                          'Recent Activity', 
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
