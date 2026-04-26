@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget buildButtonPink({
+Widget noRounded({
   required String text,
   required VoidCallback onTap,
 }) {
@@ -10,7 +10,7 @@ Widget buildButtonPink({
     height: 50,
     width: Get.width,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(10),
       gradient: const LinearGradient(
         colors: [Color(0xFF4A80F0), Color.fromARGB(255, 21, 51, 142)],
         begin: Alignment.centerLeft,

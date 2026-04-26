@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/reset_controller.dart';
 
 class ResetView extends GetView<ResetController> {
@@ -10,7 +10,7 @@ class ResetView extends GetView<ResetController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text('forgot_password_title'.tr),
         centerTitle: true,
       ),
       body: Center(
@@ -26,30 +26,31 @@ class ResetView extends GetView<ResetController> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.lock_reset_rounded,
-                    size: 70,
-                  ),
+                  const Icon(Icons.lock_reset_rounded, size: 70),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Reset Password',
-                    style: TextStyle(
+                  Text(
+                    'reset_password'.tr,
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Masukkan email akun kamu untuk menerima link reset password.',
+                  Text(
+                    'reset_subtitle'.tr,
                     textAlign: TextAlign.center,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      color: Colors.grey[500],
+                    ),
                   ),
                   const SizedBox(height: 24),
                   TextField(
                     controller: controller.emailC,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      hintText: 'contoh@email.com',
-                      labelText: 'Email',
+                      hintText: 'email_hint'.tr,
+                      labelText: 'email'.tr,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -79,9 +80,9 @@ class ResetView extends GetView<ResetController> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                'Kirim Link Reset',
-                                style: TextStyle(fontSize: 16),
+                            : Text(
+                                'send_reset_link'.tr,
+                                style: GoogleFonts.plusJakartaSans(fontSize: 16),
                               ),
                       ),
                     ),

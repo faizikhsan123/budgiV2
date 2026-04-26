@@ -19,6 +19,8 @@ abstract class Routes {
 
   static const NEW_PASS = _Paths.NEW_PASS;
   static const CRUD = _Paths.CRUD;
+  static const DETAIL = _Paths.DETAIL;
+  static const EDIT_TRANSAKSI = _Paths.EDIT_TRANSAKSI;
 }
 
 abstract class _Paths {
@@ -38,4 +40,6 @@ abstract class _Paths {
   static const OTP = '/otp';
   static const NEW_PASS = '/new-pass';
   static const CRUD = '/crud';
+  static const DETAIL = '/detail';
+  static const EDIT_TRANSAKSI = '/edit-transaksi';
 }

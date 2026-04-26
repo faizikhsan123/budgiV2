@@ -28,46 +28,31 @@ class AuthController extends GetxController {
         "updated_at": Timestamp.now(),
       });
     } else {
-      await docRef.set({
-        "updated_at": Timestamp.now(),
-      }, SetOptions(merge: true));
+      await docRef.set({"updated_at": Timestamp.now()}, SetOptions(merge: true));
     }
   }
 
   Future<void> _handleRedirect(String uid) async {
     final doc = await firestore.collection("users").doc(uid).get();
-    final data = doc.data();
+    final balance = doc.data()?["balance"];
 
-    if (data == null) {
+    if (!doc.exists || doc.data() == null) {
       Get.offAllNamed(Routes.LOGIN);
       return;
     }
 
-    final balance = data["balance"];
-
-    if (balance == null) {
-      Get.offAllNamed(Routes.COMPLETE_BALANCE);
-      return;
-    }
-
-    Get.offAllNamed(Routes.HOME);
+    Get.offAllNamed(balance == null ? Routes.COMPLETE_BALANCE : Routes.HOME);
   }
 
   Future<void> loginWithGoogle() async {
     try {
       isloading.value = true;
-
       await _googleSignIn.signOut();
 
       final googleUser = await _googleSignIn.signIn();
-
-      if (googleUser == null) {
-        isloading.value = false;
-        return;
-      }
+      if (googleUser == null) return;
 
       final googleAuth = await googleUser.authentication;
-
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken,
@@ -75,10 +60,9 @@ class AuthController extends GetxController {
 
       final userCredential = await auth.signInWithCredential(credential);
       final user = userCredential.user!;
-      final uid = user.uid;
 
       await _saveUserIfNotExists(
-        uid: uid,
+        uid: user.uid,
         data: {
           "name": user.displayName ?? "",
           "email": user.email ?? "",
@@ -86,12 +70,11 @@ class AuthController extends GetxController {
         },
       );
 
-      await _handleRedirect(uid);
+      await _handleRedirect(user.uid);
     } catch (e) {
-      print("Failed GOOGLE: $e");
       Get.snackbar(
-        "Failed",
-        "Google login failed",
+        'failed'.tr,
+        'google_login_failed'.tr,
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );
@@ -102,40 +85,46 @@ class AuthController extends GetxController {
 
   Future<void> loginForm(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar('Failed', 'All fields are required');
+      Get.snackbar(
+        'failed'.tr,
+        'fields_required'.tr,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
+      );
       return;
     }
 
     isloading.value = true;
-
     try {
       final userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final user = userCredential.user!;
-
-      await user.reload(); // refresh status verify
+      await userCredential.user!.reload();
       final freshUser = auth.currentUser!;
 
       if (!freshUser.emailVerified) {
-        await auth.signOut(); // 🔥 penting
-        Get.snackbar('Failed', 'Please verify your email check your inbox / spam ');
+        await auth.signOut();
+        Get.snackbar(
+          'failed'.tr,
+          'verify_email'.tr,
+          backgroundColor: Colors.red.shade50,
+          colorText: Colors.red.shade900,
+        );
         return;
       }
 
       await _handleRedirect(freshUser.uid);
     } catch (e) {
-      Get.snackbar('Failed', 'Login failed');
+      Get.snackbar('failed'.tr, 'login_failed'.tr);
     } finally {
       isloading.value = false;
     }
   }
 
   Future<void> signOut() async {
-    await auth.signOut();
-    await _googleSignIn.signOut();
+    await Future.wait([auth.signOut(), _googleSignIn.signOut()]);
     Get.offAllNamed(Routes.LOGIN);
   }
 }
