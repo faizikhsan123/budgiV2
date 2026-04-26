@@ -1,4 +1,5 @@
 import 'package:budgi/app/bahasa/category_helper.dart';
+import 'package:budgi/app/modules/widgets/Input_rupiah_transaksi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
@@ -15,10 +16,11 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
     final rupiah = Rupiah();
     final args = Get.arguments as Map<String, dynamic>;
 
-    final num amount = args['amount'] ?? 0;
+    final formatter = NumberFormat('#,###', 'id_ID');
+
     final String notes = args['notes'] ?? '';
     final String icon = args['icon'] ?? '';
-
+    controller.amountC.text = formatter.format(args['amount'] ?? 0);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
@@ -75,7 +77,7 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
 
                         // ── Amount display ───────────────────────────
                         Text(
-                          rupiah.convertToRupiah('${amount.toInt()}'),
+                          rupiah.convertToRupiah('${args['amount'].toInt()}'),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
@@ -96,7 +98,8 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                         _FormRow(
                           label: 'category'.tr,
                           child: Obx(() {
-                          final isIncome = controller.selectedType.value == 'income';
+                            final isIncome =
+                                controller.selectedType.value == 'income';
                             if (isIncome) {
                               // 🔒 TAMPILAN SAJA (tidak bisa diedit)
                               return Text(
@@ -145,17 +148,21 @@ class EditTransaksiView extends GetView<EditTransaksiController> {
                           label: 'amount'.tr,
                           child: SizedBox(
                             width: 140,
-                            child: TextField(
-                              controller: controller.amountC,
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.right,
-                              style: GoogleFonts.plusJakartaSans(fontSize: 13),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
+                            child: input_rupiah_transaksi(
+                              amountC: controller.amountC,
+                              hintText: '',
                             ),
+                            // child: TextField(
+                            //   controller: controller.amountC,
+                            //   keyboardType: TextInputType.number,
+                            //   textAlign: TextAlign.right,
+                            //   style: GoogleFonts.plusJakartaSans(fontSize: 13),
+                            //   decoration: const InputDecoration(
+                            //     border: InputBorder.none,
+                            //     isDense: true,
+                            //     contentPadding: EdgeInsets.zero,
+                            //   ),
+                            // ),
                           ),
                         ),
                         Divider(height: 20, color: Colors.grey[200]),

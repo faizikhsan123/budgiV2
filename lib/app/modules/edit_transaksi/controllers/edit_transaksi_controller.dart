@@ -130,8 +130,17 @@ class EditTransaksiController extends GetxController {
 
     // ✅ TAMBAH VALIDASI INI
     final isOther = selectedCategory.value.toLowerCase() == 'other';
+    final parsedAmount = int.tryParse(
+      amountC.text.replaceAll(RegExp(r'[^0-9]'), ''),
+    );
+
+    if (parsedAmount == null || parsedAmount <= 0) {
+      _snackError('invalid_amount');
+      return;
+    }
+
     if (isOther && categoryNameC.text.trim().isEmpty) {
-      _snackError('category_name_required'); // key bebas
+      _snackError('category_name_required');
       return;
     }
 
@@ -148,7 +157,7 @@ class EditTransaksiController extends GetxController {
 
       final updateData = {
         'category': finalCategory,
-        'amount': int.tryParse(amountC.text) ?? 0,
+        'amount': parsedAmount, // ✅ FIX DISINI
         'notes': notesC.text,
         'date': selectedDate.value,
         'icon': iconUrl,
