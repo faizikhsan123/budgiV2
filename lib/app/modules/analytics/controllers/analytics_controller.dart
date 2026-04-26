@@ -53,7 +53,7 @@ class AnalyticsController extends GetxController {
               isLessThan: effectiveEnd.toIso8601String())
           .orderBy("filter_tanggal", descending: true);
     } else {
-      query = query.orderBy("created_at", descending: false);
+      query = query.orderBy("filter_tanggal", descending: true);
     }
 
     return query.snapshots();
