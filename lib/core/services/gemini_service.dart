@@ -46,7 +46,7 @@ class GeminiService {
   // ── STEP 3: Scan struk ───────────────────────────────────
   Future<Map<String, dynamic>> scanStruk(File imageFile) async {
     // Kalau model belum diinisialisasi, pakai default dulu
-    _model ??= GenerativeModel(model: 'gemini-2.5-flash', apiKey: _apiKey);
+    _model ??= GenerativeModel(model: 'gemini-2.5-flash-latest', apiKey: _apiKey);
     try {
       final imageBytes = await imageFile.readAsBytes();
       final imagePart = DataPart('image/jpeg', imageBytes);
