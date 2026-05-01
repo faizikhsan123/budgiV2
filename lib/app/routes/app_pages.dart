@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
@@ -21,6 +22,8 @@ import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
 import '../modules/reset/bindings/reset_binding.dart';
 import '../modules/reset/views/reset_view.dart';
+import '../modules/scan_bill/bindings/scan_bill_binding.dart';
+import '../modules/scan_bill/views/scan_bill_view.dart';
 import '../modules/transaksi/bindings/transaksi_binding.dart';
 import '../modules/transaksi/views/transaksi_view.dart';
 
@@ -94,13 +97,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.DETAIL,
-      page: () =>  DetailView(),
+      page: () => DetailView(),
       binding: DetailBinding(),
     ),
     GetPage(
       name: _Paths.EDIT_TRANSAKSI,
-      page: () =>  EditTransaksiView(),
+      page: () => EditTransaksiView(),
       binding: EditTransaksiBinding(),
+    ),
+    GetPage(
+      name: _Paths.SCAN_BILL,
+      page: () =>  ScanBillView(),
+      binding: ScanBillBinding(),
     ),
   ];
 }

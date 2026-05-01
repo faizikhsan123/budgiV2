@@ -1,10 +1,13 @@
+import 'package:budgi/app/modules/scan_bill/controllers/scan_bill_controller.dart';
 import 'package:budgi/app/modules/widgets/cancel_transaksi.dart';
 import 'package:budgi/app/modules/widgets/content_before_transaksi.dart';
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class TransaksiController extends GetxController {
@@ -104,7 +107,7 @@ class TransaksiController extends GetxController {
     );
   }
 
-  void _snackSuccess(String messageKey) {
+  Future _snackSuccess(String messageKey) async {
     Get.snackbar(
       'success'.tr,
       messageKey.tr,
@@ -186,7 +189,7 @@ class TransaksiController extends GetxController {
   }
 
   // ── Tambah Expense ────────────────────────────────────────────────────────
-  void tambahExpense(String noteText) async {
+  Future<void> tambahExpense(String noteText) async {
     final number = _parseAmount(amount1C);
 
     if (number == null || number <= 0) {
@@ -271,20 +274,40 @@ class TransaksiController extends GetxController {
             });
 
             resetForm();
-            Get.back();
+            final c = Get.find<ScanBillController>();
+            c.reset();
+            Get.offAllNamed(Routes.HOME);
             _snackSuccess('expense_added');
           } catch (e) {
             debugPrint("ERROR ADD EXPENSE: $e");
             _snackError('transaction_failed');
           }
         },
-        child: Text('add'.tr),
+
+        child: Container(
+          width: 110,
+          height: 45,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              'add'.tr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 255, 255, 255),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   // ── Tambah Income ─────────────────────────────────────────────────────────
-  void tambahTransaksiIncome(String noteText) async {
+  Future tambahTransaksiIncome(String noteText) async {
     final number = _parseAmount(amount2C);
 
     if (number == null || number <= 0) {
@@ -341,14 +364,32 @@ class TransaksiController extends GetxController {
             });
 
             resetForm();
-            Get.back();
-            _snackSuccess('income_added');
+
+            Get.offAllNamed(Routes.HOME);
+            await _snackSuccess('income_added');
           } catch (e) {
             debugPrint("ERROR ADD INCOME: $e");
             _snackError('transaction_failed');
           }
         },
-        child: Text('add'.tr),
+        child: Container(
+          width: 110,
+          height: 45,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              'add'.tr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 255, 255, 255),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

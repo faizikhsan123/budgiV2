@@ -70,7 +70,7 @@ class HomeView extends GetView<HomeController> {
                         const SizedBox(height: 16),
                         _buildBalanceCard(rupiah, data),
                         const SizedBox(height: 24),
-                        const QuickActionsRow(),
+                         QuickActionsRow(),
                         const SizedBox(height: 24),
                         Text(
                           'recent_activity'.tr,

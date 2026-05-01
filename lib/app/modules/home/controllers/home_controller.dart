@@ -1,5 +1,4 @@
 import 'package:budgi/app/controllers/page_index_controller.dart';
-import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +30,7 @@ class HomeController extends GetxController {
         .doc(uid)
         .collection('transactions')
         .orderBy('filter_tanggal', descending: true)
-        .limit(5)
+        .limit(3)
         .snapshots();
   }
 

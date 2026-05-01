@@ -9,12 +9,13 @@ class cancel_transaksi extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 8,),
         Container(
-          width: 120,
+          width: 110,
           height: 45,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFBC9CC6)),
+            border: Border.all(color: const Color.fromARGB(255, 201, 191, 204)),
           ),
           child: TextButton(
             onPressed: Get.back,
@@ -23,7 +24,7 @@ class cancel_transaksi extends StatelessWidget {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: Colors.black,
+                color: const Color.fromARGB(255, 0, 0, 0),
               ),
             ),
           ),

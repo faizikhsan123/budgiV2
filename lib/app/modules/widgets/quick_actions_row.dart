@@ -1,3 +1,4 @@
+import 'package:budgi/app/modules/scan_bill/controllers/scan_bill_controller.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,25 +6,30 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
 class QuickActionsRow extends StatelessWidget {
-  const QuickActionsRow({super.key});
-
+  final ScanC = Get.find<ScanBillController>();
   @override
   Widget build(BuildContext context) {
     final categories = [
       _CategoryData(
         labelKey: 'analytics',
-        url: 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970771/Group_37263_h71lvx.svg',
+        url:
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970771/Group_37263_h71lvx.svg',
         onTap: () => Get.toNamed(Routes.ANALYTICS),
       ),
       _CategoryData(
         labelKey: 'history',
-        url: 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970872/Group_37264_hdwxrj.svg',
+        url:
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970872/Group_37264_hdwxrj.svg',
         onTap: () => Get.toNamed(Routes.HISTORY),
       ),
       _CategoryData(
         labelKey: 'split_bill',
-        url: 'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970902/Group_37261_m0fego.svg',
-        onTap: () {},
+        url:
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776970902/Group_37261_m0fego.svg',
+        onTap: () {
+          Get.toNamed(Routes.SCAN_BILL);
+          // ScanC.openCameras();
+        },
       ),
     ];
 
