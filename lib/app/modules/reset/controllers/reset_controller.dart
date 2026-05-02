@@ -16,7 +16,9 @@ class ResetController extends GetxController {
       Get.snackbar(
         'error'.tr,
         'email_required'.tr,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
@@ -25,7 +27,9 @@ class ResetController extends GetxController {
       Get.snackbar(
         'error'.tr,
         'email_format_invalid'.tr,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
@@ -40,9 +44,9 @@ class ResetController extends GetxController {
         Get.snackbar(
           'reset_success'.tr,
           'reset_success_msg'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: const Color(0xFF2ECC71),
-          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green.shade50,
+          colorText: Colors.green.shade900,
           duration: const Duration(seconds: 3),
         );
       });
@@ -50,13 +54,13 @@ class ResetController extends GetxController {
       final message = e.code == 'user-not-found'
           ? 'email_not_found'.tr
           : e.code == 'invalid-email'
-              ? 'email_format_invalid'.tr
-              : 'reset_failed'.tr;
+          ? 'email_format_invalid'.tr
+          : 'reset_failed'.tr;
 
       Get.snackbar(
         'error'.tr,
         message,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade900,
       );

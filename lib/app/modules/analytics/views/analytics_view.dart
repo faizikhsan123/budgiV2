@@ -35,7 +35,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
           Stack(
@@ -557,7 +557,7 @@ class _BarChart extends StatelessWidget {
             dataSource: barData,
             xValueMapper: (d, _) => d.label,
             yValueMapper: (d, _) => d.value,
-            color: const Color(0xFF3D5AF1).withOpacity(0.7),
+            color: const Color.fromARGB(138, 0, 142, 38).withOpacity(0.7),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             width: 0.5,
             dataLabelSettings: const DataLabelSettings(isVisible: false),
@@ -610,7 +610,7 @@ class _DateGroup extends StatelessWidget {
             _formatDate(items[0]['date']),
             style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
-              color: Colors.grey[400],
+              color: Colors.grey[700],
             ),
           ),
           const SizedBox(height: 10),
@@ -619,7 +619,7 @@ class _DateGroup extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,
             separatorBuilder: (_, __) =>
-                Divider(height: 14, color: Colors.grey[100]),
+                Divider(height: 14, color: Colors.grey[300]),
             itemBuilder: (context, i) {
               final item = items[i];
               return Row(

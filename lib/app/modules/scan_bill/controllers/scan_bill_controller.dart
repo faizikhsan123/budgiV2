@@ -217,8 +217,10 @@ class ScanBillController extends GetxController {
   Future<void> simpan() async {
     if (!scanBerhasil) {
       Get.snackbar(
-        'Perhatian',
-        'Scan struk dulu sebelum menyimpan!',
+        'failed'.tr,
+        'scan_dulu'.tr,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -248,8 +250,10 @@ class ScanBillController extends GetxController {
 
     if (amount == 0) {
       Get.snackbar(
-        'Error',
-        'Nominal tidak boleh kosong',
+        'failed'.tr,
+        'nominal_kosong'.tr,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;

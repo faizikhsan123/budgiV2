@@ -65,7 +65,7 @@ class TransaksiController extends GetxController {
     {
       "name": "Other",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--more-4-fill_g3maa8.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777721636/Vector_1_jnx5ek.svg",
     },
   ];
 

@@ -82,9 +82,11 @@ class MyTranslate extends Translations {
       'regis_failed_msg': 'Please check your internet connection',
 
       // Complete Balance
-      'welcome_budgi': 'Welcome to Budgi! 👋',
-      'balance_subtitle':
-          'Start by adding your current balance. You can update it anytime as you record income or expenses.',
+      'welcome_budgi': 'Welcome to Budgi,',
+      'welcome_2': ' Buddies!👋',
+      'balance_subtitle': 'Start by adding your current balance.',
+      'balance_subtitle_2':
+          'You can update it anytime as you record income or expenses.',
       'start_tracking': 'Start Tracking',
       'balance_required': 'Balance is required',
       'balance_min': 'Balance must be at least 5000',
@@ -206,6 +208,25 @@ class MyTranslate extends Translations {
       'search_here': 'Search here',
       'no_income_found': 'No income found',
       'no_income_on': 'No income on',
+
+      // Scan Bill
+      'scan_bill_title': 'Review Transaction',
+      'foto_struk': 'Photo Receipt',
+      'pilih_galeri': 'Choose from Gallery',
+      'membaca_struk': 'Reading receipt...',
+      'gagal_membaca': 'Failed to read receipt',
+      'foto_ulang': 'Retake photo →',
+      'ulangi': 'Retry',
+      'simpan': 'Save',
+      'ganti': 'Change',
+      'kategori': 'Category',
+      'nama_toko': 'Store name...',
+      'nama_barang': 'Items purchased...',
+      'scan_dulu': 'Scan receipt first before saving!',
+      'nominal_kosong': 'Amount cannot be empty',
+      'nama_kategori_hint': 'Category name...',
+      'scan_berhasil': 'Receipt scanned successfully',
+      'scan_gagal': 'Failed to scan receipt',
     },
 
     // ── Indonesia ─────────────────────────────────────────────────
@@ -287,9 +308,11 @@ class MyTranslate extends Translations {
       'regis_failed_msg': 'Periksa koneksi internetmu dan coba lagi',
 
       // Complete Balance
-      'welcome_budgi': 'Selamat datang di Budgi! 👋',
-      'balance_subtitle':
-          'Mulai dengan menambahkan saldo kamu saat ini. Kamu bisa memperbaruinya kapan saja saat mencatat pemasukan atau pengeluaran.',
+      'welcome_budgi': 'Selamat datang di Budgi,',
+      'balance_subtitle': 'Mulai dengan menambahkan saldo kamu saat ini.',
+      'balance_subtitle_2':
+          'Kamu dapat mengubahnya kapan saja jika kamu mencatat pendapatan atau pengeluaran.',
+      'welcome_2': ' Buddies!👋',
       'start_tracking': 'Mulai Lacak',
       'balance_required': 'Saldo wajib diisi',
       'balance_min': 'Saldo minimal 5000',
@@ -408,6 +431,25 @@ class MyTranslate extends Translations {
       'search_here': 'Cari di sini',
       'no_income_found': 'Tidak ada pemasukan',
       'no_income_on': 'Tidak ada pemasukan pada',
+
+      // Scan Bill
+      'scan_bill_title': 'Review Transaksi',
+      'foto_struk': 'Foto Struk',
+      'pilih_galeri': 'Pilih dari Galeri',
+      'membaca_struk': 'Membaca struk...',
+      'gagal_membaca': 'Gagal membaca struk',
+      'foto_ulang': 'Foto ulang →',
+      'ulangi': 'Ulangi',
+      'simpan': 'Simpan',
+      'ganti': 'Ganti',
+      'kategori': 'Kategori',
+      'nama_toko': 'Nama toko...',
+      'nama_barang': 'Nama barang yang dibeli...',
+      'scan_dulu': 'Scan struk dulu sebelum menyimpan!',
+      'nominal_kosong': 'Nominal tidak boleh kosong',
+      'nama_kategori_hint': 'Nama kategori...',
+      'scan_berhasil': 'Struk berhasil dibaca',
+      'scan_gagal': 'Gagal scan struk',
     },
 
     // ── Español ───────────────────────────────────────────────────
@@ -489,12 +531,14 @@ class MyTranslate extends Translations {
       'regis_failed_msg': 'Por favor verifica tu conexión a internet',
 
       // Complete Balance
-      'welcome_budgi': '¡Bienvenido a Budgi! 👋',
-      'balance_subtitle':
-          'Comienza agregando tu saldo actual. Puedes actualizarlo en cualquier momento al registrar ingresos o gastos.',
+      'welcome_budgi': '¡Bienvenido a Budgi,',
+      'balance_subtitle': 'Comienza agregando tu saldo actual.',
+      'balance_subtitle_2':
+          'Puedes modificarlo en cualquier momento si registras ingresos o gastos.',
       'start_tracking': 'Comenzar seguimiento',
       'balance_required': 'El saldo es obligatorio',
       'balance_min': 'El saldo debe ser al menos 5000',
+      'welcome_2': ' Buddies!👋',
 
       // Reset Password
       'forgot_password_title': 'Olvidé mi contraseña',
@@ -614,6 +658,25 @@ class MyTranslate extends Translations {
       'search_here': 'Buscar aquí',
       'no_income_found': 'No se encontraron ingresos',
       'no_income_on': 'Sin ingresos el',
+
+      // Scan Bill
+      'scan_bill_title': 'Revisar Transacción',
+      'foto_struk': 'Foto del Recibo',
+      'pilih_galeri': 'Elegir de Galería',
+      'membaca_struk': 'Leyendo recibo...',
+      'gagal_membaca': 'Error al leer recibo',
+      'foto_ulang': 'Reintentar foto →',
+      'ulangi': 'Reintentar',
+      'simpan': 'Guardar',
+      'ganti': 'Cambiar',
+      'kategori': 'Categoría',
+      'nama_toko': 'Nombre de tienda...',
+      'nama_barang': 'Artículos comprados...',
+      'scan_dulu': '¡Escanea el recibo primero!',
+      'nominal_kosong': 'El monto no puede estar vacío',
+      'nama_kategori_hint': 'Nombre de categoría...',
+      'scan_berhasil': 'Recibo escaneado exitosamente',
+      'scan_gagal': 'Error al escanear recibo',
     },
 
     // ── 中文 ──────────────────────────────────────────────────────
@@ -694,8 +757,10 @@ class MyTranslate extends Translations {
       'regis_failed_msg': '请检查您的网络连接',
 
       // Complete Balance
-      'welcome_budgi': '欢迎使用 Budgi！👋',
-      'balance_subtitle': '请先输入您当前的余额。您可以在记录收入或支出时随时更新。',
+      'welcome_budgi': '欢迎使用 Budgi,',
+      'welcome_2': ' Buddies!👋',
+      'balance_subtitle': '请先输入您当前的余额。',
+      'balance_subtitle_2': '如果您记录收入或支出，则可以随时更改。',
       'start_tracking': '开始记账',
       'balance_required': '余额不能为空',
       'balance_min': '余额至少需要5000',
@@ -813,6 +878,25 @@ class MyTranslate extends Translations {
       'search_here': '在此搜索',
       'no_income_found': '未找到收入记录',
       'no_income_on': '该日期无收入',
+
+      // Scan Bill
+      'scan_bill_title': '查看交易',
+      'foto_struk': '拍摄收据',
+      'pilih_galeri': '从相册选择',
+      'membaca_struk': '正在读取收据...',
+      'gagal_membaca': '读取收据失败',
+      'foto_ulang': '重新拍照 →',
+      'ulangi': '重试',
+      'simpan': '保存',
+      'ganti': '更换',
+      'kategori': '类别',
+      'nama_toko': '店铺名称...',
+      'nama_barang': '购买的商品...',
+      'scan_dulu': '请先扫描收据！',
+      'nominal_kosong': '金额不能为空',
+      'nama_kategori_hint': '类别名称...',
+      'scan_berhasil': '收据扫描成功',
+      'scan_gagal': '扫描收据失败',
     },
   };
 }
