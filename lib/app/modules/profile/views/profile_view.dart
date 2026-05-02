@@ -1,6 +1,7 @@
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
+import 'package:budgi/app/modules/widgets/loading_awal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,7 +49,7 @@ class ProfileView extends GetView<ProfileController> {
                     stream: controller.streamUser(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: loading_awal());
                       }
           
                       final user = snapshot.data!;
