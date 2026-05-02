@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 import 'package:budgi/app/bahasa/category_helper.dart';
+import 'package:budgi/app/modules/widgets/loading_awal.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -127,7 +128,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
           stream: ctrl.streamAllTransactions(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: loading_awal());
             }
 
             final allDocs = snapshot.data!.docs;
@@ -270,14 +271,10 @@ class AnalyticsView extends GetView<AnalyticsController> {
         children: [
           Icon(Icons.receipt_long_outlined, size: 48, color: Colors.grey[300]),
           const SizedBox(height: 12),
-         
           Obx(() {
             final isExpense = ctrl.transactionType.value == "expense";
-
             final emptyKey = isExpense ? 'no_expense_found' : 'no_income_found';
-
             final emptyOnKey = isExpense ? 'no_expense_on' : 'no_income_on';
-
             return Text(
               ctrl.nilaiTanggal.value.isEmpty
                   ? emptyKey.tr
@@ -322,9 +319,7 @@ class _TabItem extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected
-                      ? const Color(0xFF3D5AF1)
-                      : Colors.grey[500],
+                  color: isSelected ? const Color(0xFF3D5AF1) : Colors.grey[500],
                 ),
               ),
             ),
@@ -332,9 +327,7 @@ class _TabItem extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               height: 2,
               decoration: BoxDecoration(
-                color: isSelected
-                    ? const Color(0xFF3D5AF1)
-                    : Colors.transparent,
+                color: isSelected ? const Color(0xFF3D5AF1) : Colors.transparent,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -359,48 +352,120 @@ class _RadialChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 240,
-      child: SfCircularChart(
-        annotations: [
-          CircularChartAnnotation(
-            widget: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'total_value'.tr,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1A1D2E),
-                  ),
+    // ✅ Hitung total untuk persentase
+    final total = chartData.fold<double>(0, (sum, d) => sum + d.value);
+
+    return Column(
+      children: [
+        SizedBox(
+          height: 240,
+          child: SfCircularChart(
+            annotations: [
+              CircularChartAnnotation(
+                widget: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'total_value'.tr,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1D2E),
+                      ),
+                    ),
+                    Text(
+                      currentType == 'income' ? 'income'.tr : 'expenses'.tr,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  currentType == 'income' ? 'income'.tr : 'expenses'.tr,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 11,
-                    color: Colors.grey[500],
-                  ),
-                ),
-              ],
+              ),
+            ],
+            series: [
+              RadialBarSeries<CategoryData, String>(
+                dataSource: chartData.isEmpty
+                    ? [CategoryData('No Data', 1, Colors.grey.shade200)]
+                    : chartData,
+                xValueMapper: (d, _) => d.category,
+                yValueMapper: (d, _) => d.value,
+                pointColorMapper: (d, _) => d.color,
+                radius: '100%',
+                innerRadius: '50%',
+                gap: '3%',
+                maximumValue: maxValue > 0 ? maxValue : 1,
+                cornerStyle: CornerStyle.bothCurve,
+                trackColor: const Color(0xFFF0EBF8),
+                trackBorderWidth: 0,
+              ),
+            ],
+          ),
+        ),
+
+        // ✅ Legend pills dengan persentase
+        if (chartData.isNotEmpty && total > 0) ...[
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: chartData.map((d) {
+              final pct = ((d.value / total) * 100).round();
+              return _LegendPill(
+                label: translateCategory(d.category),
+                percent: pct,
+                color: d.color,
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 4),
+        ],
+      ],
+    );
+  }
+}
+
+// ── Legend Pill ───────────────────────────────────────────────────────────────
+class _LegendPill extends StatelessWidget {
+  final String label;
+  final int percent;
+  final Color color;
+
+  const _LegendPill({
+    required this.label,
+    required this.percent,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
             ),
           ),
-        ],
-        series: [
-          RadialBarSeries<CategoryData, String>(
-            dataSource: chartData.isEmpty
-                ? [CategoryData('No Data', 1, Colors.grey.shade200)]
-                : chartData,
-            xValueMapper: (d, _) => d.category,
-            yValueMapper: (d, _) => d.value,
-            pointColorMapper: (d, _) => d.color,
-            radius: '100%',
-            innerRadius: '50%',
-            gap: '3%',
-            maximumValue: maxValue > 0 ? maxValue : 1,
-            cornerStyle: CornerStyle.bothCurve,
-            trackColor: const Color(0xFFF0EBF8),
-            trackBorderWidth: 0,
+          const SizedBox(width: 6),
+          Text(
+            '$label  $percent%',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: color.withOpacity(0.85),
+            ),
           ),
         ],
       ),
@@ -428,16 +493,23 @@ class _BarChart extends StatelessWidget {
     for (final item in filteredItems) {
       final dateStr = item['date'] as String;
       try {
-        final day = DateFormat('d-M-yyyy').parse(dateStr).day;
+        // ✅ Support format ISO yyyy-MM-dd dan lama d-M-yyyy
+        DateTime dt;
+        if (dateStr.length >= 10 && dateStr[4] == '-') {
+          dt = DateTime.parse(dateStr);
+        } else {
+          dt = DateFormat('d-M-yyyy').parse(dateStr);
+        }
+        final day = dt.day;
         final key = day <= 6
             ? '1-6'
             : day <= 12
-            ? '7-12'
-            : day <= 18
-            ? '13-18'
-            : day <= 24
-            ? '19-24'
-            : '25-30';
+                ? '7-12'
+                : day <= 18
+                    ? '13-18'
+                    : day <= 24
+                        ? '19-24'
+                        : '25-30';
         weeklyTotals[key] =
             (weeklyTotals[key] ?? 0) + (item['amount'] as num).toDouble();
       } catch (_) {}
@@ -555,10 +627,7 @@ class _DateGroup extends StatelessWidget {
                   Container(
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5F6FA),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                   
                     padding: const EdgeInsets.all(8),
                     child: SvgPicture.network(
                       item['icon'] ?? '',
@@ -572,7 +641,6 @@ class _DateGroup extends StatelessWidget {
                       children: [
                         Text(
                           translateCategory(item['category'] ?? ''),
-
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -621,13 +689,17 @@ class CategoryData {
   const CategoryData(this.category, this.value, this.color);
 }
 
+// ✅ Support ISO (yyyy-MM-dd) dan format lama (d-M-yyyy)
 String _formatDate(dynamic rawDate) {
   if (rawDate == null || rawDate.toString().isEmpty) return '';
   try {
-    // Ambil locale aktif dari GetX, format ke kode locale intl
-    return DateFormat(
-      'd-M-yyyy',
-    ).format(DateFormat('d-M-yyyy').parse(rawDate.toString()));
+    final raw = rawDate.toString();
+    if (raw.length >= 10 && raw[4] == '-') {
+      final dt = DateTime.parse(raw);
+      return DateFormat('d MMMM yyyy').format(dt);
+    }
+    return DateFormat('d MMMM yyyy')
+        .format(DateFormat('d-M-yyyy').parse(raw));
   } catch (_) {
     return rawDate.toString();
   }
