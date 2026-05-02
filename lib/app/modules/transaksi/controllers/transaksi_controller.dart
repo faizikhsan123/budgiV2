@@ -1,4 +1,3 @@
-import 'package:budgi/app/modules/scan_bill/controllers/scan_bill_controller.dart';
 import 'package:budgi/app/modules/widgets/cancel_transaksi.dart';
 import 'package:budgi/app/modules/widgets/content_before_transaksi.dart';
 import 'package:budgi/app/routes/app_pages.dart';
@@ -31,37 +30,37 @@ class TransaksiController extends GetxController {
     {
       "name": "Food",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--fork-spoon-fill_k44lpk.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777715782/Group_37177_jz6xzj.svg",
     },
     {
       "name": "Transport",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--car-fill_oyvkvd.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777715834/Vector_ynkema.svg",
     },
     {
       "name": "Health",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1775021799/mingcute--shield-fill_1_hbbsu5.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716570/material-symbols_health-metrics-outline-rounded_kjhs3i.svg",
     },
     {
       "name": "Bill",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--bill-fill_f1txbv.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716727/mingcute_bill-line_mwjhht.svg",
     },
     {
       "name": "Shopping",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--shopping-cart-2-fill_dbgrgo.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716531/lucide_shopping-basket_rxlbdg.svg",
     },
     {
       "name": "Transfer",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--transfer-3-fill_vywadq.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716960/solar_card-transfer-outline_1_xdmzuw.svg",
     },
     {
       "name": "Entertain",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--movie-fill_kps26w.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716727/bx_camera-movie_rzi02m.svg",
     },
     {
       "name": "Other",
@@ -274,8 +273,9 @@ class TransaksiController extends GetxController {
             });
 
             resetForm();
-            final c = Get.find<ScanBillController>();
-            c.reset();
+            // final c = Get.find<ScanBillController>();
+            // c.reset();
+            // ✅ SESUDAH
             Get.offAllNamed(Routes.HOME);
             _snackSuccess('expense_added');
           } catch (e) {
@@ -353,7 +353,7 @@ class TransaksiController extends GetxController {
               "search_notes": formattedNote.toLowerCase(),
               "search_text": "income ${formattedNote.toLowerCase()}",
               "icon":
-                  "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774979395/mingcute--cash-line_nsv7vc.svg",
+                  "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777715879/Group_r1xhb3.svg",
             };
 
             await _ensureParentDoc(uid, docId, filterTanggal);
@@ -365,8 +365,9 @@ class TransaksiController extends GetxController {
 
             resetForm();
 
+            // ✅ SESUDAH
             Get.offAllNamed(Routes.HOME);
-            await _snackSuccess('income_added');
+            _snackSuccess('expense_added');
           } catch (e) {
             debugPrint("ERROR ADD INCOME: $e");
             _snackError('transaction_failed');

@@ -443,7 +443,7 @@ class _CategoryBox extends StatelessWidget {
                 width: size * 0.44,
                 height: size * 0.44,
                 colorFilter: const ColorFilter.mode(
-                  Colors.white,
+                  Color.fromARGB(255, 255, 255, 255),
                   BlendMode.srcIn,
                 ),
                 fit: BoxFit.contain,

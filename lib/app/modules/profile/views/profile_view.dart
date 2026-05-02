@@ -21,8 +21,9 @@ class ProfileView extends GetView<ProfileController> {
     return Obx(() {
       final isDark = controller.isDark.value;
 
-      final bgColor =
-          isDark ? const Color(0xFF0D0D0D) : const Color(0xFFF5F6FA);
+      final bgColor = isDark
+          ? const Color(0xFF0D0D0D)
+          : const Color(0xFFF5F6FA);
       final cardColor = isDark ? const Color(0xFF1E1E2E) : Colors.white;
       final textPrimary = isDark ? Colors.white : const Color(0xFF1A1D2E);
       final textSecondary = isDark ? Colors.grey[400] : Colors.grey[500];
@@ -32,173 +33,176 @@ class ProfileView extends GetView<ProfileController> {
           : Colors.black.withOpacity(0.05);
       final editBtnColor = isDark
           ? const Color(0xFF0B30FF)
-          : const Color.fromARGB(255, 77, 85, 129);
+          : const Color.fromARGB(255, 79, 92, 165);
 
       return Scaffold(
         backgroundColor: bgColor,
-        body: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              Expanded(
-                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  stream: controller.streamUser(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    final user = snapshot.data!;
-                    final String photoUrl = (user['photo_url'] ?? '').isEmpty
-                        ? "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}"
-                        : user['photo_url'];
-
-                    return SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 16),
-
-                          // ── Header ──────────────────────────────────────
-                          Center(
-                            child: Text(
-                              'profile'.tr,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                                color: textPrimary,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    stream: controller.streamUser(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+          
+                      final user = snapshot.data!;
+                      final String photoUrl = (user['photo_url'] ?? '').isEmpty
+                          ? "https://api.dicebear.com/9.x/initials/png?seed=${user['name']}"
+                          : user['photo_url'];
+          
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+          
+                            // ── Header ──────────────────────────────────────
+                            Center(
+                              child: Text(
+                                'profile'.tr,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                  color: textPrimary,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 24),
-
-                          // ── Profile Card ────────────────────────────────
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 24,
-                            ),
-                            decoration: BoxDecoration(
-                              color: cardColor,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: shadowColor,
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 44,
-                                  backgroundImage: NetworkImage(photoUrl),
-                                ),
-                                const SizedBox(height: 14),
-                                Text(
-                                  user['name'],
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: textPrimary,
+                            const SizedBox(height: 24),
+          
+                            // ── Profile Card ────────────────────────────────
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 24,
+                              ),
+                              decoration: BoxDecoration(
+                                color: cardColor,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: shadowColor,
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
                                   ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  user['email'],
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 13,
-                                    color: textSecondary,
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 44,
+                                    backgroundImage: NetworkImage(photoUrl),
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Edit Profile Button
-                                GestureDetector(
-                                  onTap: () => Get.toNamed(
-                                    Routes.EDIT_PROFILE,
-                                    arguments: {
-                                      "name": user.data()?['name'] ?? '',
-                                      "email": user.data()?['email'] ?? '',
-                                      "photo_url":
-                                          user.data()?['photo_url'] ?? '',
-                                    },
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                      vertical: 10,
+                                  const SizedBox(height: 14),
+                                  Text(
+                                    user['name'],
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: textPrimary,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: editBtnColor,
-                                      borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    user['email'],
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 13,
+                                      color: textSecondary,
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.edit_outlined,
-                                          color: Colors.white,
-                                          size: 15,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          'edit_profile'.tr,
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w600,
+                                  ),
+                                  const SizedBox(height: 16),
+          
+                                  // Edit Profile Button
+                                  GestureDetector(
+                                    onTap: () => Get.toNamed(
+                                      Routes.EDIT_PROFILE,
+                                      arguments: {
+                                        "name": user.data()?['name'] ?? '',
+                                        "email": user.data()?['email'] ?? '',
+                                        "photo_url":
+                                            user.data()?['photo_url'] ?? '',
+                                      },
+                                    ),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: editBtnColor,
+                                        borderRadius: BorderRadius.circular(24),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.edit_outlined,
                                             color: Colors.white,
+                                            size: 15,
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'edit_profile'.tr,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // ── Menu Items ───────────────────────────────────
-                          _MenuItem(
-                            icon: Icons.language_outlined,
-                            label: 'language'.tr,
-                            isDark: isDark,
-                            menuCardColor: menuCardColor,
-                            onTap: (position) =>
-                                _showPopupMenu(context, position),
-                          ),
-                          const SizedBox(height: 18),
-                          _MenuItem(
-                            icon: isDark
-                                ? Icons.dark_mode_outlined
-                                : Icons.light_mode_outlined,
-                            label: 'theme'.tr,
-                            isDark: isDark,
-                            menuCardColor: menuCardColor,
-                            onTap: (position) =>
-                                _showPopupMenuThema(context, position),
-                          ),
-                          const SizedBox(height: 18),
-                          _MenuItem(
-                            icon: Icons.logout_outlined,
-                            label: 'logout'.tr,
-                            isDark: isDark,
-                            menuCardColor: menuCardColor,
-                            isDestructive: true,
-                            onTap: (position) => _showLogoutDialog(context),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                            const SizedBox(height: 20),
+          
+                            // ── Menu Items ───────────────────────────────────
+                            _MenuItem(
+                              icon: Icons.translate,
+                              label: 'language'.tr,
+                              isDark: isDark,
+                              menuCardColor: menuCardColor,
+                              onTap: (position) =>
+                                  _showPopupMenu(context, position),
+                            ),
+                            const SizedBox(height: 18),
+                            _MenuItem(
+                              icon: isDark
+                                  ? Icons.dark_mode_outlined
+                                  : Icons.light_mode_outlined,
+                              label: 'theme'.tr,
+                              isDark: isDark,
+                              menuCardColor: menuCardColor,
+                              onTap: (position) =>
+                                  _showPopupMenuThema(context, position),
+                            ),
+                            const SizedBox(height: 18),
+                            _MenuItem(
+                              icon: Icons.logout_outlined,
+                              label: 'logout'.tr,
+                              isDark: isDark,
+                              menuCardColor: menuCardColor,
+                              isDestructive: true,
+                              onTap: (position) => _showLogoutDialog(context),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              bottom_navbar(pageC: pageC),
-            ],
+                bottom_navbar(pageC: pageC),
+              ],
+            ),
           ),
         ),
       );
@@ -308,30 +312,46 @@ void _showPopupMenu(BuildContext context, Offset position) async {
     items: [
       PopupMenuItem<String>(
         value: 'en',
-        child: Text('🇺🇸  English',
-            style: GoogleFonts.poppins(
-                fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '🇺🇸  English',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'id',
-        child: Text('🇮🇩  Indonesia',
-            style: GoogleFonts.poppins(
-                fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '🇮🇩  Indonesia',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'es',
-        child: Text('🇪🇸  Español',
-            style: GoogleFonts.poppins(
-                fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '🇪🇸  Español',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'zh',
-        child: Text('🇨🇳  中文',
-            style: GoogleFonts.poppins(
-                fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '🇨🇳  中文',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
     ],
   );
@@ -370,16 +390,24 @@ void _showPopupMenuThema(BuildContext context, Offset position) async {
     items: [
       PopupMenuItem<String>(
         value: 'gelap',
-        child: Text('🌙  ${'dark_mode'.tr}',
-            style: GoogleFonts.poppins(
-                fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '🌙  ${'dark_mode'.tr}',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
       const PopupMenuDivider(height: 1),
       PopupMenuItem<String>(
         value: 'terang',
-        child: Text('☀️  ${'light_mode'.tr}',
-            style: GoogleFonts.poppins(
-                fontSize: 14, color: const Color(0xFF1A1D2E))),
+        child: Text(
+          '☀️  ${'light_mode'.tr}',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF1A1D2E),
+          ),
+        ),
       ),
     ],
   );
@@ -419,8 +447,8 @@ class _MenuItem extends StatelessWidget {
     final color = isDestructive
         ? const Color(0xFFE53935)
         : isDark
-            ? Colors.white
-            : const Color(0xFF1A1D2E);
+        ? Colors.white
+        : const Color(0xFF1A1D2E);
 
     return GestureDetector(
       onTapDown: (details) => onTap(details.globalPosition),
@@ -441,7 +469,7 @@ class _MenuItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: color),
+            Icon(icon, color: color,),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
@@ -453,7 +481,7 @@ class _MenuItem extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: color, size: 20),
+            Icon(Icons.chevron_right_rounded, color: color, size: 30),
           ],
         ),
       ),

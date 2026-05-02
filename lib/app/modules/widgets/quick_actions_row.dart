@@ -83,7 +83,7 @@ class _CategoryItem extends StatelessWidget {
           ),
           Text(
             data.labelKey.tr,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
               fontWeight: FontWeight.w500,
               color: const Color(0xFF1A1D2E),

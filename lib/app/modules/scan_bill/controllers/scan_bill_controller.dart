@@ -224,7 +224,7 @@ class ScanBillController extends GetxController {
       return;
     }
 
-    final transaksiC = Get.put(TransaksiController());
+    final transaksiC = Get.find<TransaksiController>();
 
     final kategoriAkhir =
         selectedKategori.value == 'Other' && customKategori.value.isNotEmpty
@@ -272,9 +272,11 @@ class ScanBillController extends GetxController {
       transaksiC.otherC.text = kategoriAkhir;
     }
 
-    // ✅ Pakai notesCtrl.text bukan notes.value agar ikut editan user
-     transaksiC.tambahExpense(notesCtrl.text);
-
-   
+    // ✅ SESUDAH
+    if (tipe.value == 'expense') {
+      transaksiC.tambahExpense(notesCtrl.text);
+    } else {
+      // handle income nanti
+    }
   }
 }

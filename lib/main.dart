@@ -5,6 +5,7 @@ import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/app/modules/profile/controllers/profile_controller.dart';
 import 'package:budgi/app/modules/scan_bill/controllers/scan_bill_controller.dart';
+import 'package:budgi/app/modules/transaksi/controllers/transaksi_controller.dart';
 import 'package:budgi/app/modules/widgets/connectivity_wrapper.dart';
 import 'package:budgi/app/modules/widgets/loading_awal.dart';
 import 'package:budgi/firebase_options.dart';
@@ -39,6 +40,7 @@ class NyApp extends StatelessWidget {
   final connectivityC = Get.put(ConnectivityController(), permanent: true);
   final profileC = Get.put(ProfileController(), permanent: true);
   final scanC = Get.put(ScanBillController(), permanent: true);
+  final transaksiC = Get.put(TransaksiController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {

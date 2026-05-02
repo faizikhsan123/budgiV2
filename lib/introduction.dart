@@ -45,7 +45,7 @@ class OnboardingScreen extends StatelessWidget {
       // ── Skip ──
       skip: Text(
         'Skip',
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w600,
           fontSize: 15,
           color: const Color(0xFF3D5AF1),
@@ -55,7 +55,7 @@ class OnboardingScreen extends StatelessWidget {
       // ── Next ──
       next: Text(
         'Next',
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w600,
           fontSize: 15,
           color: const Color(0xFF3D5AF1),
@@ -65,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
       // ── Done ──
       done: Text(
         'Start',
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w600,
           fontSize: 15,
           color: const Color(0xFF3D5AF1),
@@ -115,7 +115,7 @@ class OnboardingScreen extends StatelessWidget {
       titleWidget: Text(
         title,
         textAlign: TextAlign.center,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontSize: 22,
           fontWeight: FontWeight.w700,
           color: const Color(0xFF1A1D2E),
@@ -125,7 +125,7 @@ class OnboardingScreen extends StatelessWidget {
       bodyWidget: Text(
         body,
         textAlign: TextAlign.center,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.plusJakartaSans(
           fontSize: 14,
           fontWeight: FontWeight.w400,
           color: Colors.grey[500],
