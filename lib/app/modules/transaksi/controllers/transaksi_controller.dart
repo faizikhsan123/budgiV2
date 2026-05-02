@@ -353,7 +353,7 @@ class TransaksiController extends GetxController {
               "search_notes": formattedNote.toLowerCase(),
               "search_text": "income ${formattedNote.toLowerCase()}",
               "icon":
-                  "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777715879/Group_r1xhb3.svg",
+                  "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777721636/Vector_1_jnx5ek.svg",
             };
 
             await _ensureParentDoc(uid, docId, filterTanggal);

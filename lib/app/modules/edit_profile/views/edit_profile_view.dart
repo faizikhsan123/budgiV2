@@ -1,3 +1,4 @@
+import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -139,24 +140,25 @@ class EditProfileView extends GetView<EditProfileController> {
                           SizedBox(
                             width: double.infinity,
                             height: 52,
-                            child: ElevatedButton(
-                              onPressed: () => controller.updateProfile(),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2D3A8C),
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ),
-                              child: Text(
-                                'save_changes'.tr,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
+                            child: buildButtonPink(text: 'save_changes'.tr, onTap: () => controller.updateProfile(),),
+                            // child: ElevatedButton(
+                            //   onPressed: () => controller.updateProfile(),
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: const Color(0xFF2D3A8C),
+                            //     foregroundColor: Colors.white,
+                            //     elevation: 0,
+                            //     shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.circular(16),
+                            //     ),
+                            //   ),
+                            //   child: Text(
+                            //     'save_changes'.tr,
+                            //     style: GoogleFonts.plusJakartaSans(
+                            //       fontSize: 15,
+                            //       fontWeight: FontWeight.w600,
+                            //     ),
+                            //   ),
+                            // ),
                           ),
                         ],
                       ),
