@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:get/get.dart';
 
 class contentBefore extends StatelessWidget {
   const contentBefore({
@@ -21,7 +21,7 @@ class contentBefore extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "Add ${rupiah.convertToRupiah(number)} to your $text ",
+          '${'add_to'.tr} ${rupiah.convertToRupiah(number)} ${'to_your'.tr} $text',
           textAlign: TextAlign.center,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 20,
@@ -29,7 +29,7 @@ class contentBefore extends StatelessWidget {
             color: const Color.fromARGB(255, 3, 3, 3),
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 0),
       ],
     );
   }

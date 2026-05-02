@@ -2,6 +2,7 @@ import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
+
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,167 +10,270 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/regis_controller.dart';
 
 class RegisView extends GetView<RegisController> {
+  const RegisView({super.key});
+
+  void _clearFields() {
+    controller.nameC.clear();
+    controller.emailC.clear();
+    controller.passC.clear();
+    controller.passReC.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 243, 242, 244),
-                  Color.fromARGB(255, 243, 242, 244),
-                ],
-              ),
-            ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
+          _buildBackground(),
+          _buildCard(),
+          _buildLoading(),
+        ],
+      ),
+    );
+  }
 
-                    Text(
-                      "Sign up",
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 32,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
+  Widget _buildBackground() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.center,
+          colors: [
+            Color.fromARGB(255, 10, 57, 111),
+            Color.fromARGB(255, 153, 196, 233),
+          ],
+        ),
+      ),
+    );
+  }
 
-                    const SizedBox(height: 6),
-
-                    Text(
-                      "Create your account!",
-                      style: GoogleFonts.plusJakartaSans(
-                        color: const Color.fromARGB(255, 45, 43, 43),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    buildLabel("Complete Name"),
-
-                    buildTextField(
-                      hint: "John Doe",
-                      controller: controller.nameC,
-                      filled: true,
-                      keyboardType: TextInputType.name,
-                    ),
-
-                    buildLabel("Email Address"),
-                    buildTextField(
-                      hint: "Budgi21@gmail.com",
-                      controller: controller.emailC,
-                      filled: true,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-
-                    buildLabel("Set Password"),
-                    Obx(
-                      () => buildTextField(
-                        controller: controller.passC,
-                        hint: "********",
-                        filled: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            controller.ishidepass.toggle();
-                          },
-                          icon: controller.ishidepass.value == true
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
-                        ),
-
-                        obscureText: controller.ishidepass.value,
-                      ),
-                    ),
-
-                    buildLabel("Re-Enter Password"),
-
-                    Obx(
-                      () => buildTextField(
-                        controller: controller.passReC,
-                        hint: "********",
-                        filled: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            controller.ishidepassreentry.toggle();
-                          },
-                          icon: controller.ishidepassreentry.value == true
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
-                        ),
-
-                        obscureText: controller.ishidepassreentry.value,
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    buildButtonPink(
-                      text: "Register",
-                      onTap: () async {
-                        await controller.jalankanRegis();
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Center(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Already have an account?",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.toNamed(Routes.LOGIN);
-                              controller.nameC.clear();
-                              controller.emailC.clear();
-                              controller.passC.clear();
-                              controller.passReC.clear();
-                            },
-                            child: Text(
-                              "Login",
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-                  ],
+  Widget _buildCard() {
+    return Stack(
+      children: [
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(
+            
+              top: 15
+            )
+            ,
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: TextButton.icon(
+                onPressed: Get.back,
+                icon: const Icon(
+                  Icons.chevron_left_rounded,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                label: Text(
+                  'back'.tr,
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
           ),
-          // LOADING OVERLAY
-          Obx(() {
-            if (!controller.isloading.value) return const SizedBox();
+        ),
+        Positioned(
+          top: Get.height * 0.18,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 20,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 28),
+                  _buildNameField(),
+                  _buildEmailField(),
+                  _buildPasswordField(),
+                  _buildConfirmPasswordField(),
+                  const SizedBox(height: 32),
+                  _buildSignUpButton(),
+                  const SizedBox(height: 25),
+                  _buildSignInLink(),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-            return loading_overlay();
-          }),
+  Widget _buildHeader() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            'hello_budies'.tr,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A1D2E),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'regis_subtitle'.tr,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              color: Colors.grey[500],
+              fontWeight: FontWeight.w400,
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNameField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildLabel('full_name'.tr),
+        buildTextField(
+          hint: 'John Doe',
+          controller: controller.nameC,
+          keyboardType: TextInputType.name,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmailField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildLabel('email'.tr),
+        buildTextField(
+          hint: 'budgi21@gmail.com',
+          controller: controller.emailC,
+          keyboardType: TextInputType.emailAddress,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildLabel('password'.tr),
+        Obx(
+          () => buildTextField(
+            hint: '••••••••',
+            controller: controller.passC,
+            obscureText: controller.ishidepass.value,
+            suffixIcon: IconButton(
+              icon: Icon(
+                controller.ishidepass.value
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: Colors.grey[400],
+                size: 20,
+              ),
+              onPressed: controller.ishidepass.toggle,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConfirmPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildLabel('confirm_password'.tr),
+        Obx(
+          () => buildTextField(
+            hint: '••••••••',
+            controller: controller.passReC,
+            obscureText: controller.ishidepassreentry.value,
+            suffixIcon: IconButton(
+              icon: Icon(
+                controller.ishidepassreentry.value
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: Colors.grey[400],
+                size: 20,
+              ),
+              onPressed: controller.ishidepassreentry.toggle,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return buildButtonPink(
+      text: 'sign_up'.tr,
+      onTap: controller.jalankanRegis,
+    );
+  }
+
+  Widget _buildSignInLink() {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'already_account'.tr,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+               color: const Color.fromARGB(255, 63, 129, 204),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.LOGIN);
+              _clearFields();
+            },
+            child: Text(
+              'sign_in'.tr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF1565C0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return Obx(
+      () => controller.isloading.value
+          ? loading_overlay()
+          : const SizedBox.shrink(),
     );
   }
 }

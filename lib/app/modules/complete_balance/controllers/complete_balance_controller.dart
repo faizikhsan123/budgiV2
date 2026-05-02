@@ -2,42 +2,35 @@ import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
 
 class CompleteBalanceController extends GetxController {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final rupiah = Rupiah();
 
   final balance = TextEditingController();
 
   Future<void> setBalance(int number) async {
-    final uid = auth.currentUser!.uid;
-
     if (number < 5000) {
       Get.snackbar(
-        "Failed",
-        "Balance must be at least 5000",
-         backgroundColor: Colors.red.shade50,
-          colorText: Colors.red.shade900,
+        'failed'.tr,
+        'balance_min'.tr,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade900,
       );
       return;
     }
+
+    final uid = auth.currentUser!.uid;
     await firestore.collection("users").doc(uid).update({'balance': number});
     Get.offAllNamed(Routes.HOME);
   }
 
   @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
-  @override
-  void dispose() {
+  void onClose() {
     balance.dispose();
-
-    // TODO: implement dispose
-    super.dispose();
+    super.onClose();
   }
 }

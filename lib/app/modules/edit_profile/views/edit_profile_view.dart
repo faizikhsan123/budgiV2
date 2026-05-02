@@ -1,308 +1,149 @@
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
-import 'package:budgi/app/modules/widgets/TextField.dart';
-import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
   final Map<String, dynamic> dataArgument =
       (Get.arguments as Map<String, dynamic>?) ?? {};
 
+  EditProfileView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final avatarSize = screenWidth * 0.22;
-    final cameraSize = avatarSize * 0.38;
-
-     String imageUrl =
-                          "https://api.dicebear.com/9.x/initials/png?seed=${dataArgument['name']}";
+    final String imageUrl =
+        "https://api.dicebear.com/9.x/initials/png?seed=${dataArgument['name']}";
+    final String photoUrl = (dataArgument['photo_url'] ?? '').isEmpty
+        ? imageUrl
+        : dataArgument['photo_url'];
 
     return Scaffold(
-      // ✅ FIX 1: Scaffold resizes saat keyboard muncul
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFFF0EBF8),
       body: Stack(
         children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFEADCF0), Colors.white],
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
             child: SafeArea(
               bottom: false,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back button
+                  // ── Header ──────────────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                      horizontal: 20,
+                      vertical: 12,
                     ),
-                    child: IconButton(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back_ios_outlined, size: 24),
-                    ),
-                  ),
-
-                  // Avatar + nama + email
-                  Center(
-                    child: Column(
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              width: avatarSize,
-                              height: avatarSize,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFFD9B3E6),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0xFFD9B3E6),
-                                    blurRadius: 6,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: ClipOval(
-                                child:
-                                    dataArgument['photo_url'] == null ||
-                                        dataArgument['photo_url'] == ''
-                                    ? Image.network(imageUrl, fit: BoxFit.cover)
-                                    : Image.network(
-                                        dataArgument['photo_url'],
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
+                        Center(
+                          child: Text(
+                            'edit_profile'.tr,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF1A1D2E),
                             ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.bottomSheet(
-                                    Container(
-                                      height:
-                                          dataArgument['photo_url'] == null ||
-                                              dataArgument['photo_url'] == ''
-                                          ? 120
-                                          : 175,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                const SizedBox(width: 30),
-                                                Text(
-                                                  "Profile Photo",
-                                                  style:
-                                                      GoogleFonts.plusJakartaSans(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.cancel_outlined,
-                                                  ),
-                                                  onPressed: () => Get.back(),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.image,
-                                                    color: Colors.purple,
-                                                  ),
-                                                  onPressed: () async {
-                                                    await controller
-                                                        .selectImage();
-                                                    Get.back();
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    await controller
-                                                        .selectImage();
-                                                    Get.back();
-                                                  },
-                                                  child: Text(
-                                                    "Gallery",
-                                                    style:
-                                                        GoogleFonts.plusJakartaSans(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Colors.black,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            if (dataArgument['photo_url'] !=
-                                                    null &&
-                                                dataArgument['photo_url'] != '')
-                                              Row(
-                                                children: [
-                                                  IconButton(
-                                                    icon: const Icon(
-                                                      Icons.delete_forever,
-                                                      color: Colors.red,
-                                                    ),
-                                                    onPressed: () => controller
-                                                        .deleteImage(),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () => controller
-                                                        .deleteImage(),
-                                                    child: Text(
-                                                      "Delete Image",
-                                                      style:
-                                                          GoogleFonts.plusJakartaSans(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: Colors.black,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  width: cameraSize,
-                                  height: cameraSize,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: const Color(0xFFE8D9EC),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: cameraSize * 0.55,
-                                    color: const Color(0xFFBC9CC6),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          dataArgument['name'] ?? '',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          dataArgument['email'] ?? '',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black54,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () => Get.back(),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Color(0xFF1A1D2E),
+                              size: 28,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
-
-                  // ✅ FIX 2: White card
-                  Expanded(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 246, 244, 244),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
+                  const SizedBox(height: 16),
+            
+                  // ── Avatar ───────────────────────────────────────────────
+                  GestureDetector(
+                    onTap: _showPhotoSheet,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        CircleAvatar(
+                          radius: 48,
+                          backgroundImage: NetworkImage(photoUrl),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFFBC9CC6),
-                            blurRadius: 4,
-                            offset: Offset(2, -1),
+                        Positioned(
+                          bottom: 0,
+                          right: -2,
+                          child: Container(
+                            width: 34,
+                            height: 34,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFFF0EBF8),
+                                width: 2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              size: 20,
+                              color: Color(0xFF3D5AF1),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+            
+                  // ── Form area ────────────────────────────────────────────
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(
+                        24,
+                        28,
+                        24,
+                        MediaQuery.of(context).viewInsets.bottom + 24,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel('full_name'.tr),
+                          _buildField(
+                            ctrl: controller.nameC,
+                            hint: 'full_name'.tr,
+                          ),
+                          const SizedBox(height: 16),
+            
+                          _buildLabel('email'.tr),
+                          _buildField(
+                            ctrl: controller.emailC,
+                            hint: 'email'.tr,
+                            readOnly: true,
+                          ),
+            
+                          const SizedBox(height: 40),
+            
+                          // Save Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: buildButtonPink(text: 'save_changes'.tr, onTap: () => controller.updateProfile(),),
+                         
                           ),
                         ],
-                      ),
-                      // ✅ FIX 3: Pakai ClipRRect agar konten tidak overflow
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                        child: SingleChildScrollView(
-                          // ✅ FIX 4: physics smooth scrolling
-                          physics: const ClampingScrollPhysics(),
-                          padding: EdgeInsets.fromLTRB(
-                            24,
-                            24,
-                            24,
-                            // ✅ FIX 5: padding bawah ikut keyboard
-                            MediaQuery.of(context).viewInsets.bottom + 24,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              buildLabel('Full Name'),
-                              buildTextField(
-                                controller: controller.nameC,
-                                hint: 'Full name',
-                                filled: true,
-                              ),
-
-                              buildLabel('Email'),
-                              buildTextField(
-                                controller: controller.emailC,
-                                hint: 'Email',
-                                readonly: true,
-                                filled: true,
-                              ),
-
-                              const SizedBox(height: 30),
-                              buildButtonPink(
-                                text: 'Save',
-                                onTap: () => controller.updateProfile(),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -311,13 +152,162 @@ class EditProfileView extends GetView<EditProfileController> {
             ),
           ),
 
-          // ✅ FIX 7: Loading overlay dipisah dari Obx utama
+          // ── Loading overlay ──────────────────────────────────────────
           Obx(
             () => controller.isloading.value
                 ? loading_overlay()
                 : const SizedBox.shrink(),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showPhotoSheet() {
+    final bool hasPhoto = (dataArgument['photo_url'] ?? '').isNotEmpty;
+
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(width: 36),
+                Text(
+                  'profile_photo'.tr,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            _SheetItem(
+              icon: Icons.photo_library_outlined,
+              label: 'gallery'.tr,
+              color: const Color(0xFF3D5AF1),
+              onTap: () async {
+                await controller.selectImage();
+              },
+            ),
+            if (hasPhoto) ...[
+              const Divider(height: 1),
+              _SheetItem(
+                icon: Icons.delete_outline_rounded,
+                label: 'delete_image'.tr,
+                color: Colors.red,
+                onTap: () {
+                  Get.back();
+                  controller.deleteImage();
+                },
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF1A1D2E),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField({
+    required TextEditingController ctrl,
+    required String hint,
+    bool readOnly = false,
+  }) {
+    return TextField(
+      controller: ctrl,
+      readOnly: readOnly,
+      style: GoogleFonts.plusJakartaSans(
+        fontSize: 14,
+        color: const Color(0xFF1A1D2E),
+      ),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 13,
+          color: Colors.grey[400],
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFF3D5AF1), width: 1.5),
+        ),
+      ),
+    );
+  }
+}
+
+class _SheetItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _SheetItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: onTap,
+      leading: Icon(icon, color: color),
+      title: Text(
+        label,
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

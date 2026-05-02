@@ -7,15 +7,19 @@ Widget buildButtonPink({
   required VoidCallback onTap,
 }) {
   return Container(
-    height: 45,
-
+    height: 50,
     width: Get.width,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),
+      gradient: const LinearGradient(
+        colors: [Color(0xFF4A80F0), Color.fromARGB(255, 21, 51, 142)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ),
       boxShadow: const [
         BoxShadow(
           color: Colors.black26,
-          blurRadius: 2,
+          blurRadius: 4,
           offset: Offset(0, 3),
         ),
       ],
@@ -23,7 +27,8 @@ Widget buildButtonPink({
     child: ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFB695C0),
+        backgroundColor: Colors.transparent, // penting!
+        shadowColor: Colors.transparent,     // hilangin shadow default
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -33,7 +38,7 @@ Widget buildButtonPink({
         style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          fontSize: 18,
+          fontSize: 16,
         ),
       ),
     ),

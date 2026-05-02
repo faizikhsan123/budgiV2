@@ -3,245 +3,241 @@ import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
-import 'package:budgi/app/modules/widgets/socialButton.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginView extends GetView<LoginController> {
-  final authC = Get.find<AuthController>();
-  RxBool isHide = true.obs;
+  const LoginView({super.key});
+
+  void _clearFields() {
+    controller.emailC.clear();
+    controller.passC.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authC = Get.find<AuthController>();
+    return Scaffold(
+      body: Stack(children: [_buildContent(authC), _buildLoading(authC)]),
+    );
+  }
+
+  Widget _buildContent(AuthController authC) {
     return Stack(
       children: [
-        Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: Container(
-            width: Get.width,
-            height: Get.height,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFECE6F2), Color.fromARGB(255, 255, 255, 255)],
-              ),
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 30,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 30),
-
-                          /// LOGO
-                          SizedBox(
-                            width: 90,
-                            height: 90,
-                            child: Image.network(
-                              'https://res.cloudinary.com/dzfi5acyl/image/upload/v1774848306/Stroke_Putih_y8ugnb.png',
-                              filterQuality: FilterQuality.high,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-
-                          const SizedBox(height: 30),
-
-                          /// TITLE
-                          Text(
-                            "Sign In To Your\nAccount",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xff1A1C1E),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          /// SUBTITLE
-                          Text(
-                            "Enter your email and password \nto sign in.",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xff1A1C1E),
-                            ),
-                          ),
-
-                          const SizedBox(height: 30),
-
-                          /// EMAIL
-                          buildTextField(
-                            hint: 'budgi@gmail.com',
-                            keyboardType: TextInputType.emailAddress,
-                            controller: controller.emailC,
-                            filled: true,
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          /// PASSWORD
-                          Obx(
-                            () => buildTextField(
-                              hint: '*******',
-                              keyboardType: TextInputType.text,
-                              obscureText: controller.isHide.value,
-                              controller: controller.passC,
-                              filled: true,
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  controller.isHide.value =
-                                      !controller.isHide.value;
-                                },
-                                icon: Icon(
-                                  controller.isHide.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Row(
-                            children: [
-                              const Spacer(),
-                              TextButton(
-                                onPressed: () {
-                                  Get.toNamed(Routes.RESET);
-                                  controller.emailC.clear();
-                                  controller.passC.clear();
-                                },
-                                child: Text(
-                                  "Forgot Password?",
-                                  style: GoogleFonts.plusJakartaSans(
-                                     fontWeight: FontWeight.w700,
-                                     fontSize: 14,
-                                    color: const Color.fromARGB(255, 0, 128, 248),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          const SizedBox(height: 10),
-
-                          /// LOGIN BUTTON
-                          buildButtonPink(
-                            // authC: authC,
-                            // controller: controller,
-                            text: "Start Now",
-                            onTap: () {
-                              authC.loginForm(
-                                controller.emailC.text,
-                                controller.passC.text,
-                              );
-                              controller.emailC.clear();
-                              controller.passC.clear();
-                            },
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          /// DIVIDER
-                          Row(
-                            children: [
-                              Expanded(child: Divider(color: Colors.grey[300])),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(
-                                  "Or",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: const Color.fromARGB(
-                                      255,
-                                      103,
-                                      96,
-                                      96,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(child: Divider(color: Colors.grey[300])),
-                            ],
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          /// GOOGLE
-                          Socialbutton(
-                            fontsize: 16,
-                            image:
-                                "https://res.cloudinary.com/dzfi5acyl/image/upload/v1773417040/Google_Icon_fbdggy.png",
-
-                            // authC: authC.loginFacebook(),
-                            text: "Continue With Google",
-                            // icon: Icons.g_mobiledata,
-                            onTap: () {
-                              authC.loginWithGoogle();
-                              controller.emailC.clear();
-                              controller.passC.clear();
-                            },
-                            item: 10,
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          const SizedBox(height: 30),
-
-                          /// REGISTER
-                          Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("Doesn't have an account? "),
-                                GestureDetector(
-                                  onTap: () {
-                                    Get.toNamed(Routes.REGIS);
-                                    controller.emailC.clear();
-                                    controller.passC.clear();
-                                  },
-                                  child: const Text(
-                                    " Sign Up",
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.topRight,
+              colors: [
+                Color.fromARGB(255, 10, 57, 111),
+                Color.fromARGB(255, 153, 196, 233),
+              ],
             ),
           ),
         ),
-
-        /// LOADING OVERLAY
-        Obx(() {
-          if (!authC.isloading.value) return const SizedBox();
-          return loading_overlay();
-        }),
+        Positioned(
+          top: Get.height * 0.2,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 20,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              child: Column(
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 24),
+                  _buildEmailField(),
+                  const SizedBox(height: 12),
+                  _buildPasswordField(),
+                  _buildForgotPassword(),
+                  const SizedBox(height: 16),
+                  _buildLoginButton(authC),
+                  const SizedBox(height: 20),
+                  _buildDivider(),
+                  const SizedBox(height: 16),
+                  _buildSocialLogin(authC),
+                  const SizedBox(height: 20),
+                  _buildSignup(),
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Text(
+          'welcome'.tr,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'login_subtitle'.tr,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            color: const Color(0xFF6B6B6B),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmailField() {
+    return buildTextField(
+      hint: 'enter_email'.tr,
+      keyboardType: TextInputType.emailAddress,
+      controller: controller.emailC,
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Obx(
+      () => buildTextField(
+        hint: 'password'.tr,
+        obscureText: controller.isHide.value,
+        controller: controller.passC,
+        suffixIcon: IconButton(
+          onPressed: controller.isHide.toggle,
+          icon: Icon(
+            controller.isHide.value
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            size: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForgotPassword() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () {
+          Get.toNamed(Routes.RESET);
+          _clearFields();
+        },
+        child: Text(
+          'forgot_password'.tr,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF1565C0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton(AuthController authC) {
+    return buildButtonPink(
+      text: 'log_in'.tr,
+      onTap: () {
+        authC.loginForm(controller.emailC.text, controller.passC.text);
+        _clearFields();
+      },
+    );
+  }
+
+  Widget _buildDivider() {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: const Color.fromARGB(255, 99, 97, 97))),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+            'sign_in_with'.tr,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              color: const Color(0xFF1565C0),
+            ),
+          ),
+        ),
+      Expanded(child: Divider(color: const Color.fromARGB(255, 99, 97, 97))),
+      ],
+    );
+  }
+
+  Widget _buildSocialLogin(AuthController authC) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () {
+            authC.loginWithGoogle();
+            _clearFields();
+          },
+          child: SvgPicture.network(
+            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776827835/devicon_google_jsb43q.svg',
+            width: 35,
+            placeholderBuilder: (_) => const SizedBox(width: 35, height: 35),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSignup() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'no_account'.tr,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            color: const Color.fromARGB(255, 70, 114, 223),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.toNamed(Routes.REGIS);
+            _clearFields();
+          },
+          child: Text(
+            'sign_up'.tr,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1565C0),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoading(AuthController authC) {
+    return Obx(
+      () => authC.isloading.value ? loading_overlay() : const SizedBox.shrink(),
     );
   }
 }

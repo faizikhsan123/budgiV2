@@ -17,7 +17,7 @@ class PageIndexController extends GetxController {
 
       case 1:
         pageIndex.value = index;
-        Get.toNamed(Routes.TRANSAKSI);
+        Get.offAllNamed(Routes.TRANSAKSI);
 
         break;
 

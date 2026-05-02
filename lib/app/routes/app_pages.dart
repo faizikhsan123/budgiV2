@@ -1,13 +1,15 @@
 import 'package:get/get.dart';
 
-import '../modules/CRUD/bindings/crud_binding.dart';
-import '../modules/CRUD/views/crud_view.dart';
 import '../modules/analytics/bindings/analytics_binding.dart';
 import '../modules/analytics/views/analytics_view.dart';
 import '../modules/complete_balance/bindings/complete_balance_binding.dart';
 import '../modules/complete_balance/views/complete_balance_view.dart';
+import '../modules/detail/bindings/detail_binding.dart';
+import '../modules/detail/views/detail_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
+import '../modules/edit_transaksi/bindings/edit_transaksi_binding.dart';
+import '../modules/edit_transaksi/views/edit_transaksi_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -20,6 +22,8 @@ import '../modules/regis/bindings/regis_binding.dart';
 import '../modules/regis/views/regis_view.dart';
 import '../modules/reset/bindings/reset_binding.dart';
 import '../modules/reset/views/reset_view.dart';
+import '../modules/scan_bill/bindings/scan_bill_binding.dart';
+import '../modules/scan_bill/views/scan_bill_view.dart';
 import '../modules/transaksi/bindings/transaksi_binding.dart';
 import '../modules/transaksi/views/transaksi_view.dart';
 
@@ -92,9 +96,19 @@ class AppPages {
       binding: ResetBinding(),
     ),
     GetPage(
-      name: _Paths.CRUD,
-      page: () =>  CrudView(),
-      binding: CrudBinding(),
+      name: _Paths.DETAIL,
+      page: () => DetailView(),
+      binding: DetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDIT_TRANSAKSI,
+      page: () => EditTransaksiView(),
+      binding: EditTransaksiBinding(),
+    ),
+    GetPage(
+      name: _Paths.SCAN_BILL,
+      page: () =>  ScanBillView(),
+      binding: ScanBillBinding(),
     ),
   ];
 }
