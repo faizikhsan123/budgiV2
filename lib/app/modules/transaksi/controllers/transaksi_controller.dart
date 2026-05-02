@@ -1,10 +1,12 @@
 import 'package:budgi/app/modules/widgets/cancel_transaksi.dart';
 import 'package:budgi/app/modules/widgets/content_before_transaksi.dart';
+import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:format_indonesia_v2/format_indonesia_v2.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class TransaksiController extends GetxController {
@@ -28,37 +30,37 @@ class TransaksiController extends GetxController {
     {
       "name": "Food",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--fork-spoon-fill_k44lpk.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777715782/Group_37177_jz6xzj.svg",
     },
     {
       "name": "Transport",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--car-fill_oyvkvd.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777715834/Vector_ynkema.svg",
     },
     {
       "name": "Health",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1775021799/mingcute--shield-fill_1_hbbsu5.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716570/material-symbols_health-metrics-outline-rounded_kjhs3i.svg",
     },
     {
       "name": "Bill",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--bill-fill_f1txbv.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716727/mingcute_bill-line_mwjhht.svg",
     },
     {
       "name": "Shopping",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--shopping-cart-2-fill_dbgrgo.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716531/lucide_shopping-basket_rxlbdg.svg",
     },
     {
       "name": "Transfer",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774973824/mingcute--transfer-3-fill_vywadq.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716960/solar_card-transfer-outline_1_xdmzuw.svg",
     },
     {
       "name": "Entertain",
       "icon":
-          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774974432/mingcute--movie-fill_kps26w.svg",
+          "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777716727/bx_camera-movie_rzi02m.svg",
     },
     {
       "name": "Other",
@@ -104,7 +106,7 @@ class TransaksiController extends GetxController {
     );
   }
 
-  void _snackSuccess(String messageKey) {
+  Future _snackSuccess(String messageKey) async {
     Get.snackbar(
       'success'.tr,
       messageKey.tr,
@@ -186,7 +188,7 @@ class TransaksiController extends GetxController {
   }
 
   // ── Tambah Expense ────────────────────────────────────────────────────────
-  void tambahExpense(String noteText) async {
+  Future<void> tambahExpense(String noteText) async {
     final number = _parseAmount(amount1C);
 
     if (number == null || number <= 0) {
@@ -271,20 +273,41 @@ class TransaksiController extends GetxController {
             });
 
             resetForm();
-            Get.back();
+            // final c = Get.find<ScanBillController>();
+            // c.reset();
+            // ✅ SESUDAH
+            Get.offAllNamed(Routes.HOME);
             _snackSuccess('expense_added');
           } catch (e) {
             debugPrint("ERROR ADD EXPENSE: $e");
             _snackError('transaction_failed');
           }
         },
-        child: Text('add'.tr),
+
+        child: Container(
+          width: 110,
+          height: 45,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              'add'.tr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 255, 255, 255),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   // ── Tambah Income ─────────────────────────────────────────────────────────
-  void tambahTransaksiIncome(String noteText) async {
+  Future tambahTransaksiIncome(String noteText) async {
     final number = _parseAmount(amount2C);
 
     if (number == null || number <= 0) {
@@ -330,7 +353,7 @@ class TransaksiController extends GetxController {
               "search_notes": formattedNote.toLowerCase(),
               "search_text": "income ${formattedNote.toLowerCase()}",
               "icon":
-                  "https://res.cloudinary.com/dzfi5acyl/image/upload/v1774979395/mingcute--cash-line_nsv7vc.svg",
+                  "https://res.cloudinary.com/dzfi5acyl/image/upload/v1777721636/Vector_1_jnx5ek.svg",
             };
 
             await _ensureParentDoc(uid, docId, filterTanggal);
@@ -341,14 +364,33 @@ class TransaksiController extends GetxController {
             });
 
             resetForm();
-            Get.back();
-            _snackSuccess('income_added');
+
+            // ✅ SESUDAH
+            Get.offAllNamed(Routes.HOME);
+            _snackSuccess('expense_added');
           } catch (e) {
             debugPrint("ERROR ADD INCOME: $e");
             _snackError('transaction_failed');
           }
         },
-        child: Text('add'.tr),
+        child: Container(
+          width: 110,
+          height: 45,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              'add'.tr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 255, 255, 255),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

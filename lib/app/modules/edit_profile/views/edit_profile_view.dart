@@ -1,3 +1,4 @@
+import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,144 +24,131 @@ class EditProfileView extends GetView<EditProfileController> {
       backgroundColor: const Color(0xFFF0EBF8),
       body: Stack(
         children: [
-          SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                // ── Header ──────────────────────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'edit_profile'.tr,
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF1A1D2E),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          onTap: () => Get.back(),
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Color(0xFF1A1D2E),
-                            size: 22,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // ── Avatar ───────────────────────────────────────────────
-                GestureDetector(
-                  onTap: _showPhotoSheet,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      CircleAvatar(
-                        radius: 48,
-                        backgroundImage: NetworkImage(photoUrl),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: -2,
-                        child: Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: const Color(0xFFF0EBF8),
-                              width: 2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt_outlined,
-                            size: 14,
-                            color: Color(0xFF3D5AF1),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 28),
-
-                // ── Form area ────────────────────────────────────────────
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(
-                      24,
-                      28,
-                      24,
-                      MediaQuery.of(context).viewInsets.bottom + 24,
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  // ── Header ──────────────────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        _buildLabel('full_name'.tr),
-                        _buildField(
-                          ctrl: controller.nameC,
-                          hint: 'full_name'.tr,
-                        ),
-                        const SizedBox(height: 16),
-
-                        _buildLabel('email'.tr),
-                        _buildField(
-                          ctrl: controller.emailC,
-                          hint: 'email'.tr,
-                          readOnly: true,
-                        ),
-
-                        const SizedBox(height: 40),
-
-                        // Save Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: ElevatedButton(
-                            onPressed: () => controller.updateProfile(),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2D3A8C),
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
+                        Center(
+                          child: Text(
+                            'edit_profile'.tr,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF1A1D2E),
                             ),
-                            child: Text(
-                              'save_changes'.tr,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () => Get.back(),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Color(0xFF1A1D2E),
+                              size: 28,
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+            
+                  // ── Avatar ───────────────────────────────────────────────
+                  GestureDetector(
+                    onTap: _showPhotoSheet,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        CircleAvatar(
+                          radius: 48,
+                          backgroundImage: NetworkImage(photoUrl),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: -2,
+                          child: Container(
+                            width: 34,
+                            height: 34,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFFF0EBF8),
+                                width: 2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              size: 20,
+                              color: Color(0xFF3D5AF1),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+            
+                  // ── Form area ────────────────────────────────────────────
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(
+                        24,
+                        28,
+                        24,
+                        MediaQuery.of(context).viewInsets.bottom + 24,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel('full_name'.tr),
+                          _buildField(
+                            ctrl: controller.nameC,
+                            hint: 'full_name'.tr,
+                          ),
+                          const SizedBox(height: 16),
+            
+                          _buildLabel('email'.tr),
+                          _buildField(
+                            ctrl: controller.emailC,
+                            hint: 'email'.tr,
+                            readOnly: true,
+                          ),
+            
+                          const SizedBox(height: 40),
+            
+                          // Save Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: buildButtonPink(text: 'save_changes'.tr, onTap: () => controller.updateProfile(),),
+                         
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 

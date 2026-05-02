@@ -2,6 +2,7 @@ import 'package:budgi/app/bahasa/category_helper.dart';
 import 'package:budgi/app/controllers/auth_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/widgets/bottom_navbar.dart';
+import 'package:budgi/app/modules/widgets/loading_awal.dart';
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +29,11 @@ class HomeView extends GetView<HomeController> {
     final hour = DateTime.now().hour;
     final String greeting = hour < 12
         ? 'good_morning'.tr
-        : hour < 18
+        : hour < 15
         ? 'good_afternoon'.tr
-        : 'good_evening'.tr;
+        : hour < 18
+        ? 'good_evening'.tr
+        : 'good_night'.tr;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -41,51 +44,64 @@ class HomeView extends GetView<HomeController> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  stream: controller.streamProfile(),
-                  builder: (context, profileSnap) {
-                    if (profileSnap.connectionState ==
-                        ConnectionState.waiting) {
-                      return const SizedBox(
-                        height: 300,
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-                    if (!profileSnap.hasData) {
-                      return Center(child: Text('data_empty'.tr));
-                    }
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
 
-                    final data = profileSnap.data!;
-                    final String photoUrl = (data['photo_url'] ?? '').isEmpty
-                        ? 'https://api.dicebear.com/9.x/initials/png?seed=${data['name']}'
-                        : data['photo_url'] as String;
+                    // ── HEADER ────────────────────────────
+                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: controller.streamProfile(),
+                      builder: (context, profileSnap) {
+                        if (!profileSnap.hasData) {
+                          return const SizedBox(
+                            height: 60,
+                            child: Center(child: loading_awal()),
+                          );
+                        }
+                        final data = profileSnap.data!;
+                        final String photoUrl =
+                            (data['photo_url'] ?? '').isEmpty
+                            ? 'https://api.dicebear.com/9.x/initials/png?seed=${data['name']}'
+                            : data['photo_url'] as String;
+                        return _buildHeader(data, photoUrl, greeting);
+                      },
+                    ),
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 16),
-                        _buildHeader(data, photoUrl, greeting),
-                        const SizedBox(height: 20),
-                        _buildSummaryCards(rupiah),
-                        const SizedBox(height: 16),
-                        _buildBalanceCard(rupiah, data),
-                        const SizedBox(height: 24),
-                        const QuickActionsRow(),
-                        const SizedBox(height: 24),
-                        Text(
-                          'recent_activity'.tr,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF1A1D2E),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        _buildTransactionList(rupiah),
-                        const SizedBox(height: 20),
-                      ],
-                    );
-                  },
+                    const SizedBox(height: 20),
+
+                    // ── SUMMARY CARDS ─────────────────────
+                    _buildSummaryCards(rupiah),
+
+                    const SizedBox(height: 16),
+
+                    // ── BALANCE CARD ──────────────────────
+                    // Pisah dari StreamBuilder profile supaya
+                    // Obx tidak bentrok dengan stream rebuild
+                    _buildBalanceCard(rupiah),
+
+                    const SizedBox(height: 24),
+
+                    QuickActionsRow(),
+
+                    const SizedBox(height: 24),
+
+                    Text(
+                      'recent_activity'.tr,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF1A1D2E),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // ── TRANSACTION LIST ──────────────────
+                    _buildTransactionList(rupiah),
+
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
             ),
@@ -111,7 +127,7 @@ class HomeView extends GetView<HomeController> {
             children: [
               Text(
                 '${data['name']}',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF1A1D2E),
@@ -119,7 +135,7 @@ class HomeView extends GetView<HomeController> {
               ),
               Text(
                 greeting,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
                   color: Colors.grey[500],
                 ),
@@ -196,70 +212,76 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildBalanceCard(
-    Rupiah rupiah,
-    DocumentSnapshot<Map<String, dynamic>> data,
-  ) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF1A1D2E), Color(0xFF2D3561)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF2D3561).withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'balance'.tr,
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.white70,
-              fontWeight: FontWeight.w400,
+  // ── Balance Card — pakai StreamBuilder sendiri, tidak nested ──
+  Widget _buildBalanceCard(Rupiah rupiah) {
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: controller.streamProfile(),
+      builder: (context, snap) {
+        final balance = snap.hasData ? '${snap.data!['balance'] ?? 0}' : '0';
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1A1D2E), Color(0xFF2D3561)],
             ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF2D3561).withOpacity(0.4),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  controller.balance.value
-                      ? '*****'
-                      : rupiah.convertToRupiah('${data['balance']}'),
-                  style: GoogleFonts.poppins(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFFFFFBC4),
-                    letterSpacing: -0.5,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [  
+              Text(
+                'balance'.tr,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w400,
                 ),
-                IconButton(
-                  onPressed: controller.hidebalance,
-                  icon: Icon(
-                    controller.balance.value
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    size: 20,
-                    color: const Color(0xFFFFFBC4),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              // Obx hanya untuk toggle hide/show — tidak baca data stream
+              Obx(
+                () => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      controller.balance.value
+                          ? '*****'
+                          : rupiah.convertToRupiah(balance),
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFFFFBC4),
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: controller.hidebalance,
+                      icon: Icon(
+                        controller.balance.value
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 20,
+                        color: const Color(0xFFFFFBC4),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -311,7 +333,7 @@ class HomeView extends GetView<HomeController> {
                           _formatDate(doc['date']),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 11,
-                            color: Colors.grey[400],
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -319,7 +341,7 @@ class HomeView extends GetView<HomeController> {
                         height: 1,
                         indent: 16,
                         endIndent: 16,
-                        color: Colors.grey[100],
+                        color: Colors.grey[200],
                       ),
                       ...List.generate(items.length, (i) {
                         final item = items[i];
@@ -341,10 +363,6 @@ class HomeView extends GetView<HomeController> {
                                   Container(
                                     width: 40,
                                     height: 40,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFF5F6FA),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
                                     padding: const EdgeInsets.all(8),
                                     child: SvgPicture.network(
                                       d['icon'] ?? '',
@@ -361,11 +379,10 @@ class HomeView extends GetView<HomeController> {
                                           translateCategory(
                                             d['category'] ?? '',
                                           ),
-
-                                          style: GoogleFonts.poppins(
+                                          style: GoogleFonts.plusJakartaSans(
                                             fontSize: 13,
-                                            fontWeight: FontWeight.w600,
-                                            color: const Color(0xFF1A1D2E),
+                                            fontWeight: FontWeight.w400,
+                                            color: const Color(0xFF030303),
                                           ),
                                         ),
                                         if ((d['notes'] ?? '')
@@ -374,7 +391,7 @@ class HomeView extends GetView<HomeController> {
                                             .isNotEmpty)
                                           Text(
                                             d['notes'],
-                                            style: GoogleFonts.poppins(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 11,
                                               color: Colors.grey[500],
                                             ),
@@ -390,7 +407,7 @@ class HomeView extends GetView<HomeController> {
                                         isIncome
                                             ? '+${rupiah.convertToRupiah('${d['amount']}')}'
                                             : '-${rupiah.convertToRupiah('${d['amount']}')}',
-                                        style: GoogleFonts.poppins(
+                                        style: GoogleFonts.plusJakartaSans(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w700,
                                           color: isIncome
@@ -459,7 +476,7 @@ class HomeView extends GetView<HomeController> {
           value: 'detail',
           child: Text(
             'view_details'.tr,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               color: const Color(0xFF1A1D2E),
             ),
@@ -470,7 +487,7 @@ class HomeView extends GetView<HomeController> {
           value: 'edit',
           child: Text(
             'update'.tr,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               color: const Color(0xFF3D5AF1),
             ),
@@ -481,7 +498,7 @@ class HomeView extends GetView<HomeController> {
           value: 'delete',
           child: Text(
             'delete'.tr,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               color: const Color(0xFFE74C3C),
             ),
@@ -505,10 +522,8 @@ class HomeView extends GetView<HomeController> {
   String _formatDate(dynamic rawDate) {
     if (rawDate == null || rawDate.toString().isEmpty) return '';
     try {
-      // Ambil locale aktif dari GetX, format ke kode locale intl
-      return DateFormat(
-        'd-M-yyyy',
-      ).format(DateFormat('d-M-yyyy').parse(rawDate.toString()));
+      return DateFormat('d-M-yyyy')
+          .format(DateFormat('d-M-yyyy').parse(rawDate.toString()));
     } catch (_) {
       return rawDate.toString();
     }
@@ -530,16 +545,19 @@ class _EmptyTransactions extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'no_transactions'.tr,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             'no_transactions_sub'.tr,
-            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[400]),
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              color: Colors.grey[400],
+            ),
           ),
         ],
       ),
@@ -566,19 +584,24 @@ class _SummaryCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isExpense
-                ? [const Color(0xFF131A63), const Color(0xFF2C3ECB)]
-                : [const Color(0xFF8B5CF6), const Color(0xFFCEBEFF)],
+                ? [
+                    const Color(0xFF131A63),
+                    const Color.fromARGB(255, 90, 101, 182),
+                  ]
+                : [
+                    const Color.fromARGB(255, 164, 125, 255),
+                    const Color.fromARGB(255, 189, 173, 237),
+                  ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color:
-                  (isExpense
-                          ? const Color(0xFF3D5AF1)
-                          : const Color(0xFF8B5CF6))
-                      .withOpacity(0.35),
+              color: (isExpense
+                      ? const Color(0xFF3D5AF1)
+                      : const Color(0xFF8B5CF6))
+                  .withOpacity(0.35),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -595,7 +618,9 @@ class _SummaryCard extends StatelessWidget {
               ),
               child: Icon(
                 isExpense ? Icons.arrow_upward : Icons.arrow_downward,
-                color: const Color(0xFF131A63),
+                color: isExpense
+                    ? const Color(0xFF131A63)
+                    : const Color.fromARGB(255, 164, 125, 255),
                 size: 18,
               ),
             ),
@@ -606,7 +631,7 @@ class _SummaryCard extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -614,7 +639,7 @@ class _SummaryCard extends StatelessWidget {
                   ),
                   Text(
                     amount,
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       color: Colors.white,
                       fontWeight: FontWeight.w400,

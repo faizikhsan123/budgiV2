@@ -29,7 +29,7 @@ class contentBefore extends StatelessWidget {
             color: const Color.fromARGB(255, 3, 3, 3),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 0),
       ],
     );
   }

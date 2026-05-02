@@ -91,7 +91,7 @@ class EditProfileController extends GetxController {
         height: 45,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFFBC9CC6)),
+          border: Border.all(color: const Color.fromARGB(255, 149, 170, 235)),
         ),
         child: TextButton(
           onPressed: () => Get.back(),
@@ -109,7 +109,7 @@ class EditProfileController extends GetxController {
         width: 120,
         height: 45,
         decoration: BoxDecoration(
-          color: const Color(0xFFBC9CC6),
+          color: const Color.fromARGB(255, 78, 94, 175),
           borderRadius: BorderRadius.circular(8),
         ),
         child: TextButton(

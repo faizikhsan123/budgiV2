@@ -24,33 +24,42 @@ class DetailView extends GetView<DetailController> {
     String formattedDate = date;
     try {
       final locale = Get.locale?.toString().replaceAll('_', '-') ?? 'en';
-      formattedDate = DateFormat('d-M-yyyy', locale)
-          .format(DateFormat('d-M-yyyy').parse(date));
+      formattedDate = DateFormat(
+        'd-M-yyyy',
+        locale,
+      ).format(DateFormat('d-M-yyyy').parse(date));
     } catch (_) {}
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F6FA),
-        elevation: 0,
-        centerTitle: true,
-        leading: GestureDetector(
-          onTap: Get.back,
-          child: const Icon(Icons.arrow_back, color: Color(0xFF1A1D2E)),
-        ),
-        title: Text(
-          'view_details'.tr,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF1A1D2E),
-          ),
-        ),
-      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
         child: Column(
           children: [
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () => Get.back(),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                    size: 28,
+                  ),
+                ),
+                SizedBox(width: 66,),
+
+                Text(
+                  'view_details'.tr,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1D2E),
+                  ),
+                ),
+                SizedBox(),
+              ],
+            ),
+
             const SizedBox(height: 16),
             Container(
               width: double.infinity,
@@ -71,7 +80,7 @@ class DetailView extends GetView<DetailController> {
                   SizedBox(
                     width: 56,
                     height: 56,
-                    child: SvgPicture.network(icon, fit: BoxFit.cover),
+                    child: SvgPicture.network(icon, fit: BoxFit.contain),
                   ),
                   const SizedBox(height: 14),
                   Text(
@@ -103,7 +112,7 @@ class DetailView extends GetView<DetailController> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Divider(color: Colors.grey[200]),
+                  Divider(color: Colors.grey[500]),
                   const SizedBox(height: 8),
 
                   // ← pakai translateCategory di sini
@@ -123,6 +132,8 @@ class DetailView extends GetView<DetailController> {
                     label: 'notes'.tr,
                     value: notes.isEmpty ? '-' : notes,
                   ),
+
+            
                 ],
               ),
             ),
@@ -141,7 +152,8 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start, // penting!
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
@@ -151,12 +163,18 @@ class _DetailRow extends StatelessWidget {
             color: Colors.grey[500],
           ),
         ),
-        Text(
-          value,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF1A1D2E),
+
+        const Spacer(), // 🔥 ini kuncinya
+
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF1A1D2E),
+            ),
           ),
         ),
       ],

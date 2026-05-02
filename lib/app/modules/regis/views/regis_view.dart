@@ -1,7 +1,8 @@
+import 'package:budgi/app/modules/widgets/ButtonPink.dart';
 import 'package:budgi/app/modules/widgets/TextField.dart';
 import 'package:budgi/app/modules/widgets/labelTextField.dart';
 import 'package:budgi/app/modules/widgets/loading_overlay.dart';
-import 'package:budgi/app/modules/widgets/noRounded.dart';
+
 import 'package:budgi/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,28 +53,35 @@ class RegisView extends GetView<RegisController> {
     return Stack(
       children: [
         SafeArea(
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: TextButton.icon(
-              onPressed: Get.back,
-              icon: const Icon(
-                Icons.chevron_left_rounded,
-                color: Colors.white,
-                size: 22,
-              ),
-              label: Text(
-                'back'.tr,
-                style: GoogleFonts.plusJakartaSans(
+          child: Padding(
+            padding: const EdgeInsets.only(
+            
+              top: 15
+            )
+            ,
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: TextButton.icon(
+                onPressed: Get.back,
+                icon: const Icon(
+                  Icons.chevron_left_rounded,
                   color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  size: 30,
+                ),
+                label: Text(
+                  'back'.tr,
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
           ),
         ),
         Positioned(
-          top: Get.height * 0.12,
+          top: Get.height * 0.18,
           left: 0,
           right: 0,
           bottom: 0,
@@ -105,7 +113,7 @@ class RegisView extends GetView<RegisController> {
                   _buildConfirmPasswordField(),
                   const SizedBox(height: 32),
                   _buildSignUpButton(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   _buildSignInLink(),
                   const SizedBox(height: 16),
                 ],
@@ -224,7 +232,7 @@ class RegisView extends GetView<RegisController> {
   }
 
   Widget _buildSignUpButton() {
-    return noRounded(
+    return buildButtonPink(
       text: 'sign_up'.tr,
       onTap: controller.jalankanRegis,
     );
@@ -239,7 +247,7 @@ class RegisView extends GetView<RegisController> {
             'already_account'.tr,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 13,
-              color: Colors.grey[500],
+               color: const Color.fromARGB(255, 63, 129, 204),
             ),
           ),
           GestureDetector(

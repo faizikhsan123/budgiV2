@@ -4,7 +4,10 @@ import 'package:budgi/app/controllers/connectivity_controller.dart';
 import 'package:budgi/app/controllers/page_index_controller.dart';
 import 'package:budgi/app/modules/login/controllers/login_controller.dart';
 import 'package:budgi/app/modules/profile/controllers/profile_controller.dart';
+import 'package:budgi/app/modules/scan_bill/controllers/scan_bill_controller.dart';
+import 'package:budgi/app/modules/transaksi/controllers/transaksi_controller.dart';
 import 'package:budgi/app/modules/widgets/connectivity_wrapper.dart';
+import 'package:budgi/app/modules/widgets/loading_awal.dart';
 import 'package:budgi/firebase_options.dart';
 import 'package:budgi/introduction.dart';
 import 'package:budgi/splash_screen.dart';
@@ -13,13 +16,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   await dotenv.load(fileName: '.env');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -33,6 +39,8 @@ class NyApp extends StatelessWidget {
   final loginC = Get.put(LoginController(), permanent: true);
   final connectivityC = Get.put(ConnectivityController(), permanent: true);
   final profileC = Get.put(ProfileController(), permanent: true);
+  final scanC = Get.put(ScanBillController(), permanent: true);
+  final transaksiC = Get.put(TransaksiController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +147,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child:loading_awal()));
     }
 
     return Obx(() {
@@ -175,7 +183,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           ),
         );
       }
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: loading_awal()));
     });
   }
 }
