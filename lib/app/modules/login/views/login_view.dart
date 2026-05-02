@@ -171,18 +171,18 @@ class LoginView extends GetView<LoginController> {
   Widget _buildDivider() {
     return Row(
       children: [
-        Expanded(child: Divider(color: Colors.grey[300])),
+        Expanded(child: Divider(color: const Color.fromARGB(255, 99, 97, 97))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Text(
             'sign_in_with'.tr,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
-              color: Colors.grey[400],
+              color: const Color(0xFF1565C0),
             ),
           ),
         ),
-        Expanded(child: Divider(color: Colors.grey[300])),
+      Expanded(child: Divider(color: const Color.fromARGB(255, 99, 97, 97))),
       ],
     );
   }
@@ -191,15 +191,6 @@ class LoginView extends GetView<LoginController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: () {},
-          child: SvgPicture.network(
-            'https://res.cloudinary.com/dzfi5acyl/image/upload/v1776827835/logos_facebook_vmtf1p.svg',
-            width: 35,
-            placeholderBuilder: (_) => const SizedBox(width: 35, height: 35),
-          ),
-        ),
-        const SizedBox(width: 20),
         GestureDetector(
           onTap: () {
             authC.loginWithGoogle();
