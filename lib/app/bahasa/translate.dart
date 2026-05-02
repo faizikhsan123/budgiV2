@@ -191,6 +191,9 @@ class MyTranslate extends Translations {
       'transaction_not_found': 'Transaction not found',
       'transaction_updated': 'Transaction updated successfully',
       'category_name_required': 'Category name is required',
+      'delete_transaction': 'Delete Transaction',
+      'delete_transaction_msg':
+          'Are you sure you want to delete this transaction?',
 
       // Analytics & History
       'all_time': 'All Time',
@@ -391,6 +394,8 @@ class MyTranslate extends Translations {
       'transaction_not_found': 'Transaksi tidak ditemukan',
       'transaction_updated': 'Transaksi berhasil diperbarui',
       'category_name_required': 'Nama kategori wajib diisi',
+      'delete_transaction': 'Hapus Transaksi',
+      'delete_transaction_msg': 'Apakah kamu yakin ingin menghapus transaksi?',
 
       // Analytics & History
       'all_time': 'Semua Waktu',
@@ -594,6 +599,9 @@ class MyTranslate extends Translations {
       'transaction_not_found': 'Transacción no encontrada',
       'transaction_updated': 'Transacción actualizada correctamente',
       'category_name_required': 'El nombre de la categoría es obligatorio',
+      'delete_transaction': 'Eliminar transacción',
+      'delete_transaction_msg':
+          'Estas seguro de que quieres eliminar esta transacción?',
 
       // Analytics & History
       'all_time': 'Todo el tiempo',
@@ -791,6 +799,8 @@ class MyTranslate extends Translations {
       'transaction_not_found': '未找到交易记录',
       'transaction_updated': '交易更新成功',
       'category_name_required': '必须填写类别名称',
+      'delete_transaction': '删除？',
+      'delete_transaction_msg': '您确定要删除此交易吗？',
 
       // Analytics & History
       'all_time': '所有时间',

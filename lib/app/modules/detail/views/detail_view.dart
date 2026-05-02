@@ -46,7 +46,7 @@ class DetailView extends GetView<DetailController> {
                     size: 28,
                   ),
                 ),
-                SizedBox(width: 70,),
+                SizedBox(width: 66,),
 
                 Text(
                   'view_details'.tr,

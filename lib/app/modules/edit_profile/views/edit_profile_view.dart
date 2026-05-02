@@ -141,24 +141,7 @@ class EditProfileView extends GetView<EditProfileController> {
                             width: double.infinity,
                             height: 52,
                             child: buildButtonPink(text: 'save_changes'.tr, onTap: () => controller.updateProfile(),),
-                            // child: ElevatedButton(
-                            //   onPressed: () => controller.updateProfile(),
-                            //   style: ElevatedButton.styleFrom(
-                            //     backgroundColor: const Color(0xFF2D3A8C),
-                            //     foregroundColor: Colors.white,
-                            //     elevation: 0,
-                            //     shape: RoundedRectangleBorder(
-                            //       borderRadius: BorderRadius.circular(16),
-                            //     ),
-                            //   ),
-                            //   child: Text(
-                            //     'save_changes'.tr,
-                            //     style: GoogleFonts.plusJakartaSans(
-                            //       fontSize: 15,
-                            //       fontWeight: FontWeight.w600,
-                            //     ),
-                            //   ),
-                            // ),
+                         
                           ),
                         ],
                       ),
