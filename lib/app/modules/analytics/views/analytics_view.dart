@@ -238,6 +238,7 @@ class AnalyticsView extends GetView<AnalyticsController> {
             showActionButtons: true,
             todayHighlightColor: Colors.transparent,
             showNavigationArrow: true,
+            maxDate: DateTime.now(),
             showTodayButton: false,
             startRangeSelectionColor: const Color(0xFF3D5AF1),
             endRangeSelectionColor: const Color(0xFF3D5AF1),
